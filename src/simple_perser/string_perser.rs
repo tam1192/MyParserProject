@@ -1,34 +1,37 @@
-// type Parser<'a> = Box<dyn Fn() -> Output<'a>>;
+type Parser<T> = Box<dyn Fn(&str) -> Option<(T, &str)>>;
 
-
-/// 文字列を指定したパターンで分割する
-fn char(input: &str, char: char) -> Option<((), &str)> {
-    if let Some(c) = input.chars().next() {
-        if c == char {
-            return Some(((), &input[1..]));
+fn char(i: char) -> Parser<()> {
+    Box::new(move |input: &str| {
+        if let Some(c) = input.chars().next() {
+            if c == i {
+                return Some(((), &input[1..]));
+            }
         }
-    }
-    return None;
+        return None;
+    })
 }
 
 #[cfg(test)]
-mod tests_ex {
+mod tests_char {
     use super::char;
     #[test]
     fn t1() {
         let input = "abc";
-        assert_eq!(char(input, 'a'), Some(((), "bc")));
+        let parser = char('a');
+        assert_eq!(parser(input), Some(((), "bc")));
     }
 
     #[test]
     fn t2() {
         let input = "abc";
-        assert_eq!(char(input, 'b'), None);
+        let parser = char('b');
+        assert_eq!(parser(input), None);
     }
 
     #[test]
     fn t3() {
         let input = "";
-        assert_eq!(char(input, ' '), None);
+        let parser = char(' ');
+        assert_eq!(parser(input), None);
     }
 }
