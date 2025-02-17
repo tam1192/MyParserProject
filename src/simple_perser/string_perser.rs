@@ -1,6 +1,23 @@
 type Output<'a, T> = Option<(T, &'a str)>;
 type Parser<T> = Box<dyn Fn(&str) -> Output<T>>;
 
+fn number(i: &str) -> Output<i32> {
+    let mut num = 0;
+    let mut rest = i;
+    for c in i.chars() {
+        if c.is_digit(10) {
+            num = num * 10 + c.to_digit(10).unwrap() as i32;
+            rest = &rest[1..];
+        } else {
+            break;
+        }
+    }
+    if rest.len() == i.len() {
+        return None;
+    }
+    return Some((num, rest));
+}
+
 fn char(i: char) -> Parser<()> {
     Box::new(move |input: &str| {
         if let Some(c) = input.chars().next() {
@@ -34,5 +51,26 @@ mod tests_char {
         let input = "";
         let parser = char(' ');
         assert_eq!(parser(input), None);
+    }
+}
+
+mod tests_number {
+    use super::number;
+    #[test]
+    fn t1() {
+        let input = "123abc";
+        assert_eq!(number(input), Some((123, "abc")));
+    }
+
+    #[test]
+    fn t2() {
+        let input = "abc";
+        assert_eq!(number(input), None);
+    }
+
+    #[test]
+    fn t3() {
+        let input = "";
+        assert_eq!(number(input), None);
     }
 }
