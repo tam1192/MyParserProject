@@ -1,6 +1,6 @@
 type Output<'a> = (Option<&'a str>, &'a str);
 
-fn ex<'a>(input: &'a str, pattern: &str) -> Output<'a> 
+fn split_string<'a>(input: &'a str, pattern: &str) -> Output<'a> 
 {
     assert!(pattern.len() > 0);
     assert!(input.len() > 0);
@@ -12,14 +12,14 @@ fn ex<'a>(input: &'a str, pattern: &str) -> Output<'a>
 
 #[cfg(test)]
 mod tests_ex {
-    use super::ex;
+    use super::split_string;
     #[test]
     fn test1() {
         // ' 'で区切る場合
         let input = "hello world !!!";
         let output =  (Some("hello"), "world !!!");
         let seperated = " ";
-        assert_eq!(ex(input, seperated), output);
+        assert_eq!(split_string(input, seperated), output);
     }
     
     #[test]
@@ -28,7 +28,7 @@ mod tests_ex {
         let input = "helloworld!!!";
         let output =  (None, input);
         let seperated = " ";
-        assert_eq!(ex(input, seperated), output);
+        assert_eq!(split_string(input, seperated), output);
     }
 
     #[test]
@@ -37,13 +37,13 @@ mod tests_ex {
         let data = "red,blue,gre en";
         let pattern = ",";
 
-        let (output, data) = ex(data, pattern);
+        let (output, data) = split_string(data, pattern);
         assert_eq!(output, Some("red"));
 
-        let (output, data) = ex(data, pattern);
+        let (output, data) = split_string(data, pattern);
         assert_eq!(output, Some("blue"));
 
-        let (output, data) = ex(data, pattern);
+        let (output, data) = split_string(data, pattern);
         assert_eq!(output, None);
         assert_eq!(data, "gre en");
     }
@@ -54,7 +54,7 @@ mod tests_ex {
         // 区切り文字が空白の場合
         let input = "helloworld!!!";
         let seperated = "";
-        ex(input, seperated);
+        split_string(input, seperated);
     }
 
     #[test]
@@ -63,13 +63,13 @@ mod tests_ex {
         // 入力が空白の場合
         let input = "";
         let seperated = " ";
-        ex(input, seperated);
+        split_string(input, seperated);
     }
 
     #[test]
     #[should_panic]
     fn test6() {
         // なにもかも空白の場合
-        ex("", "");
+        split_string("", "");
     }
 }
