@@ -1,8 +1,8 @@
 type Output<'a> = (Option<&'a str>, &'a str);
 
-fn split_string<'a>(input: &'a str, pattern: &str) -> Output<'a> 
+/// 文字列を指定したパターンで分割する
+fn split_string<'a>(input: &'a str, pattern: char) -> Output<'a> 
 {
-    assert!(pattern.len() > 0);
     assert!(input.len() > 0);
     match input.find(pattern) {
         Some(len) => (Some(&input[..len]), &input[len+1..]),
@@ -18,7 +18,7 @@ mod tests_ex {
         // ' 'で区切る場合
         let input = "hello world !!!";
         let output =  (Some("hello"), "world !!!");
-        let seperated = " ";
+        let seperated = ' ';
         assert_eq!(split_string(input, seperated), output);
     }
     
@@ -27,7 +27,7 @@ mod tests_ex {
         // 区切るものがない場合
         let input = "helloworld!!!";
         let output =  (None, input);
-        let seperated = " ";
+        let seperated = ' ';
         assert_eq!(split_string(input, seperated), output);
     }
 
@@ -35,7 +35,7 @@ mod tests_ex {
     fn test3() {
         // 連続して区切る場合
         let data = "red,blue,gre en";
-        let pattern = ",";
+        let pattern = ',';
 
         let (output, data) = split_string(data, pattern);
         assert_eq!(output, Some("red"));
@@ -51,25 +51,9 @@ mod tests_ex {
     #[test]
     #[should_panic]
     fn test4() {
-        // 区切り文字が空白の場合
-        let input = "helloworld!!!";
-        let seperated = "";
-        split_string(input, seperated);
-    }
-
-    #[test]
-    #[should_panic]
-    fn test5() {
         // 入力が空白の場合
         let input = "";
-        let seperated = " ";
+        let seperated = ' ';
         split_string(input, seperated);
-    }
-
-    #[test]
-    #[should_panic]
-    fn test6() {
-        // なにもかも空白の場合
-        split_string("", "");
     }
 }
