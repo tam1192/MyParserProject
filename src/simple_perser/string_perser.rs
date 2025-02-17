@@ -1,4 +1,5 @@
-type Parser<T> = Box<dyn Fn(&str) -> Option<(T, &str)>>;
+type Output<'a, T> = Option<(T, &'a str)>;
+type Parser<T> = Box<dyn Fn(&str) -> Output<T>>;
 
 fn char(i: char) -> Parser<()> {
     Box::new(move |input: &str| {
