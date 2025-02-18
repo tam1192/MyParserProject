@@ -29,6 +29,16 @@ fn char(i: char) -> Parser<()> {
     })
 }
 
+fn many(p: Parser<()>) -> Parser<()> {
+    Box::new(move |input: &str| {
+        let mut rest = input;
+        while let Some((_, r)) = p(rest) {
+            rest = r;
+        }
+        return Some(((), rest));
+    })
+}
+
 #[cfg(test)]
 mod tests_char {
     use super::char;
@@ -72,5 +82,29 @@ mod tests_number {
     fn t3() {
         let input = "";
         assert_eq!(number(input), None);
+    }
+}
+
+mod tests_many {
+    use super::{char, many};
+    #[test]
+    fn t1() {
+        let input = "aaabbbccc";
+        let parser = many(char('a'));
+        assert_eq!(parser(input), Some(((), "bbbccc")));
+    }
+
+    #[test]
+    fn t2() {
+        let input = "aaabbbccc";
+        let parser = many(char('b'));
+        assert_eq!(parser(input), None);
+    }
+
+    #[test]
+    fn t3() {
+        let input = "";
+        let parser = many(char(' '));
+        assert_eq!(parser(input), Some(((), "")));
     }
 }
