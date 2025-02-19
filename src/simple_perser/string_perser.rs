@@ -1,2 +1,2 @@
-type Output<T, A> = Option<(T, A)>;
-trait Parser<T, A>: Fn(A) -> Output<T, A> {}
+type Output<INPUT, OUTPUT> = Option<(INPUT, OUTPUT)>;
+trait Parser<INPUT, OUTPUT>: Fn(INPUT) -> Output<INPUT, OUTPUT> {}
