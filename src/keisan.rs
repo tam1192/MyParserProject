@@ -5,18 +5,15 @@ fn parser<'a>(input: &'a str) -> Result<(&'a str, Number)> {
     let num_parse = space_trimer(num_ex);
     let sym_parse = space_trimer(char('+'));
     
-    let (input, first) = match num_parse(input) {
-        Ok(e) => e,
-        Err(_) => return Err(Error::ParseError(input.to_string())),
-    };
-    let (input, _) = match sym_parse(input) {
-        Ok(e) => e,
-        Err(_) => return Err(Error::ParseError(input.to_string())),
-    };
-    let (input, second) = match num_parse(input) {
-        Ok(e) => e,
-        Err(_) => return Err(Error::ParseError(input.to_string())),
-    };
+    // first value
+    let (input, first) = num_parse(input)
+        .map_err(|_| Error::ParseError(input.to_string()))?;
+    // synbol check
+    let (input, _) = sym_parse(input)
+        .map_err(|_| Error::ParseError(input.to_string()))?;
+    // second value
+    let (input, second) = num_parse(input)
+        .map_err(|_| Error::ParseError(input.to_string()))?;
 
     if let Number::Int(first) = first {
         if let Number::Int(second) = second {
@@ -66,4 +63,5 @@ mod test {
         let base = "1 + 1aaaaaa";
         assert_eq!(parser(base), Ok(("aaaaaa", Number::Int(2))));
     }
+
 }
