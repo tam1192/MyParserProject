@@ -1,0 +1,22 @@
+name: Rust Tests
+
+on:
+  pull_request:
+    branches: [ "**" ]
+    types:
+      - opened
+      - synchronize
+      - reopene
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Run tests
+      run: cargo test --verbose
