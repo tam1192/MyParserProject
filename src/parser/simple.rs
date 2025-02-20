@@ -26,23 +26,22 @@ pub fn num<'a>(i: &'a str) -> Result<(&'a str, i64)> {
 
 pub fn num_ex<'a>(i: &'a str) -> Result<(&'a str, Number)> {
     // 整数部を確認
-    if let Some(integer_end) = i.find(|c: char| !c.is_numeric()) {
+    let integer_end = i.find(|c: char| !c.is_numeric()).unwrap_or(i.len());
+    if integer_end != i.len() {
         // '.'を確認
         if i[integer_end..].chars().next() == Some('.') {
             let dot_end = integer_end + 1;
             // '.'がある場合は小数として処理
-            if let Some(float_end) = i[dot_end..].find(|c: char| !c.is_numeric()) {
-                let end = integer_end + float_end + 1;
-                if let Ok(num) = i[..end].parse::<f64>() {
-                    return Ok((&i[end..], Number::Float(num)));
-                }
+            let float_end = i[dot_end..].find(|c: char | !c.is_numeric()).unwrap_or(i[dot_end..].len());
+            let end = integer_end + float_end + 1;
+            if let Ok(num) = i[..end].parse::<f64>() {
+                return Ok((&i[end..], Number::Float(num)));
             }
         }
-        // '.'がない場合は整数として処理
-        let num = i[..integer_end].parse::<i64>()?;
-        return Ok((&i[integer_end..], Number::Int(num)));
     }
-    Err(Error::ParseError(i.to_string()))
+    // '.'がない場合は整数として処理
+    let num = i[..integer_end].parse::<i64>()?;
+    Ok((&i[integer_end..], Number::Int(num)))
 }
 
 /// Parse a character from the input string
@@ -170,6 +169,20 @@ mod num_ex_test {
         let base = "123.14abc";
         let parser = num_ex;
         assert_eq!(parser(base), Ok(("abc", Number::Float(123.14))));
+    }
+
+    #[test]
+    fn test5() {
+        let base = "123";
+        let parser = num_ex;
+        assert_eq!(parser(base), Ok(("", Number::Int(123))));
+    }
+
+    #[test]
+    fn test6() {
+        let base = "123.14";
+        let parser = num_ex;
+        assert_eq!(parser(base), Ok(("", Number::Float(123.14))));
     }
 
 }

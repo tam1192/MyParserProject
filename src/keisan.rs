@@ -1,10 +1,29 @@
-use crate::{error::*, parser::simple::{num, space_trimer, Number}};
+use crate::{error::*, parser::simple::*};
 
 
 fn parser<'a>(input: &'a str) -> Result<(&'a str, Number)> {
-    let num = space_trimer(num);
+    let num_parse = space_trimer(num_ex);
+    let sym_parse = space_trimer(char('+'));
+    
+    let (input, first) = num_parse(input)?;
+    let (input, _) = sym_parse(input)?;
+    println!("{}", input);
+    let (input, second) = num_parse(input)?;
 
-    Err(Error::Uninstalled)
+    if let Number::Int(first) = first {
+        if let Number::Int(second) = second {
+            return Ok((input, Number::Int(first + second)));
+        }
+    }
+    let first = match first {
+        Number::Int(x) => x as f64,
+        Number::Float(x) => x,
+    };
+    let second = match second {
+        Number::Int(x) => x as f64,
+        Number::Float(x) => x,
+    };
+    Ok((input, Number::Float(first + second)))
 }
 
 mod test {
