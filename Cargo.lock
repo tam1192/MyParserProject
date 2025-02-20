@@ -3,5 +3,5 @@
 version = 4
 
 [[package]]
-name = "MyParserProject"
+name = "my_parser_project"
 version = "0.1.0"
