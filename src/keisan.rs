@@ -1,5 +1,27 @@
 use crate::{error::*, parser::simple::*};
 
+#[derive(Debug)]
+pub enum OPs {
+    Add,
+    Neg,
+    Mul,
+    Div,
+}
+
+impl OPs {
+    fn new<'a>(input: &'a str) -> Result<(&'a str, Self), &'a str> {
+        let input = input.trim_start();
+        // match input.trim_ascii_start().chars().next() {
+        //     Some('+') => Ok((input, Self::Add)),
+        //     Some('-') => Ok((input, Self::Neg)),
+        //     Some('*') => Ok((input, Self::Mul)),
+        //     Some('/') => Ok((input, Self::Div)),
+        //     _ => Err(Error::ParseCharError),
+        // }
+    }
+}
+
+
 
 pub fn parser<'a>(input: &'a str) -> Result<(&'a str, Number), &'a str> {
     let num_parse = space_trimer(num_ex);
