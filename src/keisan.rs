@@ -1,7 +1,7 @@
 use crate::{error::*, parser::simple::*};
 
 
-fn parser<'a>(input: &'a str) -> Result<(&'a str, Number), &'a str> {
+pub fn parser<'a>(input: &'a str) -> Result<(&'a str, Number), &'a str> {
     let num_parse = space_trimer(num_ex);
     let sym_parse = space_trimer(char('+'));
     
@@ -31,9 +31,9 @@ fn parser<'a>(input: &'a str) -> Result<(&'a str, Number), &'a str> {
     Ok((input, Number::Float(first + second)))
 }
 
+#[cfg(test)]
 mod test {
     use super::*;
-
     #[test]
     fn test1() {
         let base = "1+1";
