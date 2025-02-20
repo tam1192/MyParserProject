@@ -9,7 +9,7 @@ pub enum OPs {
 }
 
 impl OPs {
-    fn new<'a>(input: &'a str) -> Result<(&'a str, Self), &'a str> {
+    fn _new<'a>(input: &'a str) -> Result<(&'a str, Self), &'a str> {
         let input = input.trim_start();
         match input.trim_ascii_start().chars().next() {
         //     Some('+') => Ok((input, Self::Add)),
