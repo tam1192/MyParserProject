@@ -5,6 +5,7 @@ pub enum Error {
     ParseIntErrror(std::num::ParseIntError),
     ParseFloatError(std::num::ParseFloatError),
     ParseCharError,
+    Uninstalled,
 }
 
 impl fmt::Display for Error {
@@ -13,6 +14,7 @@ impl fmt::Display for Error {
             Self::ParseFloatError(parse_int_error) => write!(f, "{}", parse_int_error),
             Self::ParseIntErrror(parse_int_error) => write!(f, "{}", parse_int_error),
             Self::ParseCharError => write!(f, "ParseCharError"),
+            Self::Uninstalled => write!(f, "未実装ですまない..."),
         }
     }
 }
@@ -22,7 +24,7 @@ impl error::Error for Error {
         match self {
             Self::ParseFloatError(e) => Some(e),
             Self::ParseIntErrror(e) => Some(e),
-            Self::ParseCharError => None,
+            _ => None
         }
     }
 }
