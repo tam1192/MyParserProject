@@ -18,13 +18,13 @@ pub enum Number {
 /// let parser = num;
 /// assert_eq!(parser(base), Ok(("abc", 123)));
 /// ```
-pub fn num<'a>(i: &'a str) -> Result<(&'a str, i64)> {
+pub fn num<'a>(i: &'a str) -> Result<(&'a str, i64), &'a str> {
     let end = i.find(|c: char| !c.is_numeric()).unwrap_or(i.len());
     let num = i[..end].parse::<i64>()?;
     Ok((&i[end..], num))
 }
 
-pub fn num_ex<'a>(i: &'a str) -> Result<(&'a str, Number)> {
+pub fn num_ex<'a>(i: &'a str) -> Result<(&'a str, Number), &'a str> {
     // 整数部を確認
     let integer_end = i.find(|c: char| !c.is_numeric()).unwrap_or(i.len());
     if integer_end != i.len() {

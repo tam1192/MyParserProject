@@ -1,19 +1,19 @@
 use crate::{error::*, parser::simple::*};
 
 
-fn parser<'a>(input: &'a str) -> Result<(&'a str, Number)> {
+fn parser<'a>(input: &'a str) -> Result<(&'a str, Number), &'a str> {
     let num_parse = space_trimer(num_ex);
     let sym_parse = space_trimer(char('+'));
     
     // first value
     let (input, first) = num_parse(input)
-        .map_err(|_| Error::ParseError(input.to_string()))?;
+        .map_err(|_| Error::ParseError(input))?;
     // synbol check
     let (input, _) = sym_parse(input)
-        .map_err(|_| Error::ParseError(input.to_string()))?;
+        .map_err(|_| Error::ParseError(input))?;
     // second value
     let (input, second) = num_parse(input)
-        .map_err(|_| Error::ParseError(input.to_string()))?;
+        .map_err(|_| Error::ParseError(input))?;
 
     if let Number::Int(first) = first {
         if let Number::Int(second) = second {
@@ -49,13 +49,13 @@ mod test {
     #[test]
     fn test3() {
         let base = "aa1+1ffad";
-        assert_eq!(parser(base), Err(Error::ParseError("aa1+1ffad".to_string())));
+        assert_eq!(parser(base), Err(Error::ParseError("aa1+1ffad")));
     }
 
     #[test]
     fn test4() {
         let base = "1 + a 1";
-        assert_eq!(parser(base), Err(Error::ParseError(" a 1".to_string())));
+        assert_eq!(parser(base), Err(Error::ParseError(" a 1")));
     }
 
     #[test]
