@@ -1,12 +1,9 @@
-use crate::error::*;
+use crate::{error::*, parser::simple::{num, space_trimer, Number}};
 
-#[derive(Debug, PartialEq)]
-enum Number {
-    Int(i64),
-    Float(f64),
-}
 
 fn parser<'a>(input: &'a str) -> Result<(&'a str, Number)> {
+    let num = space_trimer(num);
+
     Err(Error::Uninstalled)
 }
 
