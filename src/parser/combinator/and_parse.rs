@@ -1,11 +1,11 @@
-use crate::parser::Parser;
+use crate::parser::ParserOnce;
 
 pub trait AndParse<I, A> {
-    fn and<B>(self, parser: impl Parser<I, B>) -> impl Parser<I, (A, B)>;
+    fn and<B>(self, parser: impl ParserOnce<I, B>) -> impl ParserOnce<I, (A, B)>;
 }
 
-impl<I, A, T: Parser<I, A>> AndParse<I, A> for T {
-    fn and<B>(self, parser: impl Parser<I, B>) -> impl Parser<I, (A, B)> {
+impl<I, A, T: ParserOnce<I, A>> AndParse<I, A> for T {
+    fn and<B>(self, parser: impl ParserOnce<I, B>) -> impl ParserOnce<I, (A, B)> {
         move |i| self(i).and_then(|(i, o1)| parser(i).map(|(i, o2)| (i, (o1, o2))))
     }
 }

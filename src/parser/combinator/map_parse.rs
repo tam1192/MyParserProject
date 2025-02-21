@@ -1,11 +1,11 @@
-use crate::parser::Parser;
+use crate::parser::ParserOnce;
 
 pub trait MapParse<I, O> {
-    fn map<T>(self, f: impl Fn(O) -> T) -> impl Parser<I, T>;
+    fn map<T>(self, f: impl Fn(O) -> T) -> impl ParserOnce<I, T>;
 }
 
-impl<I, O, P: Parser<I, O>> MapParse<I, O> for P {
-    fn map<T>(self, f: impl Fn(O) -> T) -> impl Parser<I, T> {
+impl<I, O, P: ParserOnce<I, O>> MapParse<I, O> for P {
+    fn map<T>(self, f: impl Fn(O) -> T) -> impl ParserOnce<I, T> {
         move |i| self(i).map(|(i, o)| (i, f(o)))
     }
 }
