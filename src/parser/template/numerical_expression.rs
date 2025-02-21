@@ -16,7 +16,7 @@ impl OPs {
                     .map(|_| Self::Add)
                     .or(char('-').map(|_| Self::Sub))
                     .or(char('*').map(|_| Self::Mul))
-                    .or(char('/').map(|_| Self::Sub)),
+                    .or(char('/').map(|_| Self::Div)),
             )
             .map(|((), x)| x)(i)
     }
@@ -76,7 +76,16 @@ mod test {
 
     #[test]
     fn test6() {
-        let base = "1.0 + 4.0";
-        assert_eq!(parser(base), Ok(("", Number::Float(3.0))))
+        let base = vec![
+            ("2.0 + 2.0add", ("add", Number::Float(2.0+2.0))),
+            ("2.0 - 2.0sub", ("sub", Number::Float(2.0-2.0))),
+            ("2.0 * 2.0mul", ("mul", Number::Float(2.0*2.0))),
+            ("2.0 / 2.0div", ("div", Number::Float(2.0/2.0))),
+            
+        ];
+
+        for (base, ans) in base {
+            assert_eq!(parser(base), Ok(ans))
+        }
     }
 }
