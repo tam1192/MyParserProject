@@ -1,6 +1,5 @@
-use crate::parser::Number;
 use crate::error::Result;
-
+use crate::parser::Number;
 
 pub fn num_ex<'a>(i: &'a str) -> Result<(&'a str, Number), &'a str> {
     // 整数部を確認
@@ -10,7 +9,9 @@ pub fn num_ex<'a>(i: &'a str) -> Result<(&'a str, Number), &'a str> {
         if i[integer_end..].chars().next() == Some('.') {
             let dot_end = integer_end + 1;
             // '.'がある場合は小数として処理
-            let float_end = i[dot_end..].find(|c: char | !c.is_numeric()).unwrap_or(i[dot_end..].len());
+            let float_end = i[dot_end..]
+                .find(|c: char| !c.is_numeric())
+                .unwrap_or(i[dot_end..].len());
             let end = integer_end + float_end + 1;
             if let Ok(num) = i[..end].parse::<f64>() {
                 return Ok((&i[end..], Number::Float(num)));
@@ -68,5 +69,4 @@ mod tests {
         let parser = num_ex;
         assert_eq!(parser(base), Ok(("", Number::Float(123.14))));
     }
-
 }

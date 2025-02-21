@@ -1,20 +1,19 @@
-use crate::parser::Parser;
 use crate::error::Error;
+use crate::parser::Parser;
 
 /// Parse a character from the input string
-/// 
+///
 /// # Example
-/// 
+///
 /// ``` rust
 /// use my_parser_project::parser::char;
-/// 
+///
 /// let base = "/123";
 /// let pattern = '/';
 /// let parser = char(pattern);
 /// assert_eq!(parser(base), Ok(("123", ())));
 /// ```
-pub fn char<'a>(c: char) -> impl Parser<&'a str, ()> 
-{
+pub fn char<'a>(c: char) -> impl Parser<&'a str, ()> {
     move |i: &'a str| {
         if i.starts_with(c) {
             Ok((&i[1..], ()))
@@ -59,5 +58,4 @@ mod char_test {
         let parser = char(pattern);
         assert_eq!(parser(base), Err(Error::ParseCharError));
     }
-
 }

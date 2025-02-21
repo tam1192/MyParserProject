@@ -17,20 +17,17 @@ use crate::parser::Parser;
 //     }
 // }
 
-pub fn join<I, A, B>(parser1: impl Parser<I,A>, parser2: impl Parser<I,B>) -> impl Parser<I, (A, B)> {
-    move |i| {
-        parser1(i).and_then(|(i, out1)| {
-            parser2(i).map(|(i, out2)| {
-                (i, (out1, out2))
-            })
-        })
-    }
+pub fn join<I, A, B>(
+    parser1: impl Parser<I, A>,
+    parser2: impl Parser<I, B>,
+) -> impl Parser<I, (A, B)> {
+    move |i| parser1(i).and_then(|(i, out1)| parser2(i).map(|(i, out2)| (i, (out1, out2))))
 }
 
 #[cfg(test)]
 mod tests {
     use super::join;
-    use crate::parser::{num, char};
+    use crate::parser::{char, num};
 
     #[test]
     fn test1() {
@@ -38,5 +35,4 @@ mod tests {
         let parser = join(num, char('+'));
         assert_eq!(parser(base), Ok(("abc", (123, ()))))
     }
-
 }

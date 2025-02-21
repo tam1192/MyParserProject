@@ -1,1 +1,2 @@
-pub mod join;
+mod join;
+pub use join::join;

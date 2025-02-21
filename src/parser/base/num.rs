@@ -1,7 +1,7 @@
 use crate::error::Result;
 
 /// Parse a number from the input string
-/// 
+///
 /// # Example
 ///
 /// ``` rust
@@ -16,10 +16,6 @@ pub fn num<'a>(i: &'a str) -> Result<(&'a str, i64), &'a str> {
     let num = i[..end].parse::<i64>()?;
     Ok((&i[end..], num))
 }
-
-
-
-
 
 #[cfg(test)]
 mod tests {
@@ -47,6 +43,4 @@ mod tests {
         let parser = num;
         assert_eq!(parser(base), Ok((".abc", 123)));
     }
-
 }
-

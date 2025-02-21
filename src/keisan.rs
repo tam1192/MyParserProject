@@ -12,30 +12,25 @@ impl OPs {
     fn _new<'a>(input: &'a str) -> Result<(&'a str, Self), &'a str> {
         let input = input.trim_start();
         match input.trim_ascii_start().chars().next() {
-        //     Some('+') => Ok((input, Self::Add)),
-        //     Some('-') => Ok((input, Self::Neg)),
-        //     Some('*') => Ok((input, Self::Mul)),
-        //     Some('/') => Ok((input, Self::Div)),
+            //     Some('+') => Ok((input, Self::Add)),
+            //     Some('-') => Ok((input, Self::Neg)),
+            //     Some('*') => Ok((input, Self::Mul)),
+            //     Some('/') => Ok((input, Self::Div)),
             _ => Err(Error::ParseCharError),
         }
     }
 }
 
-
-
 pub fn parser<'a>(input: &'a str) -> Result<(&'a str, Number), &'a str> {
     let num_parse = join(trimer, num_ex);
     let sym_parse = join(trimer, char('+'));
-    
+
     // first value
-    let (input, ((), first)) = num_parse(input)
-        .map_err(|_| Error::ParseError(input))?;
+    let (input, ((), first)) = num_parse(input).map_err(|_| Error::ParseError(input))?;
     // synbol check
-    let (input, _) = sym_parse(input)
-        .map_err(|_| Error::ParseError(input))?;
+    let (input, _) = sym_parse(input).map_err(|_| Error::ParseError(input))?;
     // second value
-    let (input, ((), second)) = num_parse(input)
-        .map_err(|_| Error::ParseError(input))?;
+    let (input, ((), second)) = num_parse(input).map_err(|_| Error::ParseError(input))?;
 
     if let Number::Int(first) = first {
         if let Number::Int(second) = second {
@@ -85,5 +80,4 @@ mod test {
         let base = "1 + 1aaaaaa";
         assert_eq!(parser(base), Ok(("aaaaaa", Number::Int(2))));
     }
-
 }
