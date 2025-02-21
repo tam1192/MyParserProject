@@ -1,11 +1,11 @@
-use crate::parser::ParserOnce;
+use crate::parser::Parser;
 
 pub trait OrParse<I, O> {
-    fn or(self, parser: impl ParserOnce<I, O>) -> impl ParserOnce<I, O>;
+    fn or(self, parser: impl Parser<I, O>) -> impl Parser<I, O>;
 }
 
-impl<I: Copy, O, T: ParserOnce<I, O>> OrParse<I, O> for T {
-    fn or(self, parser: impl ParserOnce<I, O>) -> impl ParserOnce<I, O> {
+impl<I: Copy, O, T: Parser<I, O>> OrParse<I, O> for T {
+    fn or(self, parser: impl Parser<I, O>) -> impl Parser<I, O> {
         move |i| self(i).or_else(|_| parser(i))
     }
 }
