@@ -9,15 +9,16 @@ pub enum OPs {
 }
 
 impl OPs {
-    fn _new<'a>(input: &'a str) -> Result<(&'a str, Self), &'a str> {
-        let input = input.trim_start();
-        match input.trim_ascii_start().chars().next() {
-            //     Some('+') => Ok((input, Self::Add)),
-            //     Some('-') => Ok((input, Self::Neg)),
-            //     Some('*') => Ok((input, Self::Mul)),
-            //     Some('/') => Ok((input, Self::Div)),
-            _ => Err(Error::ParseCharError),
-        }
+    fn new<'a>(i: &'a str) -> Result<(&'a str, Self), &'a str> {
+        trimer
+            .and(
+                char('+')
+                    .map(|_| Self::Add)
+                    .or(char('-').map(|_| Self::Neg))
+                    .or(char('*').map(|_| Self::Mul))
+                    .or(char('/').map(|_| Self::Neg)),
+            )
+            .map(|((), x)| x)(i)
     }
 }
 

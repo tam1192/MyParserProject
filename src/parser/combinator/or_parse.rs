@@ -28,4 +28,11 @@ mod tests {
         let parser = char('!').or(char('.'));
         assert_eq!(parser(base), Ok(("!abc", ())));
     }
+
+    #[test]
+    fn test3() {
+        let base = "cdefg";
+        let parser = char('a').or(char('b')).or(char('c'));
+        assert_eq!(parser(base), Ok(("defg", ())))
+    }
 }

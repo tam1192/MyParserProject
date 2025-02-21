@@ -12,8 +12,8 @@ impl<I, O, P: Parser<I, O>> MapParse<I, O> for P {
 
 #[cfg(test)]
 mod tests {
-    use crate::parser::{char, num, AndParse};
     use super::MapParse;
+    use crate::parser::{char, num, AndParse};
 
     #[test]
     fn test1() {
