@@ -1,4 +1,4 @@
-use crate::{error::*, parser::*};
+use crate::{error::*, parser::*, number::Number};
 
 #[derive(Debug)]
 pub enum OPs {
@@ -9,7 +9,7 @@ pub enum OPs {
 }
 
 impl OPs {
-    fn new<'a>(i: &'a str) -> Result<(&'a str, Self), &'a str> {
+    fn _new<'a>(i: &'a str) -> Result<(&'a str, Self), &'a str> {
         trimer
             .and(
                 char('+')

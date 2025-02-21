@@ -1,5 +1,5 @@
 use crate::error::Result;
-use crate::parser::Number;
+use crate::number::Number;
 
 pub fn num_ex<'a>(i: &'a str) -> Result<(&'a str, Number), &'a str> {
     // 整数部を確認
@@ -27,7 +27,7 @@ pub fn num_ex<'a>(i: &'a str) -> Result<(&'a str, Number), &'a str> {
 mod tests {
     use super::num_ex as parser;
     use crate::error::Error;
-    use crate::parser::Number;
+    use crate::number::Number;
 
     #[test]
     fn test1() {

@@ -35,7 +35,8 @@ pub use num::num;
 /// # Example
 ///
 /// ``` rust
-/// use my_parser_project::parser::{num_ex, Number};
+/// use my_parser_project::parser::num_ex;
+/// use my_parser_project::number::Number;
 ///
 /// let base = "3.14abc";
 /// assert_eq!(num_ex(base), Ok(("abc", Number::Float(3.14))))
