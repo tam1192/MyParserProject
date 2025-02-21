@@ -1,8 +1,7 @@
 use std::{error, fmt};
 
 #[derive(Debug, PartialEq)]
-pub enum Error<T> 
-{
+pub enum Error<T> {
     ParseIntErrror(std::num::ParseIntError),
     ParseFloatError(std::num::ParseFloatError),
     ParseCharError,
@@ -10,8 +9,9 @@ pub enum Error<T>
     ParseError(T),
 }
 
-impl<T> fmt::Display for Error<T> 
-where T: fmt::Debug + fmt::Display
+impl<T> fmt::Display for Error<T>
+where
+    T: fmt::Debug + fmt::Display,
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
@@ -25,13 +25,14 @@ where T: fmt::Debug + fmt::Display
 }
 
 impl<T> error::Error for Error<T>
-where T: fmt::Debug + fmt::Display
+where
+    T: fmt::Debug + fmt::Display,
 {
     fn source(&self) -> Option<&(dyn error::Error + 'static)> {
         match self {
             Self::ParseFloatError(e) => Some(e),
             Self::ParseIntErrror(e) => Some(e),
-            _ => None
+            _ => None,
         }
     }
 }
@@ -46,6 +47,6 @@ impl<T> From<std::num::ParseIntError> for Error<T> {
     fn from(e: std::num::ParseIntError) -> Self {
         Error::ParseIntErrror(e)
     }
-}   
+}
 
 pub type Result<T, E> = std::result::Result<T, Error<E>>;
