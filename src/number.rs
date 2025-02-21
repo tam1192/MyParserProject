@@ -42,11 +42,11 @@ impl Add for Number {
 
     fn add(self, rhs: Self) -> Self::Output {
         match (self, rhs) {
-            (Number::Int(x), Number::Int(y)) => Number::Int(x+y),
+            (Number::Int(x), Number::Int(y)) => Number::Int(x + y),
             _ => {
                 let x = f64::from(self);
                 let y = f64::from(self);
-                Number::Float(x+y)
+                Number::Float(x + y)
             }
         }
     }
@@ -57,11 +57,11 @@ impl Sub for Number {
 
     fn sub(self, rhs: Self) -> Self::Output {
         match (self, rhs) {
-            (Number::Int(x), Number::Int(y)) => Number::Int(x-y),
+            (Number::Int(x), Number::Int(y)) => Number::Int(x - y),
             _ => {
                 let x = f64::from(self);
                 let y = f64::from(self);
-                Number::Float(x-y)
+                Number::Float(x - y)
             }
         }
     }
@@ -72,11 +72,11 @@ impl Mul for Number {
 
     fn mul(self, rhs: Self) -> Self::Output {
         match (self, rhs) {
-            (Number::Int(x), Number::Int(y)) => Number::Int(x*y),
+            (Number::Int(x), Number::Int(y)) => Number::Int(x * y),
             _ => {
                 let x = f64::from(self);
                 let y = f64::from(self);
-                Number::Float(x*y)
+                Number::Float(x * y)
             }
         }
     }
@@ -88,6 +88,6 @@ impl Div for Number {
     fn div(self, rhs: Self) -> Self::Output {
         let x = f64::from(self);
         let y = f64::from(self);
-        Number::Float(x/y)
+        Number::Float(x / y)
     }
 }
