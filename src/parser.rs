@@ -8,11 +8,12 @@ pub enum Number {
     Float(f64),
 }
 
-pub mod num;
-pub mod num_ex;
-pub mod char;
+mod base;
+mod combinator;
 
-pub use num::space_trimer;
-pub use num::num;
-pub use num_ex::num_ex;
-pub use char::char;
+pub use base::char::char;
+pub use base::num::num;
+pub use base::num_ex::num_ex;
+pub use base::trimer::trimer;
+
+pub use combinator::join::join;

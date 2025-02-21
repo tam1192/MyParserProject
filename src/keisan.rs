@@ -24,17 +24,17 @@ impl OPs {
 
 
 pub fn parser<'a>(input: &'a str) -> Result<(&'a str, Number), &'a str> {
-    let num_parse = space_trimer(num_ex);
-    let sym_parse = space_trimer(char('+'));
+    let num_parse = join(trimer, num_ex);
+    let sym_parse = join(trimer, char('+'));
     
     // first value
-    let (input, first) = num_parse(input)
+    let (input, ((), first)) = num_parse(input)
         .map_err(|_| Error::ParseError(input))?;
     // synbol check
     let (input, _) = sym_parse(input)
         .map_err(|_| Error::ParseError(input))?;
     // second value
-    let (input, second) = num_parse(input)
+    let (input, ((), second)) = num_parse(input)
         .map_err(|_| Error::ParseError(input))?;
 
     if let Number::Int(first) = first {

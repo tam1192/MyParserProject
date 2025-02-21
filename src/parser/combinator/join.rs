@@ -1,21 +1,21 @@
 use crate::parser::Parser;
-use crate::error::Result;
+// use crate::error::Result;
 
-trait Join<I, O1, O2> {
-    fn join(&self, parser: impl Parser<I, O1>) -> Box<impl Parser<I, (O1, O2)>>;
-}
+// trait Join<I, O1, O2> {
+//     fn join(&self, parser: impl Parser<I, O1>) -> Box<impl Parser<I, (O1, O2)>>;
+// }
 
-impl<I, O1, O2> Join<I, O1, O2> for dyn Parser<I, O1> {
-    fn join(&self, parser: impl Parser<I, O2>) -> Box<impl Parser<I, (O1, O2)>> {
-        Box::new(move |i| {
-            self(i).and_then(|(i, o1)| {
-                parser(i).map(|(i, o2)|{
-                    (i, (o1, o2))
-                })
-            })
-        })
-    }
-}
+// impl<I, O1, O2> Join<I, O1, O2> for dyn Parser<I, O1> {
+//     fn join(&self, parser: impl Parser<I, O2>) -> Box<impl Parser<I, (O1, O2)>> {
+//         Box::new(move |i| {
+//             self(i).and_then(|(i, o1)| {
+//                 parser(i).map(|(i, o2)|{
+//                     (i, (o1, o2))
+//                 })
+//             })
+//         })
+//     }
+// }
 
 pub fn join<I, A, B>(parser1: impl Parser<I,A>, parser2: impl Parser<I,B>) -> impl Parser<I, (A, B)> {
     move |i| {
@@ -38,4 +38,5 @@ mod tests {
         let parser = join(num, char('+'));
         assert_eq!(parser(base), Ok(("abc", (123, ()))))
     }
+
 }
