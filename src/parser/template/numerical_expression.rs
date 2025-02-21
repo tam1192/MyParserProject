@@ -22,8 +22,8 @@ impl OPs {
 }
 
 pub fn parser<'a>(input: &'a str) -> Result<(&'a str, Number), &'a str> {
-    let num_parse = trimer.join(num_ex);
-    let sym_parse = trimer.join(char('+'));
+    let num_parse = trimer.and(num_ex);
+    let sym_parse = trimer.and(char('+'));
 
     // first value
     let (input, ((), first)) = num_parse(input).map_err(|_| Error::ParseError(input))?;

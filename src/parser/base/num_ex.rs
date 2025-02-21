@@ -26,8 +26,8 @@ pub fn num_ex<'a>(i: &'a str) -> Result<(&'a str, Number), &'a str> {
 #[cfg(test)]
 mod tests {
     use super::num_ex as parser;
-    use crate::parser::Number;
     use crate::error::Error;
+    use crate::parser::Number;
 
     #[test]
     fn test1() {

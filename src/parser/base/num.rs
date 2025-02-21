@@ -19,8 +19,8 @@ pub fn num<'a>(i: &'a str) -> Result<(&'a str, i64), &'a str> {
 
 #[cfg(test)]
 mod tests {
-    use crate::error::Error;
     use super::num as parser;
+    use crate::error::Error;
 
     #[test]
     fn test1() {

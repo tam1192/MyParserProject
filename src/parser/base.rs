@@ -28,19 +28,19 @@ pub use num::num;
 
 /// Support float for num
 /// If the output can be output as an integer, it is output as an integer.
-/// 
+///
 /// # Should I use num or num_ex?
 /// If decimal point is not needed, num is recommended
-/// 
+///
 /// # Example
-/// 
+///
 /// ``` rust
 /// use my_parser_project::parser::{num_ex, Number};
 ///
 /// let base = "3.14abc";
 /// assert_eq!(num_ex(base), Ok(("abc", Number::Float(3.14))))
 /// ```
-/// 
+///
 mod num_ex;
 pub use num_ex::num_ex;
 
