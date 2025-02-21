@@ -1,5 +1,3 @@
-use crate::parser::Parser;
-
 pub fn none<'a>(i: &'a str) -> Result<(&'a str, ()), &'a str> {
     Ok((i, ()))
 }
