@@ -1,4 +1,4 @@
-use std::ops::{Add, Div, Mul, Neg, Sub};
+use std::ops::{Add, Div, Mul, Sub};
 
 /// Number allows integers and floats to be managed as enums
 #[derive(Debug, PartialEq, Clone, Copy)]
@@ -45,7 +45,7 @@ impl Add for Number {
             (Number::Int(x), Number::Int(y)) => Number::Int(x + y),
             _ => {
                 let x = f64::from(self);
-                let y = f64::from(self);
+                let y = f64::from(rhs);
                 Number::Float(x + y)
             }
         }
@@ -60,7 +60,7 @@ impl Sub for Number {
             (Number::Int(x), Number::Int(y)) => Number::Int(x - y),
             _ => {
                 let x = f64::from(self);
-                let y = f64::from(self);
+                let y = f64::from(rhs);
                 Number::Float(x - y)
             }
         }
@@ -75,7 +75,7 @@ impl Mul for Number {
             (Number::Int(x), Number::Int(y)) => Number::Int(x * y),
             _ => {
                 let x = f64::from(self);
-                let y = f64::from(self);
+                let y = f64::from(rhs);
                 Number::Float(x * y)
             }
         }
@@ -87,7 +87,7 @@ impl Div for Number {
 
     fn div(self, rhs: Self) -> Self::Output {
         let x = f64::from(self);
-        let y = f64::from(self);
+        let y = f64::from(rhs);
         Number::Float(x / y)
     }
 }

@@ -38,9 +38,7 @@ pub fn parser<'a>(input: &'a str) -> Result<(&'a str, Number), &'a str> {
         .and(OPs::new)
         .and(trimer)
         .and(num_ex)
-        .map(|(((((_,x), ()),ops), _),y)| {
-            ops.calc(x, y)
-        })(input)
+        .map(|(((((_, x), ()), ops), _), y)| ops.calc(x, y))(input)
 }
 
 #[cfg(test)]
