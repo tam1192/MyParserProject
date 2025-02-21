@@ -25,48 +25,43 @@ pub fn num_ex<'a>(i: &'a str) -> Result<(&'a str, Number), &'a str> {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use super::num_ex as parser;
+    use crate::parser::Number;
     use crate::error::Error;
 
     #[test]
     fn test1() {
         let base = "123abc";
-        let parser = num_ex;
         assert_eq!(parser(base), Ok(("abc", Number::Int(123))));
     }
 
     #[test]
     fn test2() {
         let base = "abc123";
-        let parser = num_ex;
         assert!(matches!(parser(base), Err(Error::ParseIntErrror(_))));
     }
 
     #[test]
     fn test3() {
         let base = "123.abc";
-        let parser = num_ex;
         assert_eq!(parser(base), Ok(("abc", Number::Float(123.0))));
     }
 
     #[test]
     fn test4() {
         let base = "123.14abc";
-        let parser = num_ex;
         assert_eq!(parser(base), Ok(("abc", Number::Float(123.14))));
     }
 
     #[test]
     fn test5() {
         let base = "123";
-        let parser = num_ex;
         assert_eq!(parser(base), Ok(("", Number::Int(123))));
     }
 
     #[test]
     fn test6() {
         let base = "123.14";
-        let parser = num_ex;
         assert_eq!(parser(base), Ok(("", Number::Float(123.14))));
     }
 }
