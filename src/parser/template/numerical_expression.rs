@@ -32,13 +32,10 @@ impl OPs {
 }
 
 pub fn parser<'a>(input: &'a str) -> Result<(&'a str, Number), &'a str> {
-    trimer
-        .and(num_ex)
-        .and(trimer)
-        .and(OPs::new)
-        .and(trimer)
-        .and(num_ex)
-        .map(|(((((_, x), _), ops), _), y)| ops.calc(x, y))(input)
+    let num1 = trimer.and(num_ex).map(|(_, x)| x);
+    let num2 = trimer.and(num_ex).map(|(_, x)| x);
+    let ops = trimer.and(OPs::new).map(|(_, x)| x);
+    num1.and(ops).and(num2).map(|((x, op), y)| op.calc(x, y))(input)
 }
 
 #[cfg(test)]
