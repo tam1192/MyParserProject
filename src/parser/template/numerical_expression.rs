@@ -72,7 +72,16 @@ pub enum Expression {
 
 impl Expression {
     fn new<'a>(i: &'a str) -> Result<(&'a str, Self), &'a str> {
-        todo!()
+        trimer.and_b(
+            Term::new
+                .map(|t| Self::Term(Box::new(t)))
+                .or(Self::new
+                    .and(trimer.and_b(char('+')).and_b(trimer).and_b(Term::new))
+                    .map(|(t, e)| Self::Add(Box::new(t), e)))
+                .or(Self::new
+                    .and(trimer.and_b(char('-')).and_b(trimer).and_b(Term::new))
+                    .map(|(t, e)| Self::Sub(Box::new(t), e))),
+        )(i)
     }
 }
 
