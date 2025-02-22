@@ -36,7 +36,7 @@ impl<'a, A, P: Parser<&'a str, A>> AndParseStr<'a, A> for P {
 #[cfg(test)]
 mod tests {
     use super::{AndParse, AndParseStr};
-    use crate::parser::{self, char, none, num, trimer};
+    use crate::parser::{char, num, trimer};
 
     #[test]
     fn test2() {
@@ -48,14 +48,14 @@ mod tests {
     #[test]
     fn test3() {
         let base = "   123+abc";
-        let parser = trimer.and(num).and(char('+'));
-        assert_eq!(parser(base), Ok(("abc", (((), 123), ()))))
+        let parser = trimer(num).and(char('+'));
+        assert_eq!(parser(base), Ok(("abc", (123, ()))))
     }
 
     #[test]
     fn test4() {
         let base = "   +  123+abc";
-        let parser = trimer.char_and('+').trim_and(num).char_and('+');
+        let parser = trimer(char('+').trim_and(num).char_and('+'));
         assert_eq!(parser(base), Ok(("abc", ((), 123))))
     }
 }
