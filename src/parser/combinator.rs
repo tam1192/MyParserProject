@@ -1,5 +1,5 @@
 mod and_parse;
-pub use and_parse::{AndParse, AndParseStr};
+pub use and_parse::AndParse;
 
 mod or_parse;
 pub use or_parse::OrParse;
