@@ -13,6 +13,7 @@ impl<I, A, T: Parser<I, A>> AndParse<I, A> for T {
 pub trait AndParseStr<'a, A> {
     fn trim_and<B>(self, parser: impl Parser<&'a str, B>) -> impl Parser<&'a str, (A, B)>;
     fn char_and(self, char: char) -> impl Parser<&'a str, A>;
+    fn char_rand(self, char: char) -> impl Parser<&'a str, A>;
 }
 
 impl<'a, A, P: Parser<&'a str, A>> AndParseStr<'a, A> for P {
@@ -30,6 +31,16 @@ impl<'a, A, P: Parser<&'a str, A>> AndParseStr<'a, A> for P {
     
     fn trim_and<B>(self, parser: impl Parser<&'a str, B>) -> impl Parser<&'a str, (A, B)> {
         move |i| self(i).and_then(|(i, o1)| parser(i.trim_start()).map(|(i, o2)| (i, (o1, o2))))
+    }
+    
+    fn char_rand(self, char: char) -> impl Parser<&'a str, A> {
+        move |i| {
+            if i.starts_with(char) {
+                self(&i[1..])
+            } else {
+                Err(Error::ParseCharError)
+            }
+        }
     }
 }
 
@@ -57,5 +68,12 @@ mod tests {
         let base = "   +  123+abc";
         let parser = trimer(char('+').trim_and(num).char_and('+'));
         assert_eq!(parser(base), Ok(("abc", ((), 123))))
+    }
+
+    #[test]
+    fn test5() {
+        let base = "+-123\n-123+\n+abc";
+        let parser = num.char_rand('-').char_rand('+').trim_and(num.char_rand('-').char_and('+')).trim_and(char('+'));
+        assert_eq!(parser(base), Ok(("abc", ((123, 123), ()))))
     }
 }
