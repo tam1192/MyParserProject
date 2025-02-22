@@ -1,5 +1,67 @@
 use crate::{error::*, number::Number, parser::*};
 
+trait ParserConstructor {
+    fn parse<I, O>(i: I) -> Result<(I, O), I> {
+        todo!()
+    }
+}
+
+// 電卓メモ
+// <Expression> ::= <Term> | <Expression> '+' <Term> | <Expression> '-' <Term>
+// <Term> ::= <Exponent> | <Term> '*' <Exponent> | <Term> '/' <Exponent>
+// <Exponent> ::= <Factor> | <Exponent> '^' <Factor>
+// <Factor> ::= Number | '(' <Expression> ')'
+
+#[derive(Debug)]
+pub enum Factor {
+    Number(Number),
+    Scope(Box<Expression>),
+}
+
+impl ParserConstructor for Factor {
+    fn parse<I, O>(i: I) -> Result<(I, O), I> {
+        std::todo!()
+    }
+}
+
+#[derive(Debug)]
+pub enum Exponent {
+    Factor(Box<Factor>),
+    Power(Box<Exponent>, Factor),
+}
+
+impl ParserConstructor for Exponent {
+    fn parse<I, O>(i: I) -> Result<(I, O), I> {
+        std::todo!()
+    }
+}
+
+#[derive(Debug)]
+pub enum Term {
+    Exponent(Box<Exponent>),
+    Mul(Box<Term>, Exponent),
+    Div(Box<Term>, Exponent),
+}
+
+impl ParserConstructor for Term {
+    fn parse<I, O>(i: I) -> Result<(I, O), I> {
+        std::todo!()
+    }
+}
+
+#[derive(Debug)]
+pub enum Expression {
+    Term(Box<Term>),
+    Add(Box<Expression>, Term),
+    Sub(Box<Expression>, Term),
+}
+
+impl ParserConstructor for Expression {
+    fn parse<I, O>(i: I) -> Result<(I, O), I> {
+        std::todo!()
+    }
+}
+
 #[derive(Debug)]
 pub enum OPs {
     Add(Number),
