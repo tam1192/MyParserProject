@@ -14,16 +14,21 @@ pub enum Factor {
 
 impl Factor {
     fn new<'a>(i: &'a str) -> Result<(&'a str, Self), &'a str> {
-        trimer
-            .and(
-                num_ex.map(|n| Self::Number(n)).or(char('(')
-                    .and(trimer)
-                    .and(Expression::new)
-                    .and(trimer)
-                    .and(char(')'))
-                    .map(|(((_, e), _), _)| Self::Scope(Box::new(e)))),
+        // trimer
+        //     .and(
+        //         num_ex.map(|n| Self::Number(n)).or(char('(')
+        //             .and(trimer)
+        //             .and(Expression::new)
+        //             .and(trimer)
+        //             .and(char(')'))
+        //             .map(|(((_, e), _), _)| Self::Scope(Box::new(e)))),
+        //     )
+        //     .map(|(_, f)| f)(i)
+        trimer(
+            num_ex.map(|n| Self::Number(n)).or(
+                
             )
-            .map(|(_, f)| f)(i)
+        )
     }
 }
 

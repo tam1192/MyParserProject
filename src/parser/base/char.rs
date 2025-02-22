@@ -11,16 +11,6 @@ pub fn char<'a>(c: char) -> impl Parser<&'a str, ()> {
     }
 }
 
-pub fn char_and<'a, O>(c: char, parser: impl Parser<&'a str, O>) -> impl Parser<&'a str, O> {
-    move |i: &'a str| {
-        if i.starts_with(c) {
-            parser(&i[1..])
-        } else {
-            Err(Error::ParseCharError)
-        }
-    }
-}
-
 #[cfg(test)]
 mod char_test {
     use super::*;

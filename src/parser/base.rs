@@ -46,9 +46,9 @@ mod num_ex;
 ///
 pub use num_ex::num_ex;
 
-mod trimer;
+mod trim_and;
 /// space trim
-pub use trimer::trimer;
+pub use trim_and::trim_and;
 
 mod none;
 /// None parser
