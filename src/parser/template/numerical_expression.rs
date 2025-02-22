@@ -14,21 +14,14 @@ pub enum Factor {
 
 impl Factor {
     fn new<'a>(i: &'a str) -> Result<(&'a str, Self), &'a str> {
-        // trimer
-        //     .and(
-        //         num_ex.map(|n| Self::Number(n)).or(char('(')
-        //             .and(trimer)
-        //             .and(Expression::new)
-        //             .and(trimer)
-        //             .and(char(')'))
-        //             .map(|(((_, e), _), _)| Self::Scope(Box::new(e)))),
-        //     )
-        //     .map(|(_, f)| f)(i)
-        trimer(
-            num_ex.map(|n| Self::Number(n)).or(
-                
-            )
-        )
+        trimer.and_b(
+            num_ex.map(|n| Self::Number(n)).or(char('(')
+                .and_b(trimer)
+                .and_b(Expression::new)
+                .and_a(trimer)
+                .and_a(char(')'))
+                .map(|e| Self::Scope(Box::new(e)))),
+        )(i)
     }
 }
 
@@ -40,16 +33,11 @@ pub enum Exponent {
 
 impl Exponent {
     fn new<'a>(i: &'a str) -> Result<(&'a str, Self), &'a str> {
-        trimer
-            .and(
-                Factor::new.map(|f| Self::Factor(Box::new(f))).or(Self::new
-                    .and(trimer)
-                    .and(char('^'))
-                    .and(trimer)
-                    .and(Factor::new)
-                    .map(|((((e, _), _), _), f)| Self::Power(Box::new(e), f))),
-            )
-            .map(|(_, e)| e)(i)
+        trimer.and_b(
+            Factor::new.map(|f| Self::Factor(Box::new(f))).or(Self::new
+                .and(trimer.and_b(char('^')).and_b(trimer).and_b(Factor::new))
+                .map(|(e, f)| Self::Power(Box::new(e), f))),
+        )(i)
     }
 }
 
