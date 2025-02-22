@@ -1,17 +1,15 @@
 use std::{error, fmt};
 
 #[derive(Debug, PartialEq)]
-pub enum Error<T> {
+pub enum Error {
     ParseIntErrror(std::num::ParseIntError),
     ParseFloatError(std::num::ParseFloatError),
     ParseCharError,
     Uninstalled,
-    ParseError(T),
+    NumberPowError,
 }
 
-impl<T> fmt::Display for Error<T>
-where
-    T: fmt::Debug + fmt::Display,
+impl fmt::Display for Error
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
@@ -19,14 +17,12 @@ where
             Self::ParseIntErrror(parse_int_error) => write!(f, "{}", parse_int_error),
             Self::ParseCharError => write!(f, "ParseCharError"),
             Self::Uninstalled => write!(f, "未実装ですまない..."),
-            Self::ParseError(s) => write!(f, "ParseError: {}", s),
+            Self::NumberPowError => write!(f, "NumberPowError"),
         }
     }
 }
 
-impl<T> error::Error for Error<T>
-where
-    T: fmt::Debug + fmt::Display,
+impl error::Error for Error
 {
     fn source(&self) -> Option<&(dyn error::Error + 'static)> {
         match self {
@@ -37,16 +33,16 @@ where
     }
 }
 
-impl<T> From<std::num::ParseFloatError> for Error<T> {
+impl From<std::num::ParseFloatError> for Error {
     fn from(e: std::num::ParseFloatError) -> Self {
         Error::ParseFloatError(e)
     }
 }
 
-impl<T> From<std::num::ParseIntError> for Error<T> {
+impl From<std::num::ParseIntError> for Error {
     fn from(e: std::num::ParseIntError) -> Self {
         Error::ParseIntErrror(e)
     }
 }
 
-pub type Result<T, E> = std::result::Result<T, Error<E>>;
+pub type Result<T> = std::result::Result<T, Error>;

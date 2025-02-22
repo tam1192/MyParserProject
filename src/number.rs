@@ -1,5 +1,7 @@
 use std::ops::{Add, Div, Mul, Sub};
 
+use crate::error::*;
+
 /// Number allows integers and floats to be managed as enums
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub enum Number {
@@ -89,6 +91,30 @@ impl Div for Number {
         let x = f64::from(self);
         let y = f64::from(rhs);
         Number::Float(x / y)
+    }
+}
+
+impl Number {
+    fn pow(self, rhs: Self) -> Result<Number> {
+        match (self, rhs) {
+            (Number::Int(x), Number::Int(y)) => {
+                let x = x;
+                let y = y;
+                if y >= 0 {
+                    let x = x.pow(y as u32);
+                    return Ok(Number::Int(x));
+                }
+            },
+            _ => {
+                let x = f64::from(self);
+                let y = f64::from(rhs);
+                if y >= 0.0 {
+                    let x = x.powf(y);
+                    return Ok(Number::Float(x));
+                }
+            }
+        }
+        Err(Error::NumberPowError)
     }
 }
 

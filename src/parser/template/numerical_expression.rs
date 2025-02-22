@@ -6,14 +6,14 @@ use crate::{error::*, number::Number, parser::*};
 // <Exponent> ::= <Factor> | <Exponent> '^' <Factor>
 // <Factor> ::= Number | '(' <Expression> ')'
 
-#[derive(Debug)]
+#[derive(Debug,  PartialEq)]
 pub enum Factor {
     Number(Number),
     Scope(Box<Expression>),
 }
 
 impl Factor {
-    fn new<'a>(i: &'a str) -> Result<(&'a str, Self), &'a str> {
+    fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
         trimer.and_b(
             num_ex.map(|n| Self::Number(n)).or(char('(')
                 .and_b(trimer)
@@ -23,25 +23,38 @@ impl Factor {
                 .map(|e| Self::Scope(Box::new(e)))),
         )(i)
     }
+
+    fn calc(&self) -> Number {
+        match self {
+            Factor::Number(number) => number.clone(),
+            Factor::Scope(expression) => expression.calc(),
+        }
+    }
 }
 
-#[derive(Debug)]
+#[derive(Debug,  PartialEq)]
 pub enum Exponent {
     Factor(Box<Factor>),
     Power(Box<Exponent>, Factor),
 }
 
 impl Exponent {
-    fn new<'a>(i: &'a str) -> Result<(&'a str, Self), &'a str> {
+    fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
         trimer.and_b(
             Factor::new.map(|f| Self::Factor(Box::new(f))).or(Self::new
                 .and(trimer.and_b(char('^')).and_b(trimer).and_b(Factor::new))
                 .map(|(e, f)| Self::Power(Box::new(e), f))),
         )(i)
     }
+    fn calc(&self) -> Number {
+        match self {
+            Exponent::Factor(factor) => factor.calc(),
+            Exponent::Power(exponent, factor) => todo!(),
+        }
+    }
 }
 
-#[derive(Debug)]
+#[derive(Debug,  PartialEq)]
 pub enum Term {
     Exponent(Box<Exponent>),
     Mul(Box<Term>, Exponent),
@@ -49,7 +62,7 @@ pub enum Term {
 }
 
 impl Term {
-    fn new<'a>(i: &'a str) -> Result<(&'a str, Self), &'a str> {
+    fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
         trimer.and_b(
             Exponent::new
                 .map(|e| Self::Exponent(Box::new(e)))
@@ -61,9 +74,17 @@ impl Term {
                     .map(|(t, e)| Self::Div(Box::new(t), e))),
         )(i)
     }
+
+    fn calc(&self) -> Number {
+        match self {
+            Term::Exponent(exponent) => todo!(),
+            Term::Mul(term, exponent) => todo!(),
+            Term::Div(term, exponent) => todo!(),
+        }
+    }
 }
 
-#[derive(Debug)]
+#[derive(Debug,  PartialEq)]
 pub enum Expression {
     Term(Box<Term>),
     Add(Box<Expression>, Term),
@@ -71,7 +92,7 @@ pub enum Expression {
 }
 
 impl Expression {
-    fn new<'a>(i: &'a str) -> Result<(&'a str, Self), &'a str> {
+    fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
         trimer.and_b(
             Term::new
                 .map(|t| Self::Term(Box::new(t)))
@@ -82,6 +103,13 @@ impl Expression {
                     .and(trimer.and_b(char('-')).and_b(trimer).and_b(Term::new))
                     .map(|(t, e)| Self::Sub(Box::new(t), e))),
         )(i)
+    }
+    fn calc(&self) -> Number {
+        match self {
+            Expression::Term(term) => todo!(),
+            Expression::Add(expression, term) => todo!(),
+            Expression::Sub(expression, term) => todo!(),
+        }
     }
 }
 
@@ -94,7 +122,7 @@ pub enum OPs {
 }
 
 impl OPs {
-    pub fn new<'a>(i: &'a str) -> Result<(&'a str, Self), &'a str> {
+    pub fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
         char('+')
             .and(trimer.and(num_ex))
             .map(|(_, (_, x))| Self::Add(x))
@@ -119,7 +147,7 @@ impl OPs {
     }
 }
 
-pub fn parser<'a>(i: &'a str) -> Result<(&'a str, Number), &'a str> {
+pub fn parser<'a>(i: &'a str) -> Result<(&'a str, Number)> {
     let (i, (_, n)) = trimer.and(num_ex)(i)?;
     let p = trimer.and(OPs::new).map(|(_, o)| o.calc(n));
     p(i)
@@ -171,4 +199,13 @@ mod test {
             assert_eq!(parser(base), Ok(ans))
         }
     }
+
+    #[test]
+    fn test2_1() {
+        let base = "10";
+        let parse = Expression::new(base);
+        // let ans = Expression::Term(Term::Exponent(Exponent::Factor(Factor::Number(10))));
+        // assert_eq!(parse, Ok(("", Factor::Number(Number::Int(10)))))
+    }
+
 }
