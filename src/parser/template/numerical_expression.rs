@@ -1,11 +1,5 @@
 use crate::{error::*, number::Number, parser::*};
 
-trait ParserConstructor {
-    fn parse<I, O>(i: I) -> Result<(I, O), I> {
-        todo!()
-    }
-}
-
 // 電卓メモ
 // <Expression> ::= <Term> | <Expression> '+' <Term> | <Expression> '-' <Term>
 // <Term> ::= <Exponent> | <Term> '*' <Exponent> | <Term> '/' <Exponent>
@@ -18,9 +12,18 @@ pub enum Factor {
     Scope(Box<Expression>),
 }
 
-impl ParserConstructor for Factor {
-    fn parse<I, O>(i: I) -> Result<(I, O), I> {
-        std::todo!()
+impl Factor {
+    fn new<'a>(i: &'a str) -> Result<(&'a str, Self), &'a str> {
+        trimer
+            .and(
+                num_ex.map(|n| Self::Number(n)).or(char('(')
+                    .and(trimer)
+                    .and(Expression::new)
+                    .and(trimer)
+                    .and(char(')'))
+                    .map(|(((_, e), _), _)| Self::Scope(Box::new(e)))),
+            )
+            .map(|(_, f)| f)(i)
     }
 }
 
@@ -30,9 +33,18 @@ pub enum Exponent {
     Power(Box<Exponent>, Factor),
 }
 
-impl ParserConstructor for Exponent {
-    fn parse<I, O>(i: I) -> Result<(I, O), I> {
-        std::todo!()
+impl Exponent {
+    fn new<'a>(i: &'a str) -> Result<(&'a str, Self), &'a str> {
+        trimer
+            .and(
+                Factor::new.map(|f| Self::Factor(Box::new(f))).or(Self::new
+                    .and(trimer)
+                    .and(char('^'))
+                    .and(trimer)
+                    .and(Factor::new)
+                    .map(|((((e, _), _), _), f)| Self::Power(Box::new(e), f))),
+            )
+            .map(|(_, e)| e)(i)
     }
 }
 
@@ -43,9 +55,9 @@ pub enum Term {
     Div(Box<Term>, Exponent),
 }
 
-impl ParserConstructor for Term {
-    fn parse<I, O>(i: I) -> Result<(I, O), I> {
-        std::todo!()
+impl Term {
+    fn new<'a>(i: &'a str) -> Result<(&'a str, Self), &'a str> {
+        todo!()
     }
 }
 
@@ -56,9 +68,9 @@ pub enum Expression {
     Sub(Box<Expression>, Term),
 }
 
-impl ParserConstructor for Expression {
-    fn parse<I, O>(i: I) -> Result<(I, O), I> {
-        std::todo!()
+impl Expression {
+    fn new<'a>(i: &'a str) -> Result<(&'a str, Self), &'a str> {
+        todo!()
     }
 }
 
