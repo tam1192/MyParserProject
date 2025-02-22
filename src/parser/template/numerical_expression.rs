@@ -50,7 +50,16 @@ pub enum Term {
 
 impl Term {
     fn new<'a>(i: &'a str) -> Result<(&'a str, Self), &'a str> {
-        todo!()
+        trimer.and_b(
+            Exponent::new
+                .map(|e| Self::Exponent(Box::new(e)))
+                .or(Self::new
+                    .and(trimer.and_b(char('*')).and_b(trimer).and_b(Exponent::new))
+                    .map(|(t, e)| Self::Mul(Box::new(t), e)))
+                .or(Self::new
+                    .and(trimer.and_b(char('/')).and_b(trimer).and_b(Exponent::new))
+                    .map(|(t, e)| Self::Div(Box::new(t), e))),
+        )(i)
     }
 }
 
