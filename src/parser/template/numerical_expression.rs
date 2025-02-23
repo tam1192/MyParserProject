@@ -1,6 +1,7 @@
 use crate::{error::*, number::Number, parser::*};
 
 // 電卓メモ
+// ↓例えばExpression, TermとExpression逆でよくね？
 // <Expression> ::= <Term> | <Expression> '+' <Term> | <Expression> '-' <Term>
 // <Term> ::= <Exponent> | <Term> '*' <Exponent> | <Term> '/' <Exponent>
 // <Exponent> ::= <Factor> | <Exponent> '^' <Factor>
@@ -34,8 +35,8 @@ impl Factor {
 
 #[derive(Debug,  PartialEq)]
 pub enum Exponent {
-    Factor(Box<Factor>),
-    Power(Box<Exponent>, Factor),
+    Factor(Factor),
+    Power(Factor, Box<Self>),
 }
 
 impl Exponent {
@@ -60,23 +61,16 @@ impl Exponent {
 
 #[derive(Debug,  PartialEq)]
 pub enum Term {
-    Exponent(Box<Exponent>),
-    Mul(Box<Term>, Exponent),
-    Div(Box<Term>, Exponent),
+    Exponent(Exponent),
+    Mul(Exponent, Box<Self>),
+    Div(Exponent, Box<Self>),
 }
 
 impl Term {
     fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
-        trimer.and_b(
-            Exponent::new
-                .map(|e| Self::Exponent(Box::new(e)))
-                .or(Self::new
-                    .and(trimer.and_b(char('*')).and_b(trimer).and_b(Exponent::new))
-                    .map(|(t, e)| Self::Mul(Box::new(t), e)))
-                .or(Self::new
-                    .and(trimer.and_b(char('/')).and_b(trimer).and_b(Exponent::new))
-                    .map(|(t, e)| Self::Div(Box::new(t), e))),
-        )(i)
+        let x = trimer.and_b(
+
+        )
     }
 
     fn calc(&self) -> Result<Number> {
@@ -98,9 +92,9 @@ impl Term {
 
 #[derive(Debug,  PartialEq)]
 pub enum Expression {
-    Term(Box<Term>),
-    Add(Box<Expression>, Term),
-    Sub(Box<Expression>, Term),
+    Term(Term),
+    Add(Term, Box<Self>),
+    Sub(Term, Box<Self>),
 }
 
 impl Expression {
