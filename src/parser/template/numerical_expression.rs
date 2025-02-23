@@ -69,8 +69,9 @@ pub enum Term {
 impl Term {
     fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
         let x = trimer.and_b(
-
-        )
+            none
+        );
+        todo!()
     }
 
     fn calc(&self) -> Result<Number> {
