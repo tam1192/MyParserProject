@@ -1,5 +1,3 @@
-use std::f32::consts::E;
-
 use crate::{error::*, number::Number, parser::*};
 
 // 電卓メモ
@@ -8,7 +6,7 @@ use crate::{error::*, number::Number, parser::*};
 // <Exponent> ::= <Factor> | <Exponent> '^' <Factor>
 // <Factor> ::= Number | '(' <Expression> ')'
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug,  PartialEq)]
 pub enum Factor {
     Number(Number),
     Scope(Box<Expression>),
@@ -17,13 +15,12 @@ pub enum Factor {
 impl Factor {
     fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
         trimer.and_b(
-            char('(')
+            num_ex.map(|n| Self::Number(n)).or(char('(')
                 .and_b(trimer)
                 .and_b(Expression::new)
                 .and_a(trimer)
                 .and_a(char(')'))
-                .map(|e| Self::Scope(Box::new(e)))
-                .or(num_ex.map(|n| Self::Number(n))),
+                .map(|e| Self::Scope(Box::new(e)))),
         )(i)
     }
 
@@ -35,7 +32,7 @@ impl Factor {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug,  PartialEq)]
 pub enum Exponent {
     Factor(Box<Factor>),
     Power(Box<Exponent>, Factor),
@@ -44,16 +41,9 @@ pub enum Exponent {
 impl Exponent {
     fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
         trimer.and_b(
-            Self::new
-                .and(
-                    trimer
-                        .and_b(trimer)
-                        .and_b(char('^'))
-                        .and_b(trimer)
-                        .and_b(Factor::new),
-                )
-                .map(|(e, f)| Self::Power(Box::new(e), f))
-                .or(Factor::new.map(|f| Self::Factor(Box::new(f)))),
+            Factor::new.map(|f| Self::Factor(Box::new(f))).or(Self::new
+                .and(trimer.and_b(char('^')).and_b(trimer).and_b(Factor::new))
+                .map(|(e, f)| Self::Power(Box::new(e), f))),
         )(i)
     }
     fn calc(&self) -> Result<Number> {
@@ -63,12 +53,12 @@ impl Exponent {
                 let x = exponent.calc()?;
                 let y = factor.calc()?;
                 x.pow(y)?
-            }
+            },
         })
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug,  PartialEq)]
 pub enum Term {
     Exponent(Box<Exponent>),
     Mul(Box<Term>, Exponent),
@@ -78,15 +68,14 @@ pub enum Term {
 impl Term {
     fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
         trimer.and_b(
-            Self::new.and(
-                trimer.and_b(char('*')).and_b(trimer).and_b(Exponent::new)
-            ).map(|(t, e)| Self::Mul(Box::new(t), e))
-            .or(
-                Self::new.and(trimer.and_b(char('/')).and_b(trimer).and_b(Exponent::new))
-                .map(|(t,e)| Self::Div(Box::new(t),e))
-            ).or(
-                Exponent::new.map(|e| Self::Exponent(Box::new(e)))
-            )
+            Exponent::new
+                .map(|e| Self::Exponent(Box::new(e)))
+                .or(Self::new
+                    .and(trimer.and_b(char('*')).and_b(trimer).and_b(Exponent::new))
+                    .map(|(t, e)| Self::Mul(Box::new(t), e)))
+                .or(Self::new
+                    .and(trimer.and_b(char('/')).and_b(trimer).and_b(Exponent::new))
+                    .map(|(t, e)| Self::Div(Box::new(t), e))),
         )(i)
     }
 
@@ -97,17 +86,17 @@ impl Term {
                 let x = term.calc()?;
                 let y = exponent.calc()?;
                 x * y
-            }
+            },
             Term::Div(term, exponent) => {
                 let x = term.calc()?;
                 let y = exponent.calc()?;
                 (x / y)?
-            }
+            },
         })
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug,  PartialEq)]
 pub enum Expression {
     Term(Box<Term>),
     Add(Box<Expression>, Term),
@@ -115,32 +104,31 @@ pub enum Expression {
 }
 
 impl Expression {
-    pub fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
+    fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
         trimer.and_b(
-            Self::new.and(
-                trimer.and_b(char('+')).and_b(trimer).and_b(Term::new)
-            ).map(|(t, e)| Self::Add(Box::new(t), e))
-            .or(
-                Self::new.and(trimer.and_b(char('-')).and_b(trimer).and_b(Term::new))
-                .map(|(t,e)| Self::Add(Box::new(t),e))
-            ).or(
-                Term::new.map(|e| Self::Term(Box::new(e)))
-            )
+            Term::new
+                .map(|t| Self::Term(Box::new(t)))
+                .or(Self::new
+                    .and(trimer.and_b(char('+')).and_b(trimer).and_b(Term::new))
+                    .map(|(t, e)| Self::Add(Box::new(t), e)))
+                .or(Self::new
+                    .and(trimer.and_b(char('-')).and_b(trimer).and_b(Term::new))
+                    .map(|(t, e)| Self::Sub(Box::new(t), e))),
         )(i)
     }
-    pub fn calc(&self) -> Result<Number> {
+    fn calc(&self) -> Result<Number> {
         Ok(match self {
             Expression::Term(term) => term.calc()?,
             Expression::Add(expression, term) => {
                 let x = expression.calc()?;
                 let y = term.calc()?;
                 x + y
-            }
+            },
             Expression::Sub(expression, term) => {
                 let x = expression.calc()?;
                 let y = term.calc()?;
                 x - y
-            }
+            },
         })
     }
 }
@@ -157,10 +145,16 @@ impl OPs {
     pub fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
         char('+')
             .and_b(trimer.and_b(num_ex))
-            .map(|n| Self::Add(n))
-            .or(char('-').and_b(trimer.and_b(num_ex)).map(|n| Self::Sub(n)))
-            .or(char('*').and_b(trimer.and_b(num_ex)).map(|n| Self::Mul(n)))
-            .or(char('/').and_b(trimer.and_b(num_ex)).map(|n| Self::Div(n)))(i)
+                .map(|n| Self::Add(n))
+            .or(char('-')
+                .and_b(trimer.and_b(num_ex))
+                .map(|n| Self::Sub(n)))
+            .or(char('*')
+                .and_b(trimer.and_b(num_ex))
+                .map(|n| Self::Mul(n)))
+            .or(char('/')
+                .and_b(trimer.and_b(num_ex))
+                .map(|n| Self::Div(n)))(i)
     }
 
     fn calc(&self, x: Number) -> Number {
@@ -228,10 +222,10 @@ mod test {
 
     #[test]
     fn test2_1() {
-        let base = "1";
-        if let Ok((_, e)) = Expression::new(base) {
-            let c = e.calc().unwrap();
-            println!("{:?}", c)
-        }
+        let base = "10 + 2";
+        let (_, o) = Expression::new(base).unwrap();
+        let a = o.calc().unwrap();
+        println!("{:?}", a);
     }
+
 }
