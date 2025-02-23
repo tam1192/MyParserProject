@@ -24,11 +24,11 @@ impl Factor {
         )(i)
     }
 
-    fn calc(&self) -> Number {
-        match self {
+    fn calc(&self) -> Result<Number> {
+        Ok(match self {
             Factor::Number(number) => number.clone(),
-            Factor::Scope(expression) => expression.calc(),
-        }
+            Factor::Scope(expression) => expression.calc()?,
+        })
     }
 }
 
@@ -46,11 +46,15 @@ impl Exponent {
                 .map(|(e, f)| Self::Power(Box::new(e), f))),
         )(i)
     }
-    fn calc(&self) -> Number {
-        match self {
-            Exponent::Factor(factor) => factor.calc(),
-            Exponent::Power(exponent, factor) => todo!(),
-        }
+    fn calc(&self) -> Result<Number> {
+        Ok(match self {
+            Exponent::Factor(factor) => factor.calc()?,
+            Exponent::Power(exponent, factor) => {
+                let x = exponent.calc()?;
+                let y = factor.calc()?;
+                x.pow(y)?
+            },
+        })
     }
 }
 
@@ -75,12 +79,20 @@ impl Term {
         )(i)
     }
 
-    fn calc(&self) -> Number {
-        match self {
-            Term::Exponent(exponent) => todo!(),
-            Term::Mul(term, exponent) => todo!(),
-            Term::Div(term, exponent) => todo!(),
-        }
+    fn calc(&self) -> Result<Number> {
+        Ok(match self {
+            Term::Exponent(exponent) => exponent.calc()?,
+            Term::Mul(term, exponent) => {
+                let x = term.calc()?;
+                let y = exponent.calc()?;
+                x * y
+            },
+            Term::Div(term, exponent) => {
+                let x = term.calc()?;
+                let y = exponent.calc()?;
+                (x / y)?
+            },
+        })
     }
 }
 
@@ -104,12 +116,20 @@ impl Expression {
                     .map(|(t, e)| Self::Sub(Box::new(t), e))),
         )(i)
     }
-    fn calc(&self) -> Number {
-        match self {
-            Expression::Term(term) => todo!(),
-            Expression::Add(expression, term) => todo!(),
-            Expression::Sub(expression, term) => todo!(),
-        }
+    fn calc(&self) -> Result<Number> {
+        Ok(match self {
+            Expression::Term(term) => term.calc()?,
+            Expression::Add(expression, term) => {
+                let x = expression.calc()?;
+                let y = term.calc()?;
+                x + y
+            },
+            Expression::Sub(expression, term) => {
+                let x = expression.calc()?;
+                let y = term.calc()?;
+                x - y
+            },
+        })
     }
 }
 
@@ -124,17 +144,17 @@ pub enum OPs {
 impl OPs {
     pub fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
         char('+')
-            .and(trimer.and(num_ex))
-            .map(|(_, (_, x))| Self::Add(x))
+            .and_b(trimer.and_b(num_ex))
+                .map(|n| Self::Add(n))
             .or(char('-')
-                .and(trimer.and(num_ex))
-                .map(|(_, (_, x))| Self::Sub(x)))
+                .and_b(trimer.and_b(num_ex))
+                .map(|n| Self::Sub(n)))
             .or(char('*')
-                .and(trimer.and(num_ex))
-                .map(|(_, (_, x))| Self::Mul(x)))
+                .and_b(trimer.and_b(num_ex))
+                .map(|n| Self::Mul(n)))
             .or(char('/')
-                .and(trimer.and(num_ex))
-                .map(|(_, (_, x))| Self::Div(x)))(i)
+                .and_b(trimer.and_b(num_ex))
+                .map(|n| Self::Div(n)))(i)
     }
 
     fn calc(&self, x: Number) -> Number {
@@ -142,14 +162,14 @@ impl OPs {
             OPs::Add(y) => x + *y,
             OPs::Sub(y) => x - *y,
             OPs::Mul(y) => x * *y,
-            OPs::Div(y) => x / *y,
+            OPs::Div(y) => (x / *y).unwrap(),
         }
     }
 }
 
 pub fn parser<'a>(i: &'a str) -> Result<(&'a str, Number)> {
-    let (i, (_, n)) = trimer.and(num_ex)(i)?;
-    let p = trimer.and(OPs::new).map(|(_, o)| o.calc(n));
+    let (i, n) = trimer.and_b(num_ex)(i)?;
+    let p = trimer.and_b(OPs::new).map(|o| o.calc(n));
     p(i)
 }
 

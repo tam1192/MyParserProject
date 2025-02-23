@@ -7,6 +7,7 @@ pub enum Error {
     ParseCharError,
     Uninstalled,
     NumberPowError,
+    NumberZeroDivError,
 }
 
 impl fmt::Display for Error
@@ -18,6 +19,7 @@ impl fmt::Display for Error
             Self::ParseCharError => write!(f, "ParseCharError"),
             Self::Uninstalled => write!(f, "未実装ですまない..."),
             Self::NumberPowError => write!(f, "NumberPowError"),
+            Self::NumberZeroDivError => write!(f, "NumberZeroDivError"),
         }
     }
 }

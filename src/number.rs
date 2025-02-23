@@ -85,17 +85,21 @@ impl Mul for Number {
 }
 
 impl Div for Number {
-    type Output = Number;
+    type Output = Result<Number>;
 
     fn div(self, rhs: Self) -> Self::Output {
         let x = f64::from(self);
         let y = f64::from(rhs);
-        Number::Float(x / y)
+        if y != 0.0 {
+            Ok(Number::Float(x / y))
+        } else {
+            Err(Error::NumberPowError)
+        }
     }
 }
 
 impl Number {
-    fn pow(self, rhs: Self) -> Result<Number> {
+    pub fn pow(self, rhs: Self) -> Result<Number> {
         match (self, rhs) {
             (Number::Int(x), Number::Int(y)) => {
                 let x = x;
@@ -147,7 +151,7 @@ mod tests {
     fn test4() {
         let x = Number::Int(2);
         let y = Number::Int(2);
-        assert_eq!(x / y, Number::Float(1.0))
+        assert_eq!(x / y, Ok(Number::Float(1.0)))
     }
 
     #[test]
