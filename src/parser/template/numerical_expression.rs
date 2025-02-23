@@ -15,12 +15,13 @@ pub enum Factor {
 impl Factor {
     fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
         trimer.and_b(
-            num_ex.map(|n| Self::Number(n)).or(char('(')
-                .and_b(trimer)
-                .and_b(Expression::new)
-                .and_a(trimer)
-                .and_a(char(')'))
-                .map(|e| Self::Scope(Box::new(e)))),
+            char('(')
+            .and_b(trimer)
+            .and_b(Expression::new)
+            .and_a(trimer)
+            .and_a(char(')'))
+            .map(|e| Self::Scope(Box::new(e)))
+            .or(num_ex.map(|n| Self::Number(n)))
         )(i)
     }
 
@@ -41,10 +42,14 @@ pub enum Exponent {
 impl Exponent {
     fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
         trimer.and_b(
-            Factor::new.map(|f| Self::Factor(Box::new(f))).or(Self::new
-                .and(trimer.and_b(char('^')).and_b(trimer).and_b(Factor::new))
-                .map(|(e, f)| Self::Power(Box::new(e), f))),
-        )(i)
+            Self::new.and(
+                trimer.and_b(trimer)
+                            .and_b(char('^'))
+                            .and_b(trimer)
+                            .and_b(Factor::new)
+                        ).map(|(e, f)| Self::Power(Box::new(e), f))
+                        .or(Factor::new.map(|f| Self::Factor(Box::new(f))))
+                        )(i)
     }
     fn calc(&self) -> Result<Number> {
         Ok(match self {
