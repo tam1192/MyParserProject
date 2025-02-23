@@ -1,3 +1,5 @@
+use std::f32::consts::E;
+
 use crate::{error::*, number::Number, parser::*};
 
 // 電卓メモ
@@ -76,14 +78,15 @@ pub enum Term {
 impl Term {
     fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
         trimer.and_b(
-            Exponent::new
-                .map(|e| Self::Exponent(Box::new(e)))
-                .or(Self::new
-                    .and(trimer.and_b(char('*')).and_b(trimer).and_b(Exponent::new))
-                    .map(|(t, e)| Self::Mul(Box::new(t), e)))
-                .or(Self::new
-                    .and(trimer.and_b(char('/')).and_b(trimer).and_b(Exponent::new))
-                    .map(|(t, e)| Self::Div(Box::new(t), e))),
+            Self::new.and(
+                trimer.and_b(char('*')).and_b(trimer).and_b(Exponent::new)
+            ).map(|(t, e)| Self::Mul(Box::new(t), e))
+            .or(
+                Self::new.and(trimer.and_b(char('/')).and_b(trimer).and_b(Exponent::new))
+                .map(|(t,e)| Self::Div(Box::new(t),e))
+            ).or(
+                Exponent::new.map(|e| Self::Exponent(Box::new(e)))
+            )
         )(i)
     }
 
@@ -112,19 +115,20 @@ pub enum Expression {
 }
 
 impl Expression {
-    fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
+    pub fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
         trimer.and_b(
-            Term::new
-                .map(|t| Self::Term(Box::new(t)))
-                .or(Self::new
-                    .and(trimer.and_b(char('+')).and_b(trimer).and_b(Term::new))
-                    .map(|(t, e)| Self::Add(Box::new(t), e)))
-                .or(Self::new
-                    .and(trimer.and_b(char('-')).and_b(trimer).and_b(Term::new))
-                    .map(|(t, e)| Self::Sub(Box::new(t), e))),
+            Self::new.and(
+                trimer.and_b(char('+')).and_b(trimer).and_b(Term::new)
+            ).map(|(t, e)| Self::Add(Box::new(t), e))
+            .or(
+                Self::new.and(trimer.and_b(char('-')).and_b(trimer).and_b(Term::new))
+                .map(|(t,e)| Self::Add(Box::new(t),e))
+            ).or(
+                Term::new.map(|e| Self::Term(Box::new(e)))
+            )
         )(i)
     }
-    fn calc(&self) -> Result<Number> {
+    pub fn calc(&self) -> Result<Number> {
         Ok(match self {
             Expression::Term(term) => term.calc()?,
             Expression::Add(expression, term) => {
@@ -224,9 +228,10 @@ mod test {
 
     #[test]
     fn test2_1() {
-        let base = "10";
-        let parse = Expression::new(base);
-        // let ans = Expression::Term(Term::Exponent(Exponent::Factor(Factor::Number(10))));
-        // assert_eq!(parse, Ok(("", Factor::Number(Number::Int(10)))))
+        let base = "1";
+        if let Ok((_, e)) = Expression::new(base) {
+            let c = e.calc().unwrap();
+            println!("{:?}", c)
+        }
     }
 }
