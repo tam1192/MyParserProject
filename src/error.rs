@@ -10,8 +10,7 @@ pub enum Error {
     NumberZeroDivError,
 }
 
-impl fmt::Display for Error
-{
+impl fmt::Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::ParseFloatError(parse_int_error) => write!(f, "{}", parse_int_error),
@@ -24,8 +23,7 @@ impl fmt::Display for Error
     }
 }
 
-impl error::Error for Error
-{
+impl error::Error for Error {
     fn source(&self) -> Option<&(dyn error::Error + 'static)> {
         match self {
             Self::ParseFloatError(e) => Some(e),

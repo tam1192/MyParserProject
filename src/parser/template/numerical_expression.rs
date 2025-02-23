@@ -6,7 +6,7 @@ use crate::{error::*, number::Number, parser::*};
 // <Exponent> ::= <Factor> | <Exponent> '^' <Factor>
 // <Factor> ::= Number | '(' <Expression> ')'
 
-#[derive(Debug,  PartialEq)]
+#[derive(Debug, PartialEq)]
 pub enum Factor {
     Number(Number),
     Scope(Box<Expression>),
@@ -16,12 +16,12 @@ impl Factor {
     fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
         trimer.and_b(
             char('(')
-            .and_b(trimer)
-            .and_b(Expression::new)
-            .and_a(trimer)
-            .and_a(char(')'))
-            .map(|e| Self::Scope(Box::new(e)))
-            .or(num_ex.map(|n| Self::Number(n)))
+                .and_b(trimer)
+                .and_b(Expression::new)
+                .and_a(trimer)
+                .and_a(char(')'))
+                .map(|e| Self::Scope(Box::new(e)))
+                .or(num_ex.map(|n| Self::Number(n))),
         )(i)
     }
 
@@ -33,7 +33,7 @@ impl Factor {
     }
 }
 
-#[derive(Debug,  PartialEq)]
+#[derive(Debug, PartialEq)]
 pub enum Exponent {
     Factor(Box<Factor>),
     Power(Box<Exponent>, Factor),
@@ -42,14 +42,17 @@ pub enum Exponent {
 impl Exponent {
     fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
         trimer.and_b(
-            Self::new.and(
-                trimer.and_b(trimer)
-                            .and_b(char('^'))
-                            .and_b(trimer)
-                            .and_b(Factor::new)
-                        ).map(|(e, f)| Self::Power(Box::new(e), f))
-                        .or(Factor::new.map(|f| Self::Factor(Box::new(f))))
-                        )(i)
+            Self::new
+                .and(
+                    trimer
+                        .and_b(trimer)
+                        .and_b(char('^'))
+                        .and_b(trimer)
+                        .and_b(Factor::new),
+                )
+                .map(|(e, f)| Self::Power(Box::new(e), f))
+                .or(Factor::new.map(|f| Self::Factor(Box::new(f)))),
+        )(i)
     }
     fn calc(&self) -> Result<Number> {
         Ok(match self {
@@ -58,12 +61,12 @@ impl Exponent {
                 let x = exponent.calc()?;
                 let y = factor.calc()?;
                 x.pow(y)?
-            },
+            }
         })
     }
 }
 
-#[derive(Debug,  PartialEq)]
+#[derive(Debug, PartialEq)]
 pub enum Term {
     Exponent(Box<Exponent>),
     Mul(Box<Term>, Exponent),
@@ -91,17 +94,17 @@ impl Term {
                 let x = term.calc()?;
                 let y = exponent.calc()?;
                 x * y
-            },
+            }
             Term::Div(term, exponent) => {
                 let x = term.calc()?;
                 let y = exponent.calc()?;
                 (x / y)?
-            },
+            }
         })
     }
 }
 
-#[derive(Debug,  PartialEq)]
+#[derive(Debug, PartialEq)]
 pub enum Expression {
     Term(Box<Term>),
     Add(Box<Expression>, Term),
@@ -128,12 +131,12 @@ impl Expression {
                 let x = expression.calc()?;
                 let y = term.calc()?;
                 x + y
-            },
+            }
             Expression::Sub(expression, term) => {
                 let x = expression.calc()?;
                 let y = term.calc()?;
                 x - y
-            },
+            }
         })
     }
 }
@@ -150,16 +153,10 @@ impl OPs {
     pub fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
         char('+')
             .and_b(trimer.and_b(num_ex))
-                .map(|n| Self::Add(n))
-            .or(char('-')
-                .and_b(trimer.and_b(num_ex))
-                .map(|n| Self::Sub(n)))
-            .or(char('*')
-                .and_b(trimer.and_b(num_ex))
-                .map(|n| Self::Mul(n)))
-            .or(char('/')
-                .and_b(trimer.and_b(num_ex))
-                .map(|n| Self::Div(n)))(i)
+            .map(|n| Self::Add(n))
+            .or(char('-').and_b(trimer.and_b(num_ex)).map(|n| Self::Sub(n)))
+            .or(char('*').and_b(trimer.and_b(num_ex)).map(|n| Self::Mul(n)))
+            .or(char('/').and_b(trimer.and_b(num_ex)).map(|n| Self::Div(n)))(i)
     }
 
     fn calc(&self, x: Number) -> Number {
@@ -232,5 +229,4 @@ mod test {
         // let ans = Expression::Term(Term::Exponent(Exponent::Factor(Factor::Number(10))));
         // assert_eq!(parse, Ok(("", Factor::Number(Number::Int(10)))))
     }
-
 }

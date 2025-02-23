@@ -108,7 +108,7 @@ impl Number {
                     let x = x.pow(y as u32);
                     return Ok(Number::Int(x));
                 }
-            },
+            }
             _ => {
                 let x = f64::from(self);
                 let y = f64::from(rhs);
