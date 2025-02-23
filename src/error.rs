@@ -13,7 +13,7 @@ pub enum Error {
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::ParseFloatError(parse_int_error) => write!(f, "{}", parse_int_error),
+            Self::ParseFloatError(parse_float_error) => write!(f, "{}", parse_float_error),
             Self::ParseIntErrror(parse_int_error) => write!(f, "{}", parse_int_error),
             Self::ParseCharError => write!(f, "ParseCharError"),
             Self::Uninstalled => write!(f, "未実装ですまない..."),
