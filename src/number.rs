@@ -1,4 +1,4 @@
-use std::ops::{Add, Div, Mul, Sub};
+use std::{ops::{Add, Div, Mul, Sub}, fmt::Display};
 
 use crate::error::*;
 
@@ -7,6 +7,15 @@ use crate::error::*;
 pub enum Number {
     Int(i64),
     Float(f64),
+}
+
+impl Display for Number {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Number::Int(i) => write!(f, "{}", i),
+            Number::Float(i) => write!(f, "{}", i),
+        }
+    }
 }
 
 impl From<Number> for f64 {
