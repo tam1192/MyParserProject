@@ -1,11 +1,77 @@
 use crate::{error::*, number::Number, parser::*};
 
-// 電卓メモ
-// ↓例えばExpression, TermとExpression逆でよくね？
-// <Expression> ::= <Term> | <Expression> '+' <Term> | <Expression> '-' <Term>
-// <Term> ::= <Exponent> | <Term> '*' <Exponent> | <Term> '/' <Exponent>
-// <Exponent> ::= <Factor> | <Exponent> '^' <Factor>
-// <Factor> ::= Number | '(' <Expression> ')'
+/// Extracting mathematical expressions from a string
+/// 
+/// # example
+/// ## General usage
+/// ```rust
+/// use my_parser_project::parser::numerical_expression::*;
+/// use my_parser_project::number::Number;
+/// 
+/// let base = "10 + 2";
+/// let (_, o) = parser(base).unwrap();
+/// let a = o.calc().unwrap();
+/// assert_eq!(a, Number::Int(12))
+/// ```
+/// 
+/// ## About Data Structure
+/// ```rust
+/// use my_parser_project::parser::numerical_expression::*;
+/// use my_parser_project::number::Number;
+/// 
+/// let base = "2+3*4";
+/// let (_, e) = parser(base).unwrap();
+/// let ans = 
+/// Expression::Add(
+///     Term::Exponent(
+///         Exponent::Factor(
+///             Factor::Number(
+///                 Number::Int(2)
+///             )
+///         )
+///     ), 
+///     Box::new(Expression::Term(
+///         Term::Mul(
+///             Exponent::Factor(
+///                 Factor::Number(
+///                     Number::Int(3)
+///                 )
+///             ),
+///             Box::new(Term::Exponent(
+///                 Exponent::Factor(
+///                     Factor::Number(
+///                         Number::Int(4)
+///                     )
+///                 )
+///             )) 
+///         ))
+///     )
+/// );
+/// assert_eq!(e, ans);
+/// let n = e.calc().unwrap();
+/// assert_eq!(n, Number::Int(14))
+/// ```
+/// 
+
+pub fn parser<'a>(i: &'a str) -> Result<(&'a str, Expression)> {
+    Expression::new(i)
+}
+
+/// Executes `parser()` and also performs calculations
+/// 
+/// # example
+/// ```rust
+/// use my_parser_project::parser::numerical_expression::*;
+/// use my_parser_project::number::Number;
+/// 
+/// let base = "10 + 2";
+/// assert_eq!(parse_and_calc(base).unwrap(), ("", Number::Int(12)))
+/// ```
+pub fn parse_and_calc<'a>(i: &'a str) -> Result<(&'a str, Number)> {
+    let (i, e) = parser(i)?;
+    let a = e.calc()?;
+    Ok((i, a))
+}
 
 #[derive(Debug, PartialEq)]
 pub enum Factor {
@@ -159,16 +225,6 @@ impl Expression {
     }
 }
 
-pub fn parse_and_calc<'a>(i: &'a str) -> Result<(&'a str, Number)> {
-    let (i, e) = Expression::new(i)?;
-    let a = e.calc()?;
-    Ok((i, a))
-}
-
-pub fn parser<'a>(i: &'a str) -> Result<(&'a str, Expression)> {
-    Expression::new(i)
-}
-
 #[cfg(test)]
 mod test {
     use super::*;
@@ -267,8 +323,7 @@ mod test {
     #[test]
     fn test2_3() {
         let base = "(1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9)*2";
-        let (_, e) = parser(base).unwrap();
-        let n = e.calc().unwrap();
+        let (_, n) = parse_and_calc(base).unwrap();
         assert_eq!(n, Number::Int(90))
     }
 }
