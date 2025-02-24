@@ -1,6 +1,7 @@
 use crate::parser::Parser;
 
-enum OrResult<A, B> {
+#[derive(Debug, PartialEq)]
+pub enum OrResult<A, B> {
     A(A),
     B(B),
 }
