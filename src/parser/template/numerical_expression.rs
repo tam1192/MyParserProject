@@ -159,6 +159,12 @@ impl Expression {
     }
 }
 
+pub fn parser<'a>(i: &'a str) -> Result<(&'a str, Number)> {
+    let (i, e) = Expression::new(i)?;
+    let a = e.calc()?;
+    Ok((i, a))
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -183,7 +189,7 @@ mod test {
     #[test]
     fn test4() {
         let base = "1 + a 1";
-        assert!(matches!(parser(base), Err(_)));
+        assert_eq!(parser(base), Ok((" + a 1", Number::Int(1))))
     }
 
     #[test]
@@ -212,6 +218,7 @@ mod test {
     fn test2_1() {
         let base = "10 + 2";
         let (_, o) = Expression::new(base).unwrap();
+        println!("{:?}", o);
         let a = o.calc().unwrap();
         println!("{:?}", a);
     }
