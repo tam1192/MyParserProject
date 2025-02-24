@@ -159,40 +159,6 @@ impl Expression {
     }
 }
 
-#[derive(Debug)]
-pub enum OPs {
-    Add(Number),
-    Sub(Number),
-    Mul(Number),
-    Div(Number),
-}
-
-impl OPs {
-    pub fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
-        char('+')
-            .and_b(trimer.and_b(num_ex))
-            .map(|n| Self::Add(n))
-            .or(char('-').and_b(trimer.and_b(num_ex)).map(|n| Self::Sub(n)))
-            .or(char('*').and_b(trimer.and_b(num_ex)).map(|n| Self::Mul(n)))
-            .or(char('/').and_b(trimer.and_b(num_ex)).map(|n| Self::Div(n)))(i)
-    }
-
-    fn calc(&self, x: Number) -> Number {
-        match self {
-            OPs::Add(y) => x + *y,
-            OPs::Sub(y) => x - *y,
-            OPs::Mul(y) => x * *y,
-            OPs::Div(y) => (x / *y).unwrap(),
-        }
-    }
-}
-
-pub fn parser<'a>(i: &'a str) -> Result<(&'a str, Number)> {
-    let (i, n) = trimer.and_b(num_ex)(i)?;
-    let p = trimer.and_b(OPs::new).map(|o| o.calc(n));
-    p(i)
-}
-
 #[cfg(test)]
 mod test {
     use super::*;
