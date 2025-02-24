@@ -1,4 +1,7 @@
-use std::{ops::{Add, Div, Mul, Sub}, fmt::Display};
+use std::{
+    fmt::Display,
+    ops::{Add, Div, Mul, Sub},
+};
 
 use crate::error::*;
 
