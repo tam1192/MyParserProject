@@ -121,7 +121,7 @@ pub enum Expression {
 }
 
 impl Expression {
-    pub fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
+    fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
         trimer
             .and_b(
                 Term::new.and(
@@ -159,10 +159,14 @@ impl Expression {
     }
 }
 
-pub fn parser<'a>(i: &'a str) -> Result<(&'a str, Number)> {
+pub fn parse_and_calc<'a>(i: &'a str) -> Result<(&'a str, Number)> {
     let (i, e) = Expression::new(i)?;
     let a = e.calc()?;
     Ok((i, a))
+}
+
+pub fn parser<'a>(i: &'a str) -> Result<(&'a str, Expression)> {
+    Expression::new(i)
 }
 
 #[cfg(test)]
@@ -171,31 +175,31 @@ mod test {
     #[test]
     fn test1() {
         let base = "1+1";
-        assert_eq!(parser(base), Ok(("", Number::Int(2))));
+        assert_eq!(parse_and_calc(base), Ok(("", Number::Int(2))));
     }
 
     #[test]
     fn test2() {
         let base = "2 + 4";
-        assert_eq!(parser(base), Ok(("", Number::Int(6))));
+        assert_eq!(parse_and_calc(base), Ok(("", Number::Int(6))));
     }
 
     #[test]
     fn test3() {
         let base = "aa1+1ffad";
-        assert!(matches!(parser(base), Err(_)));
+        assert!(matches!(parse_and_calc(base), Err(_)));
     }
 
     #[test]
     fn test4() {
         let base = "1 + a 1";
-        assert_eq!(parser(base), Ok((" + a 1", Number::Int(1))))
+        assert_eq!(parse_and_calc(base), Ok((" + a 1", Number::Int(1))))
     }
 
     #[test]
     fn test5() {
         let base = "1 + 1aaaaaa";
-        assert_eq!(parser(base), Ok(("aaaaaa", Number::Int(2))));
+        assert_eq!(parse_and_calc(base), Ok(("aaaaaa", Number::Int(2))));
     }
 
     #[test]
