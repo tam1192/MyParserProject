@@ -1,11 +1,77 @@
 use crate::{error::*, number::Number, parser::*};
 
-// 電卓メモ
-// ↓例えばExpression, TermとExpression逆でよくね？
-// <Expression> ::= <Term> | <Expression> '+' <Term> | <Expression> '-' <Term>
-// <Term> ::= <Exponent> | <Term> '*' <Exponent> | <Term> '/' <Exponent>
-// <Exponent> ::= <Factor> | <Exponent> '^' <Factor>
-// <Factor> ::= Number | '(' <Expression> ')'
+/// Extracting mathematical expressions from a string
+/// 
+/// # example
+/// ## General usage
+/// ```rust
+/// use my_parser_project::parser::numerical_expression::*;
+/// use my_parser_project::number::Number;
+/// 
+/// let base = "10 + 2";
+/// let (_, o) = parser(base).unwrap();
+/// let a = o.calc().unwrap();
+/// assert_eq!(a, Number::Int(12))
+/// ```
+/// 
+/// ## About Data Structure
+/// ```rust
+/// use my_parser_project::parser::numerical_expression::*;
+/// use my_parser_project::number::Number;
+/// 
+/// let base = "2+3*4";
+/// let (_, e) = parser(base).unwrap();
+/// let ans = 
+/// Expression::Add(
+///     Term::Exponent(
+///         Exponent::Factor(
+///             Factor::Number(
+///                 Number::Int(2)
+///             )
+///         )
+///     ), 
+///     Box::new(Expression::Term(
+///         Term::Mul(
+///             Exponent::Factor(
+///                 Factor::Number(
+///                     Number::Int(3)
+///                 )
+///             ),
+///             Box::new(Term::Exponent(
+///                 Exponent::Factor(
+///                     Factor::Number(
+///                         Number::Int(4)
+///                     )
+///                 )
+///             )) 
+///         ))
+///     )
+/// );
+/// assert_eq!(e, ans);
+/// let n = e.calc().unwrap();
+/// assert_eq!(n, Number::Int(14))
+/// ```
+/// 
+
+pub fn parser<'a>(i: &'a str) -> Result<(&'a str, Expression)> {
+    Expression::new(i)
+}
+
+/// Executes `parser()` and also performs calculations
+/// 
+/// # example
+/// ```rust
+/// use my_parser_project::parser::numerical_expression::*;
+/// use my_parser_project::number::Number;
+/// 
+/// let base = "10 + 2";
+/// assert_eq!(parse_and_calc(base).unwrap(), ("", Number::Int(12)))
+/// ```
+pub fn parse_and_calc<'a>(i: &'a str) -> Result<(&'a str, Number)> {
+    let (i, e) = parser(i)?;
+    let a = e.calc()?;
+    Ok((i, a))
+}
 
 #[derive(Debug, PartialEq)]
 pub enum Factor {
@@ -121,7 +187,7 @@ pub enum Expression {
 }
 
 impl Expression {
-    pub fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
+    fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
         trimer
             .and_b(
                 Term::new.and(
@@ -159,71 +225,37 @@ impl Expression {
     }
 }
 
-#[derive(Debug)]
-pub enum OPs {
-    Add(Number),
-    Sub(Number),
-    Mul(Number),
-    Div(Number),
-}
-
-impl OPs {
-    pub fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
-        char('+')
-            .and_b(trimer.and_b(num_ex))
-            .map(|n| Self::Add(n))
-            .or(char('-').and_b(trimer.and_b(num_ex)).map(|n| Self::Sub(n)))
-            .or(char('*').and_b(trimer.and_b(num_ex)).map(|n| Self::Mul(n)))
-            .or(char('/').and_b(trimer.and_b(num_ex)).map(|n| Self::Div(n)))(i)
-    }
-
-    fn calc(&self, x: Number) -> Number {
-        match self {
-            OPs::Add(y) => x + *y,
-            OPs::Sub(y) => x - *y,
-            OPs::Mul(y) => x * *y,
-            OPs::Div(y) => (x / *y).unwrap(),
-        }
-    }
-}
-
-pub fn parser<'a>(i: &'a str) -> Result<(&'a str, Number)> {
-    let (i, n) = trimer.and_b(num_ex)(i)?;
-    let p = trimer.and_b(OPs::new).map(|o| o.calc(n));
-    p(i)
-}
-
 #[cfg(test)]
 mod test {
     use super::*;
     #[test]
     fn test1() {
         let base = "1+1";
-        assert_eq!(parser(base), Ok(("", Number::Int(2))));
+        assert_eq!(parse_and_calc(base), Ok(("", Number::Int(2))));
     }
 
     #[test]
     fn test2() {
         let base = "2 + 4";
-        assert_eq!(parser(base), Ok(("", Number::Int(6))));
+        assert_eq!(parse_and_calc(base), Ok(("", Number::Int(6))));
     }
 
     #[test]
     fn test3() {
         let base = "aa1+1ffad";
-        assert!(matches!(parser(base), Err(_)));
+        assert!(matches!(parse_and_calc(base), Err(_)));
     }
 
     #[test]
     fn test4() {
         let base = "1 + a 1";
-        assert!(matches!(parser(base), Err(_)));
+        assert_eq!(parse_and_calc(base), Ok((" + a 1", Number::Int(1))))
     }
 
     #[test]
     fn test5() {
         let base = "1 + 1aaaaaa";
-        assert_eq!(parser(base), Ok(("aaaaaa", Number::Int(2))));
+        assert_eq!(parse_and_calc(base), Ok(("aaaaaa", Number::Int(2))));
     }
 
     #[test]
@@ -246,7 +278,52 @@ mod test {
     fn test2_1() {
         let base = "10 + 2";
         let (_, o) = Expression::new(base).unwrap();
+        println!("{:?}", o);
         let a = o.calc().unwrap();
         println!("{:?}", a);
+    }
+
+    #[rustfmt::skip]
+    #[test]
+    fn test2_2() {
+        let base = "2+3*4";
+        let (_, e) = parser(base).unwrap();
+        // 中身
+        let ans = 
+        Expression::Add(
+            Term::Exponent(
+                Exponent::Factor(
+                    Factor::Number(
+                        Number::Int(2)
+                    )
+                )
+            ), 
+            Box::new(Expression::Term(
+                Term::Mul(
+                    Exponent::Factor(
+                        Factor::Number(
+                            Number::Int(3)
+                        )
+                    ),
+                    Box::new(Term::Exponent(
+                        Exponent::Factor(
+                            Factor::Number(
+                                Number::Int(4)
+                            )
+                        )
+                    )) 
+                ))
+            )
+        );
+        assert_eq!(e, ans);
+        let n = e.calc().unwrap();
+        assert_eq!(n, Number::Int(14))
+    }
+
+    #[test]
+    fn test2_3() {
+        let base = "(1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9)*2";
+        let (_, n) = parse_and_calc(base).unwrap();
+        assert_eq!(n, Number::Int(90))
     }
 }
