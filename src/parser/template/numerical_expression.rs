@@ -121,7 +121,7 @@ pub enum Expression {
 }
 
 impl Expression {
-    fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
+    pub fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
         trimer
             .and_b(
                 Term::new.and(
@@ -142,7 +142,7 @@ impl Expression {
                 },
             })(i)
     }
-    fn calc(&self) -> Result<Number> {
+    pub fn calc(&self) -> Result<Number> {
         Ok(match self {
             Expression::Term(term) => term.calc()?,
             Expression::Add(expression, term) => {
