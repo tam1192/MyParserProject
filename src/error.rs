@@ -5,14 +5,20 @@ pub enum Error {
     ParseIntErrror(std::num::ParseIntError),
     ParseFloatError(std::num::ParseFloatError),
     ParseCharError,
+    Uninstalled,
+    NumberPowError,
+    NumberZeroDivError,
 }
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::ParseFloatError(parse_int_error) => write!(f, "{}", parse_int_error),
+            Self::ParseFloatError(parse_float_error) => write!(f, "{}", parse_float_error),
             Self::ParseIntErrror(parse_int_error) => write!(f, "{}", parse_int_error),
             Self::ParseCharError => write!(f, "ParseCharError"),
+            Self::Uninstalled => write!(f, "未実装ですまない..."),
+            Self::NumberPowError => write!(f, "NumberPowError"),
+            Self::NumberZeroDivError => write!(f, "NumberZeroDivError"),
         }
     }
 }
@@ -22,7 +28,7 @@ impl error::Error for Error {
         match self {
             Self::ParseFloatError(e) => Some(e),
             Self::ParseIntErrror(e) => Some(e),
-            Self::ParseCharError => None,
+            _ => None,
         }
     }
 }
@@ -37,6 +43,6 @@ impl From<std::num::ParseIntError> for Error {
     fn from(e: std::num::ParseIntError) -> Self {
         Error::ParseIntErrror(e)
     }
-}   
+}
 
 pub type Result<T> = std::result::Result<T, Error>;
