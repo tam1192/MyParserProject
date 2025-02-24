@@ -1,10 +1,24 @@
-use std::ops::{Add, Div, Mul, Sub};
+use std::{
+    fmt::Display,
+    ops::{Add, Div, Mul, Sub},
+};
+
+use crate::error::*;
 
 /// Number allows integers and floats to be managed as enums
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub enum Number {
     Int(i64),
     Float(f64),
+}
+
+impl Display for Number {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Number::Int(i) => write!(f, "{}", i),
+            Number::Float(i) => write!(f, "{}", i),
+        }
+    }
 }
 
 impl From<Number> for f64 {
@@ -83,12 +97,40 @@ impl Mul for Number {
 }
 
 impl Div for Number {
-    type Output = Number;
+    type Output = Result<Number>;
 
     fn div(self, rhs: Self) -> Self::Output {
         let x = f64::from(self);
         let y = f64::from(rhs);
-        Number::Float(x / y)
+        if y != 0.0 {
+            Ok(Number::Float(x / y))
+        } else {
+            Err(Error::NumberPowError)
+        }
+    }
+}
+
+impl Number {
+    pub fn pow(self, rhs: Self) -> Result<Number> {
+        match (self, rhs) {
+            (Number::Int(x), Number::Int(y)) => {
+                let x = x;
+                let y = y;
+                if y >= 0 {
+                    let x = x.pow(y as u32);
+                    return Ok(Number::Int(x));
+                }
+            }
+            _ => {
+                let x = f64::from(self);
+                let y = f64::from(rhs);
+                if y >= 0.0 {
+                    let x = x.powf(y);
+                    return Ok(Number::Float(x));
+                }
+            }
+        }
+        Err(Error::NumberPowError)
     }
 }
 
@@ -121,7 +163,7 @@ mod tests {
     fn test4() {
         let x = Number::Int(2);
         let y = Number::Int(2);
-        assert_eq!(x / y, Number::Float(1.0))
+        assert_eq!(x / y, Ok(Number::Float(1.0)))
     }
 
     #[test]

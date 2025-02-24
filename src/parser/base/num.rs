@@ -1,17 +1,6 @@
 use crate::error::Result;
 
-/// Parse a number from the input string
-///
-/// # Example
-///
-/// ``` rust
-/// use my_parser_project::parser::num;
-///
-/// let base = "123abc";
-/// let parser = num;
-/// assert_eq!(parser(base), Ok(("abc", 123)));
-/// ```
-pub fn num<'a>(i: &'a str) -> Result<(&'a str, i64), &'a str> {
+pub fn num<'a>(i: &'a str) -> Result<(&'a str, i64)> {
     let end = i.find(|c: char| !c.is_numeric()).unwrap_or(i.len());
     let num = i[..end].parse::<i64>()?;
     Ok((&i[end..], num))

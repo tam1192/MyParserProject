@@ -1,3 +1,5 @@
+mod char;
+
 /// Parse a character from the input string
 ///
 /// # Example
@@ -10,9 +12,9 @@
 /// let parser = char(pattern);
 /// assert_eq!(parser(base), Ok(("123", ())));
 /// ```
-mod char;
 pub use char::char;
 
+mod num;
 /// Parse a number from the input string
 ///
 /// # Example
@@ -23,9 +25,9 @@ pub use char::char;
 /// let base = "123abc";
 /// assert_eq!(num(base), Ok(("abc", 123)))
 /// ``````
-mod num;
 pub use num::num;
 
+mod num_ex;
 /// Support float for num
 /// If the output can be output as an integer, it is output as an integer.
 ///
@@ -42,8 +44,12 @@ pub use num::num;
 /// assert_eq!(num_ex(base), Ok(("abc", Number::Float(3.14))))
 /// ```
 ///
-mod num_ex;
 pub use num_ex::num_ex;
 
 mod trimer;
+/// space trim
 pub use trimer::trimer;
+
+mod none;
+/// None parser
+pub use none::none;
