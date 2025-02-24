@@ -229,14 +229,16 @@ mod test {
     #[test]
     fn test6() {
         let base = vec![
-            ("2.0 + 2.0add", ("add", Number::Float(2.0 + 2.0))),
-            ("2.0 - 2.0sub", ("sub", Number::Float(2.0 - 2.0))),
-            ("2.0 * 2.0mul", ("mul", Number::Float(2.0 * 2.0))),
-            ("2.0 / 2.0div", ("div", Number::Float(2.0 / 2.0))),
+            ("2.0 + 2.0add", ("add", Number::Float(4.0))),
+            ("2.0 - 2.0sub", ("sub", Number::Float(0.0))),
+            ("2.0 * 2.0mul", ("mul", Number::Float(4.0))),
+            ("2.0 / 2.0div", ("div", Number::Float(1.0))),
         ];
 
         for (base, ans) in base {
-            assert_eq!(parser(base), Ok(ans))
+            let (s, o) = Expression::new(base).unwrap();
+            let n = o.calc().unwrap();
+            assert_eq!((s, n), ans)
         }
     }
 
