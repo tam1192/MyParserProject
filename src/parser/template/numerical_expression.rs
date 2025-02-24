@@ -1,3 +1,5 @@
+use std::cmp::Ordering;
+
 use crate::{error::*, number::Number, parser::*};
 
 // 電卓メモ
@@ -16,7 +18,7 @@ pub enum Factor {
 impl Factor {
     fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
         trimer.and_b(
-            num_ex.map(|n| Self::Number(n)).or(char('(')
+            num_ex.map(|n| Self::Number(n)).or_else(char('(')
                 .and_b(trimer)
                 .and_b(Expression::new)
                 .and_a(trimer)
@@ -41,11 +43,15 @@ pub enum Exponent {
 
 impl Exponent {
     fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
-        trimer.and_b(
-            Factor::new.map(|f| Self::Factor(Box::new(f))).or(Self::new
-                .and(trimer.and_b(char('^')).and_b(trimer).and_b(Factor::new))
-                .map(|(e, f)| Self::Power(Box::new(e), f))),
-        )(i)
+        Factor::new.and(
+            trimer.and_b(Self::new)
+            .or_ab(none)
+        ).map(|(f, o)| {
+            match o {
+                OrResult::A(e) => Self::Power(f, Box::new(e)),
+                OrResult::B(_) => Self::Factor(f),
+            }
+        })(i)
     }
     fn calc(&self) -> Result<Number> {
         Ok(match self {
@@ -103,10 +109,10 @@ impl Expression {
         trimer.and_b(
             Term::new
                 .map(|t| Self::Term(Box::new(t)))
-                .or(Self::new
+                .or_else(Self::new
                     .and(trimer.and_b(char('+')).and_b(trimer).and_b(Term::new))
                     .map(|(t, e)| Self::Add(Box::new(t), e)))
-                .or(Self::new
+                .or_else(Self::new
                     .and(trimer.and_b(char('-')).and_b(trimer).and_b(Term::new))
                     .map(|(t, e)| Self::Sub(Box::new(t), e))),
         )(i)
@@ -141,13 +147,13 @@ impl OPs {
         char('+')
             .and_b(trimer.and_b(num_ex))
                 .map(|n| Self::Add(n))
-            .or(char('-')
+            .or_else(char('-')
                 .and_b(trimer.and_b(num_ex))
                 .map(|n| Self::Sub(n)))
-            .or(char('*')
+            .or_else(char('*')
                 .and_b(trimer.and_b(num_ex))
                 .map(|n| Self::Mul(n)))
-            .or(char('/')
+            .or_else(char('/')
                 .and_b(trimer.and_b(num_ex))
                 .map(|n| Self::Div(n)))(i)
     }
