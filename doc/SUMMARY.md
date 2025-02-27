@@ -1,4 +1,4 @@
 # Summary
 
 - [first](./first.md)
-- [Chapter 1](./chapter_1.md)
+- [コード規約](./code_rule.md)
