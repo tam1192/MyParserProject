@@ -1,5 +1,3 @@
-use core::num;
-
 use crate::{
     number::{self, Number},
     parser::{self, char, none, num_ex, trimer, AndParse, MapParse, OrParse, OrResult},
@@ -236,7 +234,7 @@ mod test {
     #[test]
     fn test1() {
         let base = "1+1";
-        // assert_eparse_and_calc(base)q!(, Ok(("", Number::Int(2))));
+        assert_eq!(parse_and_calc(base), Ok(("", Number::Int(2))));
     }
 
     #[test]
