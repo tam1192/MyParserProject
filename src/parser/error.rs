@@ -5,6 +5,7 @@ pub enum Error {
     ParseIntErrror(std::num::ParseIntError),
     ParseFloatError(std::num::ParseFloatError),
     ParseCharError,
+    CombinatorParseError(Box<Self>),
     Uninstalled,
     NumberError(crate::number::error::Error),
 }
@@ -16,7 +17,8 @@ impl fmt::Display for Error {
             Self::ParseIntErrror(parse_int_error) => write!(f, "{}", parse_int_error),
             Self::ParseCharError => write!(f, "ParseCharError"),
             Self::Uninstalled => write!(f, "未実装ですまない..."),
-            Self::NumberError(error) => write!(f, "{}", error),
+            Self::NumberError(e) => write!(f, "{}", e),
+            Self::CombinatorParseError(e) => write!(f, "{}", e),
         }
     }
 }
@@ -27,6 +29,7 @@ impl error::Error for Error {
             Self::ParseFloatError(e) => Some(e),
             Self::ParseIntErrror(e) => Some(e),
             Self::NumberError(e) => Some(e),
+            Self::CombinatorParseError(e) => Some(e),
             _ => None,
         }
     }
