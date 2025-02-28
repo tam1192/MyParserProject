@@ -6,8 +6,7 @@ pub enum Error {
     ParseFloatError(std::num::ParseFloatError),
     ParseCharError,
     Uninstalled,
-    NumberPowError,
-    NumberZeroDivError,
+    NumberError(crate::number::error::Error),
 }
 
 impl fmt::Display for Error {
@@ -17,8 +16,7 @@ impl fmt::Display for Error {
             Self::ParseIntErrror(parse_int_error) => write!(f, "{}", parse_int_error),
             Self::ParseCharError => write!(f, "ParseCharError"),
             Self::Uninstalled => write!(f, "未実装ですまない..."),
-            Self::NumberPowError => write!(f, "NumberPowError"),
-            Self::NumberZeroDivError => write!(f, "NumberZeroDivError"),
+            Self::NumberError(error) => write!(f, "{}", error),
         }
     }
 }
@@ -28,6 +26,7 @@ impl error::Error for Error {
         match self {
             Self::ParseFloatError(e) => Some(e),
             Self::ParseIntErrror(e) => Some(e),
+            Self::NumberError(e) => Some(e),
             _ => None,
         }
     }
@@ -42,6 +41,12 @@ impl From<std::num::ParseFloatError> for Error {
 impl From<std::num::ParseIntError> for Error {
     fn from(e: std::num::ParseIntError) -> Self {
         Error::ParseIntErrror(e)
+    }
+}
+
+impl From<crate::number::error::Error> for Error {
+    fn from(e: crate::number::error::Error) -> Self {
+        Error::NumberError(e)
     }
 }
 

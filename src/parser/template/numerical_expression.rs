@@ -72,7 +72,7 @@ pub fn parser<'a>(i: &'a str) -> Result<(&'a str, Expression), parser::error::Er
 /// let base = "10 + 2";
 /// assert_eq!(parse_and_calc(base).unwrap(), ("", Number::Int(12)))
 /// ```
-pub fn parse_and_calc<'a>(i: &'a str) -> Result<(&'a str, Number)> {
+pub fn parse_and_calc<'a>(i: &'a str) -> Result<(&'a str, Number), parser::error::Error> {
     let (i, e) = parser(i)?;
     let a = e.calc()?;
     Ok((i, a))
