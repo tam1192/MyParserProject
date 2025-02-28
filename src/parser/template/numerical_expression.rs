@@ -1,27 +1,30 @@
-use crate::{error::*, number::Number, parser::*};
+use crate::{
+    number::Number,
+    parser::{error::Result, *},
+};
 
 /// Extracting mathematical expressions from a string
-/// 
+///
 /// # example
 /// ## General usage
 /// ```rust
 /// use my_parser_project::parser::numerical_expression::*;
 /// use my_parser_project::number::Number;
-/// 
+///
 /// let base = "10 + 2";
 /// let (_, o) = parser(base).unwrap();
 /// let a = o.calc().unwrap();
 /// assert_eq!(a, Number::Int(12))
 /// ```
-/// 
+///
 /// ## About Data Structure
 /// ```rust
 /// use my_parser_project::parser::numerical_expression::*;
 /// use my_parser_project::number::Number;
-/// 
+///
 /// let base = "2+3*4";
 /// let (_, e) = parser(base).unwrap();
-/// let ans = 
+/// let ans =
 /// Expression::Add(
 ///     Term::Exponent(
 ///         Exponent::Factor(
@@ -29,7 +32,7 @@ use crate::{error::*, number::Number, parser::*};
 ///                 Number::Int(2)
 ///             )
 ///         )
-///     ), 
+///     ),
 ///     Box::new(Expression::Term(
 ///         Term::Mul(
 ///             Exponent::Factor(
@@ -43,7 +46,7 @@ use crate::{error::*, number::Number, parser::*};
 ///                         Number::Int(4)
 ///                     )
 ///                 )
-///             )) 
+///             ))
 ///         ))
 ///     )
 /// );
@@ -51,19 +54,19 @@ use crate::{error::*, number::Number, parser::*};
 /// let n = e.calc().unwrap();
 /// assert_eq!(n, Number::Int(14))
 /// ```
-/// 
+///
 
 pub fn parser<'a>(i: &'a str) -> Result<(&'a str, Expression)> {
     Expression::new(i)
 }
 
 /// Executes `parser()` and also performs calculations
-/// 
+///
 /// # example
 /// ```rust
 /// use my_parser_project::parser::numerical_expression::*;
 /// use my_parser_project::number::Number;
-/// 
+///
 /// let base = "10 + 2";
 /// assert_eq!(parse_and_calc(base).unwrap(), ("", Number::Int(12)))
 /// ```

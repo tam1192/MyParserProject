@@ -1,4 +1,4 @@
-use crate::error::Result;
+use crate::parser::error::Result;
 
 pub fn num<'a>(i: &'a str) -> Result<(&'a str, i64)> {
     let end = i.find(|c: char| !c.is_numeric()).unwrap_or(i.len());
@@ -9,7 +9,7 @@ pub fn num<'a>(i: &'a str) -> Result<(&'a str, i64)> {
 #[cfg(test)]
 mod tests {
     use super::num as parser;
-    use crate::error::Error;
+    use crate::parser::error::Error;
 
     #[test]
     fn test1() {

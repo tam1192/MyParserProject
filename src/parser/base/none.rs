@@ -1,4 +1,4 @@
-use crate::error::Result;
+use crate::parser::error::Result;
 
 pub fn none<'a>(i: &'a str) -> Result<(&'a str, ())> {
     Ok((i, ()))

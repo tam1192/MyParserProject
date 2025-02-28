@@ -3,7 +3,7 @@ use std::{
     ops::{Add, Div, Mul, Sub},
 };
 
-use crate::error::*;
+use crate::parser::error::*;
 
 /// Number allows integers and floats to be managed as enums
 #[derive(Debug, PartialEq, Clone, Copy)]
