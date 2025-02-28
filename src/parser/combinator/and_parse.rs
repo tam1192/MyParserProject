@@ -1,21 +1,21 @@
 use crate::parser::Parser;
 
-pub trait AndParse<I, A> {
-    fn and<B>(self, parser: impl Parser<I, B>) -> impl Parser<I, (A, B)>;
-    fn and_a<B>(self, parser: impl Parser<I, B>) -> impl Parser<I, A>;
-    fn and_b<B>(self, parser: impl Parser<I, B>) -> impl Parser<I, B>;
+pub trait AndParse<I, A, E> {
+    fn and<B>(self, parser: impl Parser<I, B, E>) -> impl Parser<I, (A, B), E>;
+    fn and_a<B>(self, parser: impl Parser<I, B, E>) -> impl Parser<I, A, E>;
+    fn and_b<B>(self, parser: impl Parser<I, B, E>) -> impl Parser<I, B, E>;
 }
 
-impl<I, A, T: Parser<I, A>> AndParse<I, A> for T {
-    fn and<B>(self, parser: impl Parser<I, B>) -> impl Parser<I, (A, B)> {
+impl<I, A, E, T: Parser<I, A, E>> AndParse<I, A, E> for T {
+    fn and<B>(self, parser: impl Parser<I, B, E>) -> impl Parser<I, (A, B), E> {
         move |i| self(i).and_then(|(i, o1)| parser(i).map(|(i, o2)| (i, (o1, o2))))
     }
 
-    fn and_a<B>(self, parser: impl Parser<I, B>) -> impl Parser<I, A> {
+    fn and_a<B>(self, parser: impl Parser<I, B, E>) -> impl Parser<I, A, E> {
         move |i| self(i).and_then(|(i, o1)| parser(i).map(|(i, _)| (i, o1)))
     }
 
-    fn and_b<B>(self, parser: impl Parser<I, B>) -> impl Parser<I, B> {
+    fn and_b<B>(self, parser: impl Parser<I, B, E>) -> impl Parser<I, B, E> {
         move |i| self(i).and_then(|(i, _)| parser(i).map(|(i, o2)| (i, o2)))
     }
 }

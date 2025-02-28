@@ -1,6 +1,6 @@
-use crate::parser::error::Result;
+use crate::parser::error::Error;
 
-pub fn num<'a>(i: &'a str) -> Result<(&'a str, i64)> {
+pub fn num<'a>(i: &'a str) -> Result<(&'a str, i64), Error> {
     let end = i.find(|c: char| !c.is_numeric()).unwrap_or(i.len());
     let num = i[..end].parse::<i64>()?;
     Ok((&i[end..], num))

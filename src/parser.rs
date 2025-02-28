@@ -1,8 +1,8 @@
-pub trait Parser<I, O>: ParserOnce<I, O> + Clone {}
-impl<F, I, O> Parser<I, O> for F where F: ParserOnce<I, O> + Clone {}
+pub trait Parser<I, O, E>: ParserOnce<I, O, E> + Clone {}
+impl<F, I, O, E> Parser<I, O, E> for F where F: ParserOnce<I, O, E> + Clone {}
 
-pub trait ParserOnce<I, O>: Fn(I) -> error::Result<(I, O)> {}
-impl<F, I, O> ParserOnce<I, O> for F where F: Fn(I) -> error::Result<(I, O)> {}
+pub trait ParserOnce<I, O, E>: Fn(I) -> Result<(I, O), E> {}
+impl<F, I, O, E> ParserOnce<I, O, E> for F where F: Fn(I) -> Result<(I, O), E> {}
 
 mod base;
 pub use base::*;

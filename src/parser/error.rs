@@ -52,5 +52,3 @@ impl From<crate::number::error::Error> for Error {
         Error::NumberError(e)
     }
 }
-
-pub type Result<T> = std::result::Result<T, Error>;
