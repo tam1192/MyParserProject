@@ -11,13 +11,14 @@
 /// # My Rust Base Repositoly
 /// It is implements the original rust development model that i advocate.
 /// the contents are roughly as follows
-/// - CI/CD
+/// - CI/CD  
 /// Do CI/CD(Continuous Integration/Continuous Delivery) that adopt github actions.
-/// - tests
+/// - tests  
 /// adopt test-driven development;
-/// - original error
-///
-///
+/// - original error  
+/// Define your own error type that implements error trait.  
+/// - Adopt general branching model
+/// Adopt a general branching model during development
 pub mod error;
 pub mod number;
 pub mod parser;
