@@ -7,13 +7,20 @@ pub trait AndParse<I, A> {
 }
 
 impl<I, A, T: Parser<I, A>> AndParse<I, A> for T {
+    /// concatenate the parser contained in the argument
     fn and<B>(self, parser: impl Parser<I, B>) -> impl Parser<I, (A, B)> {
         move |i| match self(i) {
             Ok((i, o1)) => match parser(i) {
                 Ok((i, o2)) => Ok((i, (o1, o2))),
-                Err(e) => Err(Error::CombinatorParseError(Box::new(e), None)),
+                Err(e) => Err(Error::AndParseError {
+                    source: Box::new(e),
+                    is_b: true,
+                }),
             },
-            Err(e) => Err(Error::CombinatorParseError(Box::new(e), None)),
+            Err(e) => Err(Error::AndParseError {
+                source: Box::new(e),
+                is_b: false,
+            }),
         }
     }
 
@@ -21,9 +28,15 @@ impl<I, A, T: Parser<I, A>> AndParse<I, A> for T {
         move |i| match self(i) {
             Ok((i, o1)) => match parser(i) {
                 Ok((i, _)) => Ok((i, o1)),
-                Err(e) => Err(Error::CombinatorParseError(Box::new(e), None)),
+                Err(e) => Err(Error::AndParseError {
+                    source: Box::new(e),
+                    is_b: true,
+                }),
             },
-            Err(e) => Err(Error::CombinatorParseError(Box::new(e), None)),
+            Err(e) => Err(Error::AndParseError {
+                source: Box::new(e),
+                is_b: false,
+            }),
         }
     }
 
@@ -31,9 +44,15 @@ impl<I, A, T: Parser<I, A>> AndParse<I, A> for T {
         move |i| match self(i) {
             Ok((i, _)) => match parser(i) {
                 Ok((i, o2)) => Ok((i, o2)),
-                Err(e) => Err(Error::CombinatorParseError(Box::new(e), None)),
+                Err(e) => Err(Error::AndParseError {
+                    source: Box::new(e),
+                    is_b: true,
+                }),
             },
-            Err(e) => Err(Error::CombinatorParseError(Box::new(e), None)),
+            Err(e) => Err(Error::AndParseError {
+                source: Box::new(e),
+                is_b: false,
+            }),
         }
     }
 }

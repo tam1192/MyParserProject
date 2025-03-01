@@ -8,8 +8,10 @@ pub enum Error {
     // 文字列エラー
     ParseCharError,
     // コンビネーターエラー
-    // andでは1以上、orでは2つ子を持つ
-    CombinatorParseError(Box<Self>, Option<Box<Self>>),
+    // andでは子を一つ、
+    AndParseError { source: Box<Self>, is_b: bool },
+    // orでは2つ子を持つ
+    OrParseError(Box<Self>, Option<Box<Self>>),
     // Numberのエラーを持つエラー
     NumberError(crate::number::Error),
 }
@@ -21,8 +23,15 @@ impl fmt::Display for Error {
             Self::ParseIntError(parse_int_error) => write!(f, "{}", parse_int_error),
             Self::ParseCharError => write!(f, "ParseCharError"),
             Self::NumberError(e) => write!(f, "{}", e),
-            Self::CombinatorParseError(a, b) => {
-                let s = format!("CombinatorParseError:\nA:\n{}", a);
+            Self::AndParseError { source, is_b } => {
+                if *is_b {
+                    write!(f, "AndParseError:\nB:\n{}", source)
+                } else {
+                    write!(f, "AndParseError:\nA:\n{}", source)
+                }
+            }
+            Self::OrParseError(a, b) => {
+                let s = format!("OrParseError:\nA:\n{}", a);
                 if let Some(b) = b {
                     write!(f, "{}\nB:\n{}", s, b)
                 } else {
@@ -39,10 +48,11 @@ impl error::Error for Error {
             Self::ParseFloatError(e) => Some(e),
             Self::ParseIntError(e) => Some(e),
             Self::NumberError(e) => Some(e),
-            Self::CombinatorParseError(a, None) => Some(a),
+            Self::AndParseError { source, is_b: _ } => Some(source),
+            Self::OrParseError(a, None) => Some(a),
             // 二つある場合は取り出せない
             // division_combinator_parse_error関数でエラーを分裂させる
-            Self::CombinatorParseError(_, Some(_)) => None,
+            Self::OrParseError(_, Some(_)) => None,
             _ => None,
         }
     }
@@ -68,11 +78,8 @@ impl From<crate::number::Error> for Error {
 
 impl Error {
     pub fn division_combinator_parse_error(self) -> Option<(Self, Self)> {
-        if let Self::CombinatorParseError(a, Some(b)) = self {
-            Some((
-                Self::CombinatorParseError(a, None),
-                Self::CombinatorParseError(b, None),
-            ))
+        if let Self::OrParseError(a, Some(b)) = self {
+            Some((Self::OrParseError(a, None), Self::OrParseError(b, None)))
         } else {
             None
         }

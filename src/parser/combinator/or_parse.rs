@@ -17,10 +17,7 @@ impl<I: Copy, O, T: Parser<I, O>> OrParse<I, O> for T {
             Ok(o) => Ok(o),
             Err(e1) => match parser(i) {
                 Ok(o) => Ok(o),
-                Err(e2) => Err(Error::CombinatorParseError(
-                    Box::new(e1),
-                    Some(Box::new(e2)),
-                )),
+                Err(e2) => Err(Error::OrParseError(Box::new(e1), Some(Box::new(e2)))),
             },
         }
     }
@@ -30,10 +27,7 @@ impl<I: Copy, O, T: Parser<I, O>> OrParse<I, O> for T {
             Ok((i, o)) => Ok((i, OrResult::A(o))),
             Err(e1) => match parser(i) {
                 Ok((i, o)) => Ok((i, OrResult::B(o))),
-                Err(e2) => Err(Error::CombinatorParseError(
-                    Box::new(e1),
-                    Some(Box::new(e2)),
-                )),
+                Err(e2) => Err(Error::OrParseError(Box::new(e1), Some(Box::new(e2)))),
             },
         }
     }
