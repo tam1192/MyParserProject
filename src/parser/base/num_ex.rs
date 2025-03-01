@@ -1,7 +1,7 @@
 use crate::number::Number;
-use crate::parser::error::Error;
+use crate::parser::error::Result;
 
-pub fn num_ex<'a>(i: &'a str) -> Result<(&'a str, Number), Error> {
+pub fn num_ex<'a>(i: &'a str) -> Result<(&'a str, Number)> {
     // 整数部を確認
     let integer_end = i.find(|c: char| !c.is_numeric()).unwrap_or(i.len());
     if integer_end != i.len() {

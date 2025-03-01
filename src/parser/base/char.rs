@@ -1,6 +1,6 @@
 use crate::parser::{error::Error, Parser};
 
-pub fn char<'a>(c: char) -> impl Parser<&'a str, (), Error> {
+pub fn char<'a>(c: char) -> impl Parser<&'a str, ()> {
     move |i: &'a str| {
         if i.starts_with(c) {
             Ok((&i[1..], ()))

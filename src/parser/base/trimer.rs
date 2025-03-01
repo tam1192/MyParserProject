@@ -1,4 +1,6 @@
-pub fn trimer<'a>(input: &'a str) -> Result<(&'a str, ()), ()> {
+use crate::parser::error::Result;
+
+pub fn trimer<'a>(input: &'a str) -> Result<(&'a str, ())> {
     Ok((input.trim_start(), ()))
 }
 
