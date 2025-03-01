@@ -1,6 +1,10 @@
 use crate::{
     number::{self, Number},
-    parser::{self, char, none, num_ex, trimer, AndParse, MapParse, OrParse, OrResult},
+    parser::{
+        self,
+        base::{char, none, num_ex, trimer},
+        combinator::{AndParse, MapParse, OrParse, OrResult},
+    },
 };
 
 /// Extracting mathematical expressions from a string

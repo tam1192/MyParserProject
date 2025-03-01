@@ -8,7 +8,7 @@ mod char;
 /// # Example
 ///
 /// ``` rust
-/// use my_parser_project::parser::char;
+/// use my_parser_project::parser::base::char;
 ///
 /// let base = "/123";
 /// let pattern = '/';
@@ -29,7 +29,7 @@ mod num;
 /// # Example
 ///
 /// ``` rust
-/// use my_parser_project::parser::num;
+/// use my_parser_project::parser::base::num;
 ///
 /// let base = "123abc";
 /// assert_eq!(num(base), Ok(("abc", 123)))
@@ -49,7 +49,7 @@ mod num_ex;
 /// # Example
 ///
 /// ``` rust
-/// use my_parser_project::parser::num_ex;
+/// use my_parser_project::parser::base::num_ex;
 /// use my_parser_project::number::Number;
 ///
 /// let base = "3.14abc";

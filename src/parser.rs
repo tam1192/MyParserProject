@@ -4,11 +4,9 @@ impl<F, I, O> Parser<I, O> for F where F: ParserOnce<I, O> + Clone {}
 pub trait ParserOnce<I, O>: Fn(I) -> error::Result<(I, O)> {}
 impl<F, I, O> ParserOnce<I, O> for F where F: Fn(I) -> error::Result<(I, O)> {}
 
-mod base;
-pub use base::*;
+pub mod base;
 
-mod combinator;
-pub use combinator::*;
+pub mod combinator;
 
 mod template;
 pub use template::*;

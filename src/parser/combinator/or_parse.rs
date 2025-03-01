@@ -42,7 +42,10 @@ impl<I: Copy, O, T: Parser<I, O>> OrParse<I, O> for T {
 #[cfg(test)]
 mod tests {
     use super::OrParse;
-    use crate::parser::{char, num, AndParse, MapParse};
+    use crate::parser::{
+        base::{char, num},
+        combinator::{AndParse, MapParse},
+    };
 
     #[test]
     fn test1() {

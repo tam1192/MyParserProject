@@ -41,7 +41,7 @@ impl<I, A, T: Parser<I, A>> AndParse<I, A> for T {
 #[cfg(test)]
 mod tests {
     use super::AndParse;
-    use crate::parser::{char, num, trimer};
+    use crate::parser::base::{char, num, trimer};
 
     #[test]
     fn test2() {
