@@ -2,10 +2,10 @@ use std::{error, fmt};
 
 /// A list specifying general categories of Number type error.
 /// This list is intended to grow over time and it is not recommended to exhaustively match against it.
-/// It is used with the [] type.
-/// [my_parser_project::number::error::Number]
+/// It is used with the [Error] type.
 #[derive(Debug, PartialEq)]
 pub enum ErrorKind {
+    /// division-by-zero error
     ZeroDiv,
 }
 
@@ -17,6 +17,8 @@ impl fmt::Display for ErrorKind {
     }
 }
 
+/// The error type of [super::Number] type.
+/// Handles exceptions that occur in the calculation process.
 #[derive(Debug, PartialEq)]
 pub struct Error {
     kind: ErrorKind,
