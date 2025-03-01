@@ -1,5 +1,8 @@
 use std::{error, fmt};
 
+// Errorを構造体(struct)と列挙型(enum)に分けるのは、Enumが保有するデータを隠蔽できないため
+// 参考: https://qiita.com/MasashiSUZUKI/items/b09881839c4e02b2f485
+
 /// A list specifying general categories of Number type error.
 /// This list is intended to grow over time and it is not recommended to exhaustively match against it.
 /// It is used with the [Error] type.
@@ -32,7 +35,8 @@ impl fmt::Display for Error {
 
 impl error::Error for Error {
     fn source(&self) -> Option<&(dyn error::Error + 'static)> {
-        match self {
+        // sourceはErrorKindに含まれる
+        match self.kind {
             _ => None,
         }
     }
