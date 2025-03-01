@@ -55,6 +55,8 @@ impl Add for Number {
     type Output = Number;
 
     fn add(self, rhs: Self) -> Self::Output {
+        // 型を合わせて足し算を行う
+        // Floatを優先にする
         match (self, rhs) {
             (Number::Int(x), Number::Int(y)) => Number::Int(x + y),
             _ => {
@@ -70,6 +72,8 @@ impl Sub for Number {
     type Output = Number;
 
     fn sub(self, rhs: Self) -> Self::Output {
+        // 型を合わせて引き算を行う
+        // Floatを優先にする
         match (self, rhs) {
             (Number::Int(x), Number::Int(y)) => Number::Int(x - y),
             _ => {
@@ -85,6 +89,8 @@ impl Mul for Number {
     type Output = Number;
 
     fn mul(self, rhs: Self) -> Self::Output {
+        // 型を合わせて掛け算を行う
+        // Floatを優先にする
         match (self, rhs) {
             (Number::Int(x), Number::Int(y)) => Number::Int(x * y),
             _ => {
@@ -100,6 +106,8 @@ impl Div for Number {
     type Output = Result<Number, Error>;
 
     fn div(self, rhs: Self) -> Self::Output {
+        // 計算結果が出るまで整数か小数か判断が難しいので
+        // 全て小数で返却する
         let x = f64::from(self);
         let y = f64::from(rhs);
         if y != 0.0 {
@@ -112,8 +120,12 @@ impl Div for Number {
 
 impl Number {
     pub fn pow(self, rhs: Self) -> Number {
+        // 計算結果が出るまで整数か小数か判断が難しいので
+        // 全て小数で返却する
         let x = f64::from(self);
         let y = f64::from(rhs);
+        // powfが一番早い
+        // 参照: https://qiita.com/tatsuya6502/items/d50e4b131130aa5b5ab6
         let x = x.powf(y);
         Number::Float(x)
     }
