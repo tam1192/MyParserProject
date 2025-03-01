@@ -29,7 +29,6 @@ impl fmt::Display for Error {
                     write!(f, "{}", s)
                 }
             }
-            _ => write!(f, ""),
         }
     }
 }
@@ -68,7 +67,7 @@ impl From<crate::number::error::Error> for Error {
 }
 
 impl Error {
-    fn division_combinator_parse_error(self) -> Option<(Self, Self)> {
+    pub fn division_combinator_parse_error(self) -> Option<(Self, Self)> {
         if let Self::CombinatorParseError(a, Some(b)) = self {
             Some((
                 Self::CombinatorParseError(a, None),
