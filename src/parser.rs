@@ -13,4 +13,6 @@ pub use combinator::*;
 mod template;
 pub use template::*;
 
-pub mod error;
+mod error;
+pub use error::Error;
+pub use error::Result;

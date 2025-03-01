@@ -56,7 +56,7 @@ use crate::{
 /// ```
 ///
 
-pub fn parser<'a>(i: &'a str) -> Result<(&'a str, Expression), parser::error::Error> {
+pub fn parser<'a>(i: &'a str) -> Result<(&'a str, Expression), parser::Error> {
     Expression::new(i)
 }
 
@@ -70,7 +70,7 @@ pub fn parser<'a>(i: &'a str) -> Result<(&'a str, Expression), parser::error::Er
 /// let base = "10 + 2";
 /// assert_eq!(parse_and_calc(base).unwrap(), ("", Number::Int(12)))
 /// ```
-pub fn parse_and_calc<'a>(i: &'a str) -> Result<(&'a str, Number), parser::error::Error> {
+pub fn parse_and_calc<'a>(i: &'a str) -> Result<(&'a str, Number), parser::Error> {
     let (i, e) = parser(i)?;
     let a = e.calc()?;
     Ok((i, a))
@@ -83,7 +83,7 @@ pub enum Factor {
 }
 
 impl Factor {
-    fn new<'a>(i: &'a str) -> Result<(&'a str, Self), parser::error::Error> {
+    fn new<'a>(i: &'a str) -> Result<(&'a str, Self), parser::Error> {
         trimer.and_b(
             num_ex.map(|n| Self::Number(n)).or(char('(')
                 .and_b(trimer)
@@ -109,7 +109,7 @@ pub enum Exponent {
 }
 
 impl Exponent {
-    fn new<'a>(i: &'a str) -> Result<(&'a str, Self), parser::error::Error> {
+    fn new<'a>(i: &'a str) -> Result<(&'a str, Self), parser::Error> {
         Factor::new
             .and(
                 trimer
@@ -143,7 +143,7 @@ pub enum Term {
 }
 
 impl Term {
-    fn new<'a>(i: &'a str) -> Result<(&'a str, Self), parser::error::Error> {
+    fn new<'a>(i: &'a str) -> Result<(&'a str, Self), parser::Error> {
         trimer
             .and_b(
                 Exponent::new.and(
@@ -190,7 +190,7 @@ pub enum Expression {
 }
 
 impl Expression {
-    fn new<'a>(i: &'a str) -> Result<(&'a str, Self), parser::error::Error> {
+    fn new<'a>(i: &'a str) -> Result<(&'a str, Self), parser::Error> {
         trimer
             .and_b(
                 Term::new.and(
