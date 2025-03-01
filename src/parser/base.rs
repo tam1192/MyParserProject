@@ -1,6 +1,7 @@
 mod char;
 
-/// Parse a character from the input string
+/// Parse a character from the input string.  
+/// if not found, return error type [super::error::Error::ParseCharError].
 ///
 /// # Example
 ///
