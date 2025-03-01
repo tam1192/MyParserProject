@@ -1,24 +1,40 @@
-use std::error;
-
 use crate::parser::{error::Error, Parser};
 
-pub trait AndParse<I, A, e> {
-    fn and<B>(self, parser: impl Parser<I, B, E>) -> impl Parser<I, (A, B), Error>;
-    fn and_a<B>(self, parser: impl Parser<I, B, E>) -> impl Parser<I, A, Error>;
-    fn and_b<B>(self, parser: impl Parser<I, B, E>) -> impl Parser<I, B, Error>;
+pub trait AndParse<I, A, E> {
+    fn and<B>(self, parser: impl Parser<I, B, E>) -> impl Parser<I, (A, B), E>;
+    fn and_a<B>(self, parser: impl Parser<I, B, E>) -> impl Parser<I, A, E>;
+    fn and_b<B>(self, parser: impl Parser<I, B, E>) -> impl Parser<I, B, E>;
 }
 
-impl<I, A, E, T: Parser<I, A, E>> AndParse<I, A, E> for T {
-    fn and<B>(self, parser: impl Parser<I, B, E>) -> impl Parser<I, (A, B), Error> {
-        move |i| self(i).and_then(|(i, o1)| parser(i).map(|(i, o2)| (i, (o1, o2))))
+impl<I, A, T: Parser<I, A, Error>> AndParse<I, A, Error> for T {
+    fn and<B>(self, parser: impl Parser<I, B, Error>) -> impl Parser<I, (A, B), Error> {
+        move |i| match self(i) {
+            Ok((i, o1)) => match parser(i) {
+                Ok((i, o2)) => Ok((i, (o1, o2))),
+                Err(e) => Err(Error::CombinatorParseError(Box::new(e), None)),
+            },
+            Err(e) => Err(Error::CombinatorParseError(Box::new(e), None)),
+        }
     }
 
-    fn and_a<B>(self, parser: impl Parser<I, B, E>) -> impl Parser<I, A, Error> {
-        move |i| self(i).and_then(|(i, o1)| parser(i).map(|(i, _)| (i, o1)))
+    fn and_a<B>(self, parser: impl Parser<I, B, Error>) -> impl Parser<I, A, Error> {
+        move |i| match self(i) {
+            Ok((i, o1)) => match parser(i) {
+                Ok((i, _)) => Ok((i, o1)),
+                Err(e) => Err(Error::CombinatorParseError(Box::new(e), None)),
+            },
+            Err(e) => Err(Error::CombinatorParseError(Box::new(e), None)),
+        }
     }
 
-    fn and_b<B>(self, parser: impl Parser<I, B, E>) -> impl Parser<I, B, Error> {
-        move |i| self(i).and_then(|(i, _)| parser(i).map(|(i, o2)| (i, o2)))
+    fn and_b<B>(self, parser: impl Parser<I, B, Error>) -> impl Parser<I, B, Error> {
+        move |i| match self(i) {
+            Ok((i, _)) => match parser(i) {
+                Ok((i, o2)) => Ok((i, o2)),
+                Err(e) => Err(Error::CombinatorParseError(Box::new(e), None)),
+            },
+            Err(e) => Err(Error::CombinatorParseError(Box::new(e), None)),
+        }
     }
 }
 
