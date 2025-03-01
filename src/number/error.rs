@@ -2,22 +2,20 @@ use std::{error, fmt};
 
 #[derive(Debug, PartialEq)]
 pub enum ErrorKind {
-    Pow,
     ZeroDiv,
-}
-
-#[derive(Debug, PartialEq)]
-pub struct Error {
-    kind: ErrorKind,
 }
 
 impl fmt::Display for ErrorKind {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::Pow => write!(f, "NumberPowError"),
             Self::ZeroDiv => write!(f, "NumberZeroDivError"),
         }
     }
+}
+
+#[derive(Debug, PartialEq)]
+pub struct Error {
+    kind: ErrorKind,
 }
 
 impl fmt::Display for Error {

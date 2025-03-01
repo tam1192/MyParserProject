@@ -48,3 +48,10 @@ fn test7() {
     let y = Number::Float(3.0);
     assert_eq!(x * y, Number::Float(6.0))
 }
+
+#[test]
+fn test8() {
+    let x = Number::Int(2);
+    let y = Number::Int(-1);
+    assert_eq!(x.pow(y), Number::Float(0.5))
+}

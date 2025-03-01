@@ -129,7 +129,7 @@ impl Exponent {
             Exponent::Power(exponent, factor) => {
                 let x = exponent.calc()?;
                 let y = factor.calc()?;
-                x.pow(y)?
+                x.pow(y)
             }
         })
     }

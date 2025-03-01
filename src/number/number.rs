@@ -111,25 +111,10 @@ impl Div for Number {
 }
 
 impl Number {
-    pub fn pow(self, rhs: Self) -> Result<Number, Error> {
-        match (self, rhs) {
-            (Number::Int(x), Number::Int(y)) => {
-                let x = x;
-                let y = y;
-                if y >= 0 {
-                    let x = x.pow(y as u32);
-                    return Ok(Number::Int(x));
-                }
-            }
-            _ => {
-                let x = f64::from(self);
-                let y = f64::from(rhs);
-                if y >= 0.0 {
-                    let x = x.powf(y);
-                    return Ok(Number::Float(x));
-                }
-            }
-        }
-        Err(Error::from(ErrorKind::Pow))
+    pub fn pow(self, rhs: Self) -> Number {
+        let x = f64::from(self);
+        let y = f64::from(rhs);
+        let x = x.powf(y);
+        Number::Float(x)
     }
 }
