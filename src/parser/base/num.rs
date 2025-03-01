@@ -20,7 +20,7 @@ mod tests {
     #[test]
     fn test2() {
         let base = "abc123";
-        assert!(matches!(parser(base), Err(Error::ParseIntErrror(_))));
+        assert!(matches!(parser(base), Err(Error::ParseIntError(_))));
     }
 
     #[test]

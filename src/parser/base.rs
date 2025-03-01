@@ -1,7 +1,9 @@
 mod char;
 
 /// Parse a character from the input string.  
-/// if not found, return error type [super::error::Error::ParseCharError].
+///
+/// # Error
+/// if not found, return error type [super::Error::ParseCharError].
 ///
 /// # Example
 ///
@@ -17,6 +19,11 @@ pub use char::char;
 
 mod num;
 /// Parse a number from the input string
+/// The numeric (0-9) characters are obtained from the beginning until they are broken off,  
+/// Then [`str::parse::<i64>`()] converts it.
+///
+/// # Error
+/// [`str::parse::<i64>`()] fails [super::Error::ParseIntError] type error returns
 ///
 /// # Example
 ///

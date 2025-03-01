@@ -3,7 +3,7 @@ use std::{error, fmt};
 #[derive(Debug, PartialEq)]
 pub enum Error {
     // 数値パーサー用エラー
-    ParseIntErrror(std::num::ParseIntError),
+    ParseIntError(std::num::ParseIntError),
     ParseFloatError(std::num::ParseFloatError),
     // 文字列エラー
     ParseCharError,
@@ -18,7 +18,7 @@ impl fmt::Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::ParseFloatError(parse_float_error) => write!(f, "{}", parse_float_error),
-            Self::ParseIntErrror(parse_int_error) => write!(f, "{}", parse_int_error),
+            Self::ParseIntError(parse_int_error) => write!(f, "{}", parse_int_error),
             Self::ParseCharError => write!(f, "ParseCharError"),
             Self::NumberError(e) => write!(f, "{}", e),
             Self::CombinatorParseError(a, b) => {
@@ -37,7 +37,7 @@ impl error::Error for Error {
     fn source(&self) -> Option<&(dyn error::Error + 'static)> {
         match self {
             Self::ParseFloatError(e) => Some(e),
-            Self::ParseIntErrror(e) => Some(e),
+            Self::ParseIntError(e) => Some(e),
             Self::NumberError(e) => Some(e),
             Self::CombinatorParseError(a, None) => Some(a),
             // 二つある場合は取り出せない
@@ -56,7 +56,7 @@ impl From<std::num::ParseFloatError> for Error {
 
 impl From<std::num::ParseIntError> for Error {
     fn from(e: std::num::ParseIntError) -> Self {
-        Error::ParseIntErrror(e)
+        Error::ParseIntError(e)
     }
 }
 
