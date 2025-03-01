@@ -19,6 +19,7 @@ pub use char::char;
 
 mod num;
 /// Parse a number from the input string
+///
 /// The numeric (0-9) characters are obtained from the beginning until they are broken off,  
 /// Then [`str::parse::<i64>`()] converts it.
 ///
@@ -37,10 +38,13 @@ pub use num::num;
 
 mod num_ex;
 /// Support float for num
-/// If the output can be output as an integer, it is output as an integer.
 ///
 /// # Should I use num or num_ex?
 /// If decimal point is not needed, num is recommended
+///
+/// # Error
+/// - [`str::parse::<i64>`()] fails [super::Error::ParseIntError] type error returns
+/// - [`str::parse::<f64>`()] fails [super::Error::ParseFloatError] type error returns
 ///
 /// # Example
 ///
@@ -56,8 +60,14 @@ pub use num_ex::num_ex;
 
 mod trimer;
 /// space trim
+///
+/// # Error
+/// No errors exist at all.
 pub use trimer::trimer;
 
 mod none;
 /// None parser
+///
+/// # Error
+/// No errors exist at all.
 pub use none::none;
