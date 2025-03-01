@@ -1,4 +1,4 @@
-use crate::parser::Parser;
+use crate::parser::{error::Error, Parser};
 
 #[derive(Debug, PartialEq)]
 pub enum OrResult<A, B> {
@@ -13,19 +13,28 @@ pub trait OrParse<I, O> {
 
 impl<I: Copy, O, T: Parser<I, O>> OrParse<I, O> for T {
     fn or(self, parser: impl Parser<I, O>) -> impl Parser<I, O> {
-        move |i| self(i).or_else(|_| parser(i))
+        move |i| match self(i) {
+            Ok(o) => Ok(o),
+            Err(e1) => match parser(i) {
+                Ok(o) => Ok(o),
+                Err(e2) => Err(Error::CombinatorParseError(
+                    Box::new(e1),
+                    Some(Box::new(e2)),
+                )),
+            },
+        }
     }
 
     fn or_ab<O2>(self, parser: impl Parser<I, O2>) -> impl Parser<I, OrResult<O, O2>> {
-        move |i| {
-            let x = match self(i) {
-                Ok((i, o)) => (i, OrResult::A(o)),
-                Err(_) => {
-                    let (i, o2) = parser(i)?;
-                    (i, OrResult::B(o2))
-                }
-            };
-            Ok(x)
+        move |i| match self(i) {
+            Ok((i, o)) => Ok((i, OrResult::A(o))),
+            Err(e1) => match parser(i) {
+                Ok((i, o)) => Ok((i, OrResult::B(o))),
+                Err(e2) => Err(Error::CombinatorParseError(
+                    Box::new(e1),
+                    Some(Box::new(e2)),
+                )),
+            },
         }
     }
 }
