@@ -94,7 +94,7 @@ impl Factor {
         )(i)
     }
 
-    fn calc(&self) -> Result<Number, number::error::Error> {
+    fn calc(&self) -> Result<Number, number::Error> {
         Ok(match self {
             Factor::Number(number) => number.clone(),
             Factor::Scope(expression) => expression.calc()?,
@@ -123,7 +123,7 @@ impl Exponent {
                 OrResult::B(_) => Self::Factor(f),
             })(i)
     }
-    fn calc(&self) -> Result<Number, number::error::Error> {
+    fn calc(&self) -> Result<Number, number::Error> {
         Ok(match self {
             Exponent::Factor(factor) => factor.calc()?,
             Exponent::Power(exponent, factor) => {
@@ -165,7 +165,7 @@ impl Term {
             })(i)
     }
 
-    fn calc(&self) -> Result<Number, number::error::Error> {
+    fn calc(&self) -> Result<Number, number::Error> {
         Ok(match self {
             Term::Exponent(exponent) => exponent.calc()?,
             Term::Mul(term, exponent) => {
@@ -211,7 +211,7 @@ impl Expression {
                 },
             })(i)
     }
-    pub fn calc(&self) -> Result<Number, number::error::Error> {
+    pub fn calc(&self) -> Result<Number, number::Error> {
         Ok(match self {
             Expression::Term(term) => term.calc()?,
             Expression::Add(expression, term) => {

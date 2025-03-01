@@ -1,5 +1,9 @@
 use std::{error, fmt};
 
+/// A list specifying general categories of Number type error.
+/// This list is intended to grow over time and it is not recommended to exhaustively match against it.
+/// It is used with the [] type.
+/// [my_parser_project::number::error::Number]
 #[derive(Debug, PartialEq)]
 pub enum ErrorKind {
     ZeroDiv,

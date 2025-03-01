@@ -11,7 +11,7 @@ pub enum Error {
     // andでは1以上、orでは2つ子を持つ
     CombinatorParseError(Box<Self>, Option<Box<Self>>),
     // Numberのエラーを持つエラー
-    NumberError(crate::number::error::Error),
+    NumberError(crate::number::Error),
 }
 
 impl fmt::Display for Error {
@@ -60,8 +60,8 @@ impl From<std::num::ParseIntError> for Error {
     }
 }
 
-impl From<crate::number::error::Error> for Error {
-    fn from(e: crate::number::error::Error) -> Self {
+impl From<crate::number::Error> for Error {
+    fn from(e: crate::number::Error) -> Self {
         Error::NumberError(e)
     }
 }

@@ -1,7 +1,8 @@
 mod number;
 pub use number::Number;
 
-pub mod error;
+mod error;
+pub use error::{Error, ErrorKind};
 
 #[cfg(test)]
 mod tests;
