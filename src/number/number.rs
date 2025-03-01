@@ -3,7 +3,7 @@ use std::{
     ops::{Add, Div, Mul, Sub},
 };
 
-use super::error::Error;
+use super::error::{Error, ErrorKind};
 
 /// Number allows integers and floats to be managed as enums
 #[derive(Debug, PartialEq, Clone, Copy)]
@@ -105,7 +105,7 @@ impl Div for Number {
         if y != 0.0 {
             Ok(Number::Float(x / y))
         } else {
-            Err(Error::NumberPowError)
+            Err(Error::from(ErrorKind::ZeroDiv))
         }
     }
 }
@@ -130,6 +130,6 @@ impl Number {
                 }
             }
         }
-        Err(Error::NumberPowError)
+        Err(Error::from(ErrorKind::Pow))
     }
 }
