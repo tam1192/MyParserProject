@@ -7,7 +7,6 @@ pub trait AndParse<I, A> {
 }
 
 impl<I, A, T: Parser<I, A>> AndParse<I, A> for T {
-    /// concatenate the parser contained in the argument
     fn and<B>(self, parser: impl Parser<I, B>) -> impl Parser<I, (A, B)> {
         move |i| match self(i) {
             Ok((i, o1)) => match parser(i) {

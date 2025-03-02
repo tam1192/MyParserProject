@@ -1,13 +1,19 @@
 mod and_parse;
 
-/// Combine parser
-/// It is implemented in a parser object.
-/// The parsers put in the method arguments are connected.
+/// # Combine parser
 ///
-/// # Error
-/// Error::CombinatorParseError(Box::new(e), None)
+/// It is implemented in a parser object.  
+/// The parsers put in the method arguments are connected.  
 ///
-/// # Example
+/// ## What are A and B?
+/// - The object side (self) is A
+/// - The side included in the method argument is B
+///
+/// ## Error
+/// [super::Error::AndParseError]  
+/// If is_b is true, error occurred on B side
+///
+/// ## Example
 /// ```rust
 /// use my_parser_project::parser::{base::{num, char}, combinator::AndParse};
 ///
@@ -19,6 +25,16 @@ pub use and_parse::AndParse;
 
 mod or_parse;
 /// Choose a parser
+///
+/// ## What are A and B?
+/// - The object side (self) is A
+/// - The side included in the method argument is B
+///
+/// ## Error
+/// [super::Error::OrParseError]  
+/// The [std::error::Error::source()] method cannot be used because two sources are included.  
+/// It is necessary to use the [super::Error::division_combinator_parse_error] method to split them.
+///
 pub use or_parse::{OrParse, OrResult};
 
 mod map_parse;
