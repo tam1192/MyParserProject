@@ -6,6 +6,8 @@ use std::{
 use super::error::{Error, ErrorKind};
 
 /// Number allows integers and floats to be managed as enums
+///
+///
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub enum Number {
     Int(i64),

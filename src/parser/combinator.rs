@@ -33,7 +33,16 @@ mod or_parse;
 /// ## Error
 /// [super::Error::OrParseError]  
 /// The [std::error::Error::source()] method cannot be used because two sources are included.  
-/// It is necessary to use the [super::Error::division_combinator_parse_error] method to split them.
+/// It is necessary to use the [super::Error::division_combinator_parse_error] method to split them.  
+///
+/// ## Example
+/// ```rust
+/// use my_parser_project::parser::{base::{num, char}, combinator::{OrParse, OrResult}};
+///
+/// let base = "123+abc";
+/// let parser = num.or_ab(char('+'));
+/// assert_eq!(parser(base), Ok(("+abc", OrResult::A(123))))
+/// ```
 ///
 pub use or_parse::{OrParse, OrResult};
 
