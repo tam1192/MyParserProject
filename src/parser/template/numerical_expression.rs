@@ -1,27 +1,34 @@
-use crate::{error::*, number::Number, parser::*};
+use crate::{
+    number::{self, Number},
+    parser::{
+        self,
+        base::{char, none, num_ex, trimer},
+        combinator::{AndParse, MapParse, OrParse, OrResult},
+    },
+};
 
 /// Extracting mathematical expressions from a string
-/// 
+///
 /// # example
 /// ## General usage
 /// ```rust
 /// use my_parser_project::parser::numerical_expression::*;
 /// use my_parser_project::number::Number;
-/// 
+///
 /// let base = "10 + 2";
 /// let (_, o) = parser(base).unwrap();
 /// let a = o.calc().unwrap();
 /// assert_eq!(a, Number::Int(12))
 /// ```
-/// 
+///
 /// ## About Data Structure
 /// ```rust
 /// use my_parser_project::parser::numerical_expression::*;
 /// use my_parser_project::number::Number;
-/// 
+///
 /// let base = "2+3*4";
 /// let (_, e) = parser(base).unwrap();
-/// let ans = 
+/// let ans =
 /// Expression::Add(
 ///     Term::Exponent(
 ///         Exponent::Factor(
@@ -29,7 +36,7 @@ use crate::{error::*, number::Number, parser::*};
 ///                 Number::Int(2)
 ///             )
 ///         )
-///     ), 
+///     ),
 ///     Box::new(Expression::Term(
 ///         Term::Mul(
 ///             Exponent::Factor(
@@ -43,7 +50,7 @@ use crate::{error::*, number::Number, parser::*};
 ///                         Number::Int(4)
 ///                     )
 ///                 )
-///             )) 
+///             ))
 ///         ))
 ///     )
 /// );
@@ -51,23 +58,23 @@ use crate::{error::*, number::Number, parser::*};
 /// let n = e.calc().unwrap();
 /// assert_eq!(n, Number::Int(14))
 /// ```
-/// 
+///
 
-pub fn parser<'a>(i: &'a str) -> Result<(&'a str, Expression)> {
+pub fn parser<'a>(i: &'a str) -> Result<(&'a str, Expression), parser::Error> {
     Expression::new(i)
 }
 
 /// Executes `parser()` and also performs calculations
-/// 
+///
 /// # example
 /// ```rust
 /// use my_parser_project::parser::numerical_expression::*;
 /// use my_parser_project::number::Number;
-/// 
+///
 /// let base = "10 + 2";
 /// assert_eq!(parse_and_calc(base).unwrap(), ("", Number::Int(12)))
 /// ```
-pub fn parse_and_calc<'a>(i: &'a str) -> Result<(&'a str, Number)> {
+pub fn parse_and_calc<'a>(i: &'a str) -> Result<(&'a str, Number), parser::Error> {
     let (i, e) = parser(i)?;
     let a = e.calc()?;
     Ok((i, a))
@@ -80,7 +87,7 @@ pub enum Factor {
 }
 
 impl Factor {
-    fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
+    fn new<'a>(i: &'a str) -> Result<(&'a str, Self), parser::Error> {
         trimer.and_b(
             num_ex.map(|n| Self::Number(n)).or(char('(')
                 .and_b(trimer)
@@ -91,7 +98,7 @@ impl Factor {
         )(i)
     }
 
-    fn calc(&self) -> Result<Number> {
+    fn calc(&self) -> Result<Number, number::Error> {
         Ok(match self {
             Factor::Number(number) => number.clone(),
             Factor::Scope(expression) => expression.calc()?,
@@ -106,7 +113,7 @@ pub enum Exponent {
 }
 
 impl Exponent {
-    fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
+    fn new<'a>(i: &'a str) -> Result<(&'a str, Self), parser::Error> {
         Factor::new
             .and(
                 trimer
@@ -120,13 +127,13 @@ impl Exponent {
                 OrResult::B(_) => Self::Factor(f),
             })(i)
     }
-    fn calc(&self) -> Result<Number> {
+    fn calc(&self) -> Result<Number, number::Error> {
         Ok(match self {
             Exponent::Factor(factor) => factor.calc()?,
             Exponent::Power(exponent, factor) => {
                 let x = exponent.calc()?;
                 let y = factor.calc()?;
-                x.pow(y)?
+                x.pow(y)
             }
         })
     }
@@ -140,7 +147,7 @@ pub enum Term {
 }
 
 impl Term {
-    fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
+    fn new<'a>(i: &'a str) -> Result<(&'a str, Self), parser::Error> {
         trimer
             .and_b(
                 Exponent::new.and(
@@ -162,7 +169,7 @@ impl Term {
             })(i)
     }
 
-    fn calc(&self) -> Result<Number> {
+    fn calc(&self) -> Result<Number, number::Error> {
         Ok(match self {
             Term::Exponent(exponent) => exponent.calc()?,
             Term::Mul(term, exponent) => {
@@ -187,7 +194,7 @@ pub enum Expression {
 }
 
 impl Expression {
-    fn new<'a>(i: &'a str) -> Result<(&'a str, Self)> {
+    fn new<'a>(i: &'a str) -> Result<(&'a str, Self), parser::Error> {
         trimer
             .and_b(
                 Term::new.and(
@@ -208,7 +215,7 @@ impl Expression {
                 },
             })(i)
     }
-    pub fn calc(&self) -> Result<Number> {
+    pub fn calc(&self) -> Result<Number, number::Error> {
         Ok(match self {
             Expression::Term(term) => term.calc()?,
             Expression::Add(expression, term) => {

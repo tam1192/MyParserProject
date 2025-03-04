@@ -1,4 +1,4 @@
-use crate::error::Result;
+use crate::parser::error::Result;
 
 pub fn none<'a>(i: &'a str) -> Result<(&'a str, ())> {
     Ok((i, ()))
@@ -6,7 +6,10 @@ pub fn none<'a>(i: &'a str) -> Result<(&'a str, ())> {
 
 #[cfg(test)]
 mod char_test {
-    use crate::parser::{char, num, AndParse, OrParse};
+    use crate::parser::{
+        base::{char, num},
+        combinator::{AndParse, OrParse},
+    };
 
     use super::*;
 

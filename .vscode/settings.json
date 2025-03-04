@@ -1,0 +1,11 @@
+{
+    "files.watcherExclude": {
+        "**/book/**": true,
+        "**/target/**": true
+    },
+    "editor.defaultFormatter": "rust-lang.rust-analyzer",
+    "editor.formatOnSave": true,
+    "[jsonc]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    }
+}

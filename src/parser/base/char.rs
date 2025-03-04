@@ -1,5 +1,4 @@
-use crate::error::Error;
-use crate::parser::Parser;
+use crate::parser::{error::Error, Parser};
 
 pub fn char<'a>(c: char) -> impl Parser<&'a str, ()> {
     move |i: &'a str| {

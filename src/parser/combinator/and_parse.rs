@@ -1,4 +1,4 @@
-use crate::parser::Parser;
+use crate::parser::{error::Error, Parser};
 
 pub trait AndParse<I, A> {
     fn and<B>(self, parser: impl Parser<I, B>) -> impl Parser<I, (A, B)>;
@@ -8,22 +8,58 @@ pub trait AndParse<I, A> {
 
 impl<I, A, T: Parser<I, A>> AndParse<I, A> for T {
     fn and<B>(self, parser: impl Parser<I, B>) -> impl Parser<I, (A, B)> {
-        move |i| self(i).and_then(|(i, o1)| parser(i).map(|(i, o2)| (i, (o1, o2))))
+        move |i| match self(i) {
+            Ok((i, o1)) => match parser(i) {
+                Ok((i, o2)) => Ok((i, (o1, o2))),
+                Err(e) => Err(Error::AndParseError {
+                    source: Box::new(e),
+                    is_b: true,
+                }),
+            },
+            Err(e) => Err(Error::AndParseError {
+                source: Box::new(e),
+                is_b: false,
+            }),
+        }
     }
 
     fn and_a<B>(self, parser: impl Parser<I, B>) -> impl Parser<I, A> {
-        move |i| self(i).and_then(|(i, o1)| parser(i).map(|(i, _)| (i, o1)))
+        move |i| match self(i) {
+            Ok((i, o1)) => match parser(i) {
+                Ok((i, _)) => Ok((i, o1)),
+                Err(e) => Err(Error::AndParseError {
+                    source: Box::new(e),
+                    is_b: true,
+                }),
+            },
+            Err(e) => Err(Error::AndParseError {
+                source: Box::new(e),
+                is_b: false,
+            }),
+        }
     }
 
     fn and_b<B>(self, parser: impl Parser<I, B>) -> impl Parser<I, B> {
-        move |i| self(i).and_then(|(i, _)| parser(i).map(|(i, o2)| (i, o2)))
+        move |i| match self(i) {
+            Ok((i, _)) => match parser(i) {
+                Ok((i, o2)) => Ok((i, o2)),
+                Err(e) => Err(Error::AndParseError {
+                    source: Box::new(e),
+                    is_b: true,
+                }),
+            },
+            Err(e) => Err(Error::AndParseError {
+                source: Box::new(e),
+                is_b: false,
+            }),
+        }
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::AndParse;
-    use crate::parser::{char, num, trimer};
+    use crate::parser::base::{char, num, trimer};
 
     #[test]
     fn test2() {

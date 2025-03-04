@@ -1,4 +1,4 @@
-use crate::error::Result;
+use crate::parser::error::Result;
 
 pub fn trimer<'a>(input: &'a str) -> Result<(&'a str, ())> {
     Ok((input.trim_start(), ()))
@@ -6,7 +6,7 @@ pub fn trimer<'a>(input: &'a str) -> Result<(&'a str, ())> {
 
 #[cfg(test)]
 mod tests {
-    use crate::parser::{num, AndParse};
+    use crate::parser::{base::num, combinator::AndParse};
 
     use super::*;
     #[test]
