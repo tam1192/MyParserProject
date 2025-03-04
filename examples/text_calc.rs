@@ -2,7 +2,7 @@
 
 // use my_parser_project::parser::numerical_expression;
 
-// fn main() {
+fn main() {
 //     for line in stdin().lines() {
 //         match line {
 //             Ok(base) => match numerical_expression::parser(&base) {
@@ -22,4 +22,4 @@
 //             Err(e) => eprintln!("{}", e),
 //         }
 //     }
-// }
+}
