@@ -6,7 +6,7 @@ pub mod combinator;
 
 // エラー
 mod error;
-use error::*;
+pub use error::*;
 
 /// パーサー関数をトレイトオブジェクト化
 trait Parser<I, T, E>: Fn(I) -> (I, Result<T, E>) + Clone {}

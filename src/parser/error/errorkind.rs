@@ -2,6 +2,6 @@
 #[derive(PartialEq, Debug)]
 pub enum ErrorKind{
     /// パースできない時
-    ParseNotNum,
+    ParseNumError(std::num::ParseIntError),
 
 }
