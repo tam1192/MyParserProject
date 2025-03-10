@@ -9,6 +9,6 @@ mod error;
 pub use error::*;
 
 /// パーサー関数をトレイトオブジェクト化
-trait Parser<I, T, E>: Fn(I) -> (I, Result<T, E>) + Clone {}
+pub trait Parser<I, T, E>: Fn(I) -> (I, Result<T, E>) + Clone {}
 // Fn(I) -> (I, Result<T,E>) を Parser<I, T, E> として使えるようにする
 impl<I, T, E, F> Parser<I, T, E> for F where F: Fn(I) -> (I, Result<T, E>) + Clone {}
