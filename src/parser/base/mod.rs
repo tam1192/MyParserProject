@@ -5,3 +5,6 @@ pub use num::*;
 
 mod char;
 pub use char::*;
+
+mod string;
+pub use string::*;
