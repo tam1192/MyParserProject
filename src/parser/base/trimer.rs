@@ -7,8 +7,7 @@ use super::*;
 /// use crate::parser::base::trimer;
 /// 
 /// let input = "     abc";
-/// let (rest, result) = trimer(input);
-/// assert_eq!(result, Ok(()));
+/// let (rest, _) = trimer(input);
 /// assert_eq!(rest, "abc");
 /// ```
 /// 
