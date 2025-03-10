@@ -8,3 +8,6 @@ pub use char::*;
 
 mod string;
 pub use string::*;
+
+mod trimer;
+pub use trimer::*;
