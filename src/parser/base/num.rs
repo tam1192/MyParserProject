@@ -3,6 +3,8 @@ use super::*;
 /// 
 /// # Example
 /// ```rust
+/// use crate::parser::base::num;
+/// 
 /// let input = "123abc";
 /// let (rest, result) = num(input);
 /// assert_eq!(result, Ok(123));
