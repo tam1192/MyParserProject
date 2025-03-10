@@ -4,6 +4,8 @@ use super::*;
 /// 
 /// # Example
 /// ```rust
+/// use crate::parser::base::string;
+/// 
 /// let input = "hello_world";
 /// let (rest, result) = string("hello".to_string())(input);
 /// assert_eq!(result, Ok("hello"));
@@ -13,7 +15,7 @@ use super::*;
 /// # Error
 /// kindが [crate::parser::ErrorKind::ParseStringError] になります。
 /// 
-pub fn string<'a>(s: String) -> impl Parser<&'a str, String, Error> {
+pub fn string<'a>(s: String) -> impl Parser<&'a str, Result<String, Error>> {
     move |i: &'a str| {
         todo!()
     }
