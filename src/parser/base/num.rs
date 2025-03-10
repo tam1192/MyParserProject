@@ -1,5 +1,4 @@
 use super::*;
-
 /// 先端から続くまで、0-9でパースする関数
 /// 
 /// # Example
@@ -11,7 +10,7 @@ use super::*;
 /// 
 /// # Error
 /// - 数値がパースできなかった時
-/// kindが [crate::parser::ErrorKind::ParseNotNum] になります。
+/// kindが [crate::parser::ErrorKind::ParseNumError] になります。
 /// sourceは [std::num::ParseIntError] になります。
 /// 
 pub fn num<'a>(i: &'a str) -> (&'a str, Result<i64, Error>) {
@@ -20,6 +19,8 @@ pub fn num<'a>(i: &'a str) -> (&'a str, Result<i64, Error>) {
 
 #[cfg(test)]
 mod tests{
+    use std::num::ParseIntError;
+
     use super::*;
 
     // 正常系: 数字がパースできる場合
@@ -36,8 +37,8 @@ mod tests{
     fn dissociation_test() {
         let input = "abc123";
         let (rest, result) = num(input);
-        assert!(matches!(result, Err(_)));
         assert_eq!(rest, "abc123");
+        assert!(matches!(result.unwrap_err().kind(), &ErrorKind::ParseNumError(_)));
     }
 
 }
