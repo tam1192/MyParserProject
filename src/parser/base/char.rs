@@ -28,8 +28,10 @@ mod tests {
         let base = "*123";
         let parser = char('*');
         let (rest, result) = parser(base);
-        assert_eq!(result, Ok('*'));
+        // 残った文字列
         assert_eq!(rest, "123");
+        // パースした文字
+        assert_eq!(result, Ok('*'));
     }
 
     // 異常
@@ -38,7 +40,9 @@ mod tests {
         let base = "123*";
         let parser = char('*');
         let (rest, result) = parser(base);
+        // 残った文字列
         assert_eq!(rest, "123*");
+        // パースした文字（エラー）
         assert_eq!(result.unwrap_err().kind(), &ErrorKind::ParseCharError);
     }
 }
