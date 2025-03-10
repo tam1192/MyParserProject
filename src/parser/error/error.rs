@@ -10,3 +10,10 @@ pub struct Error
 {
     kind: ErrorKind,
 }
+
+impl Error {
+    /// ErrorKindを取得する
+    pub fn kind(&self) -> &ErrorKind {
+        &self.kind
+    }
+}
