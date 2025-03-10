@@ -3,5 +3,5 @@
 pub enum ErrorKind{
     /// パースできない時
     ParseNumError(std::num::ParseIntError),
-
+    ParseCharError,
 }
