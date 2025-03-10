@@ -11,3 +11,6 @@ pub use string::*;
 
 mod trimer;
 pub use trimer::*;
+
+mod none;
+pub use none::*;
