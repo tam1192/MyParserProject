@@ -1,24 +1,22 @@
 use super::*;
 
 /// 文字列でパースする
-/// 
+///
 /// # Example
 /// ```rust
 /// use crate::parser::base::string;
-/// 
+///
 /// let input = "hello_world";
 /// let (rest, result) = string("hello".to_string())(input);
 /// assert_eq!(result, Ok("hello"));
 /// assert_eq!(rest, "_world");
 /// ```
-/// 
+///
 /// # Error
 /// kindが [crate::parser::ErrorKind::ParseStringError] になります。
-/// 
+///
 pub fn string<'a>(s: String) -> impl Parser<&'a str, Result<String, Error>> {
-    move |i: &'a str| {
-        todo!()
-    }
+    move |i: &'a str| todo!()
 }
 
 #[cfg(test)]

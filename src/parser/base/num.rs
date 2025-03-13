@@ -1,26 +1,26 @@
 use super::*;
 /// 先端から続くまで、0-9でパースする関数
-/// 
+///
 /// # Example
 /// ```rust
 /// use crate::parser::base::num;
-/// 
+///
 /// let input = "123abc";
 /// let (rest, result) = num(input);
 /// assert_eq!(result, Ok(123));
 /// ```
-/// 
+///
 /// # Error
 /// - 数値がパースできなかった時
 /// kindが [crate::parser::ErrorKind::ParseNumError] になります。
 /// sourceは [std::num::ParseIntError] になります。
-/// 
+///
 pub fn num<'a>(i: &'a str) -> (&'a str, Result<i64, Error>) {
     todo!()
 }
 
 #[cfg(test)]
-mod tests{
+mod tests {
     use std::num::ParseIntError;
 
     use super::*;
@@ -44,7 +44,9 @@ mod tests{
         // 残った文字列
         assert_eq!(rest, "abc123");
         // パースした数字（エラー）
-        assert!(matches!(result.unwrap_err().kind(), &ErrorKind::ParseNumError(_)));
+        assert!(matches!(
+            result.unwrap_err().kind(),
+            &ErrorKind::ParseNumError(_)
+        ));
     }
-
 }

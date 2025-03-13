@@ -1,23 +1,21 @@
 use super::*;
 
 /// 先頭一文字でパースする
-/// 
+///
 /// # Example
 /// ```rust
 /// use crate::parser::base::char;
-/// 
+///
 /// let input = "*123";
 /// let (rest, result) = char('*')(input);
 /// assert_eq!(result, Ok('*'));
 /// ```
-/// 
+///
 /// # Error
 /// kindが [crate::parser::ErrorKind::ParseCharError] になります。
-/// 
+///
 pub fn char<'a>(c: char) -> impl Parser<&'a str, Result<char, Error>> {
-    move |i: &'a str| {
-        todo!()
-    }
+    move |i: &'a str| todo!()
 }
 
 #[cfg(test)]

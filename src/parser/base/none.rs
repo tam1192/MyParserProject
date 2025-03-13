@@ -1,19 +1,19 @@
 use super::*;
 
 /// パースしないパーサー
-/// 
+///
 /// # Example
 /// ```rust
 /// use crate::parser::base::none;
-/// 
+///
 /// let input = "   *abc";
 /// let (rest, _) = none(input);
 /// assert_eq!(rest, "   *abc");
 /// ```
-/// 
+///
 /// # Error
 /// errorはない
-/// 
+///
 pub fn none<'a>(i: &'a str) -> (&'a str, ()) {
     todo!()
 }

@@ -1,19 +1,19 @@
 use super::*;
 
 /// 空白を除去する
-/// 
+///
 /// # Example
 /// ```rust
 /// use crate::parser::base::trimer;
-/// 
+///
 /// let input = "     abc";
 /// let (rest, _) = trimer(input);
 /// assert_eq!(rest, "abc");
 /// ```
-/// 
+///
 /// # Error
 /// errorはない
-/// 
+///
 pub fn trimer<'a>(i: &'a str) -> (&'a str, ()) {
     todo!()
 }
