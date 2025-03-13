@@ -1,7 +1,7 @@
 use super::*;
 
-mod and;
-use and::*;
+mod concat;
+use concat::*;
 
 mod or;
 use or::*;

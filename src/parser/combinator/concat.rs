@@ -4,7 +4,7 @@ use super::*;
 ///
 /// [crate::parser::Parser] 型の関数オブジェクトを連結させるためのメソッドを提供します。
 
-trait And<I, O1, O2> {
+trait Concat<I, O1, O2> {
     /// パーサーを連結させ、両方の結果を返す
     ///
     /// # 結果について
@@ -17,16 +17,16 @@ trait And<I, O1, O2> {
     ///
     /// # Example
     /// ```
-    /// use crate::parser::{base::{char, num}, combinator::And};
+    /// use crate::parser::{base::{char, num}, combinator::Concat};
     ///
     /// let input = "*123";
-    /// let parser = char('*').and(num);
+    /// let parser = char('*').cat(num);
     /// let (_, result) = parser(input);
     ///
     /// assert_eq!(result, (Ok('*'), Ok(123)))
     /// ```
     ///
-    fn and(self, p: impl Parser<I, O1>) -> impl Parser<I, (O1, O2)>;
+    fn cat(self, p: impl Parser<I, O1>) -> impl Parser<I, (O1, O2)>;
 
     /// パーサーを連結させ、メソッド呼び出し元のパーサーが返した結果を返す
     ///
@@ -41,16 +41,16 @@ trait And<I, O1, O2> {
     ///
     /// # Example
     /// ```
-    /// use crate::parser::{base::{char, num}, combinator::And};
+    /// use crate::parser::{base::{char, num}, combinator::Concat};
     ///
     /// let input = "*123";
-    /// let parser = char('*').and_a(num);
+    /// let parser = char('*').cat_a(num);
     /// let (_, result) = parser(input);
     ///
     /// assert_eq!(result, Ok('*'))
     /// ```
     ///
-    fn and_a(self, p: impl Parser<I, O1>) -> impl Parser<I, (O1, O2)>;
+    fn cat_a(self, p: impl Parser<I, O1>) -> impl Parser<I, (O1, O2)>;
 
     /// パーサーを連結させ、メソッド引数に含めたパーサーが返した結果を返す
     ///
@@ -65,14 +65,14 @@ trait And<I, O1, O2> {
     ///
     /// # Example
     /// ```
-    /// use crate::parser::{base::{char, num}, combinator::And};
+    /// use crate::parser::{base::{char, num}, combinator::Concat};
     ///
     /// let input = "*123";
-    /// let parser = char('*').and_b(num);
+    /// let parser = char('*').cat_b(num);
     /// let (_, result) = parser(input);
     ///
     /// assert_eq!(result, Ok(123))
     /// ```
     ///
-    fn and_b(self, p: impl Parser<I, O1>) -> impl Parser<I, (O1, O2)>;
+    fn cat_b(self, p: impl Parser<I, O1>) -> impl Parser<I, (O1, O2)>;
 }
