@@ -1,13 +1,13 @@
 use super::*;
 
 mod concat;
-use concat::*;
+pub use concat::*;
 
-mod or;
-use or::*;
+mod substitute;
+pub use substitute::*;
 
 mod map;
-use map::*;
+pub use map::*;
 
 mod more;
-use more::*;
+pub use more::*;
