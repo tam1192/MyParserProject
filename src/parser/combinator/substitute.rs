@@ -1,7 +1,7 @@
 use super::*;
 
 /// [Sub]の結果を保持する
-enum SubResult<A, B> {
+pub enum SubResult<A, B> {
     A(A),
     B(B),
 }
@@ -10,7 +10,7 @@ enum SubResult<A, B> {
 ///
 /// 失敗する可能性のある [crate::parser::Parser] 型の関数オブジェクトに適用され、  
 /// メソッド呼び出し元のパーサーが失敗した場合、引数のパーサーを試みます。
-trait Substitute<I, A, AE> {
+pub trait Substitute<I, A, AE> {
     /// 別のパーサーを試す
     ///
     /// # Errorと結果について

@@ -4,7 +4,7 @@ use super::*;
 ///
 /// [crate::parser::Parser] 型の関数オブジェクトを連結させるためのメソッドを提供します。
 
-trait Concat<I, O1, O2> {
+pub trait Concat<I, O1, O2> {
     /// パーサーを連結させ、両方の結果を返す
     ///
     /// # 結果について
