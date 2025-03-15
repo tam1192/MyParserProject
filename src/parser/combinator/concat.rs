@@ -27,7 +27,7 @@ pub trait Concat<I, O1, O2> {
     /// assert_eq!(result, (Ok('*'), Ok(123)))
     /// ```
     ///
-    fn cat(self, p: impl Parser<I, O1>) -> impl Parser<I, (O1, O2)>;
+    fn cat(self, p: impl Parser<I, O2>) -> impl Parser<I, (O1, O2)>;
 
     /// パーサーを連結させ、メソッド呼び出し元のパーサーが返した結果を返す
     ///
@@ -51,7 +51,7 @@ pub trait Concat<I, O1, O2> {
     /// assert_eq!(result, Ok('*'))
     /// ```
     ///
-    fn cat_a(self, p: impl Parser<I, O1>) -> impl Parser<I, (O1, O2)>;
+    fn cat_a(self, p: impl Parser<I, O2>) -> impl Parser<I, O1>;
 
     /// パーサーを連結させ、メソッド引数に含めたパーサーが返した結果を返す
     ///
@@ -75,5 +75,53 @@ pub trait Concat<I, O1, O2> {
     /// assert_eq!(result, Ok(123))
     /// ```
     ///
-    fn cat_b(self, p: impl Parser<I, O1>) -> impl Parser<I, (O1, O2)>;
+    fn cat_b(self, p: impl Parser<I, O2>) -> impl Parser<I, O2>;
+}
+
+// 実装
+impl<I, O1, O2, P> Concat<I, O1, O2> for P
+where
+    P: Parser<I, O1>,
+{
+    fn cat(self, p: impl Parser<I, O2>) -> impl Parser<I, (O1, O2)> {
+        move |i| todo!()
+    }
+
+    fn cat_a(self, p: impl Parser<I, O2>) -> impl Parser<I, O1> {
+        move |i| todo!()
+    }
+
+    fn cat_b(self, p: impl Parser<I, O2>) -> impl Parser<I, O2> {
+        move |i| todo!()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    // cat成功時
+    #[test]
+    fn cat_success_test() {
+        let base = "*123";
+        let parser = base::char('*').cat(base::num);
+        let (i, (r1, r2)) = parser(base);
+        // パースした結果
+        assert_eq!(r1, Ok('*'));
+        assert_eq!(r2, Ok(123));
+        // 取り残された文字
+        assert_eq!(i, "");
+    }
+
+    // cat_a成功時
+    #[test]
+    fn cat_a_success_test() {
+        let base = "*123";
+        let parser = base::char('*').cat_a(base::num);
+        let (i, r1) = parser(base);
+        // パースした結果
+        assert_eq!(r1, Ok('*'));
+        // 取り残された文字
+        assert_eq!(i, "");
+    }
 }
