@@ -21,8 +21,6 @@ pub fn num<'a>(i: &'a str) -> (&'a str, Result<i64, Error>) {
 
 #[cfg(test)]
 mod tests {
-    use std::num::ParseIntError;
-
     use super::*;
 
     // 正常系: 数字がパースできる場合
