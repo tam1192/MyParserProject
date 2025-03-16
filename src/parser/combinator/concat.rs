@@ -124,4 +124,29 @@ mod tests {
         // 取り残された文字
         assert_eq!(i, "");
     }
+
+    // cat_b成功時
+    #[test]
+    fn cat_b_success_test() {
+        let base = "*123";
+        let parser = base::char('*').cat_b(base::num);
+        let (i, r1) = parser(base);
+        // パースした結果
+        assert_eq!(r1, Ok(123));
+        // 取り残された文字
+        assert_eq!(i, "");
+    }
+
+    // エラー
+    #[test]
+    fn cat_error_test() {
+        let base = "+-abc";
+        let parser = base::char('-').cat(base::char('+'));
+        let (i, (r1, r2)) = parser(base);
+        // パースした結果
+        assert_eq!(r1.unwrap_err().kind(), &ErrorKind::ParseCharError);
+        assert_eq!(r2.unwrap_err().kind(), &ErrorKind::ParseCharError);
+        // 取り残された文字
+        assert_eq!(i, "+-abc");
+    }
 }
