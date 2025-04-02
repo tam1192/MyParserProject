@@ -1,6 +1,7 @@
 use super::*;
 
 /// [Sub]の結果を保持する
+#[derive(PartialEq)]
 pub enum SubResult<A, B> {
     A(A),
     B(B),
@@ -44,4 +45,38 @@ pub trait Substitute<I, A, AE> {
         self,
         p: impl Parser<I, Result<B, BE>>,
     ) -> impl Parser<I, Result<SubResult<A, B>, (AE, BE)>>;
+}
+
+// 実装
+impl<I, A, AE, P> Substitute<I, A, AE> for P
+where
+    P: Parser<I, Result<A, AE>>,
+{
+    fn sub<B, BE>(
+        self,
+        p: impl Parser<I, Result<B, BE>>,
+    ) -> impl Parser<I, Result<SubResult<A, B>, (AE, BE)>> {
+        move |i| todo!()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    // 成功例
+    #[test]
+    fn sub_success() {
+        let input = "*123";
+        let parser = base::char('*').sub(base::num);
+        let (_, result) = parser(input);
+        assert_eq!(result, Ok(SubResult::A('*')))
+    }
+    #[test]
+    fn sub_failure() {
+        let input = "a123";
+        let parser = char('*').sub(num);
+        let (_, result) = parser(input);
+        assert_eq!(result, Err((SubError::AE, SubError::BE)))
+    }
 }
