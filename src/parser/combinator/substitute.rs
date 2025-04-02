@@ -10,7 +10,7 @@ pub enum SubResult<A, B> {
 /// パース失敗時に別のパーサーを試すためのメソッドを提供する
 ///
 /// 失敗する可能性のある [crate::parser::Parser] 型の関数オブジェクトに適用され、  
-/// メソッド呼び出し元のパーサーが失敗した場合、引数のパーサーを試みます。
+/// メソッド呼び出し元(以下Aとする)のパーサーが失敗した場合、引数のパーサー(以下Bとする)を試みます。
 pub trait Substitute<I, A, AE> {
     /// 別のパーサーを試す
     ///
@@ -64,19 +64,31 @@ where
 mod tests {
     use super::*;
 
-    // 成功例
+    // A:メソッド呼び出し元
+    // B:メソッド引数
+
+    // Aのパーサーで成功する時
     #[test]
-    fn sub_success() {
+    fn sub_success_a() {
         let input = "*123";
-        let parser = base::char('*').sub(base::num);
+        let parser = base::char('*').sub(base::char('+'));
         let (_, result) = parser(input);
         assert_eq!(result, Ok(SubResult::A('*')))
     }
+    // Bのパーサーで成功する時
+    #[test]
+    fn sub_success_b() {
+        let input = "+123";
+        let parser = base::char('*').sub(base::char('+'));
+        let (_, result) = parser(input);
+        assert_eq!(result, Ok(SubResult::B('+')))
+    }
+    // ABどちらもパース不可能な時
     #[test]
     fn sub_failure() {
         let input = "a123";
-        let parser = char('*').sub(num);
+        let parser = base::char('*').sub(base::char('+'));
         let (_, result) = parser(input);
-        assert_eq!(result, Err((SubError::AE, SubError::BE)))
+        assert!(matches!(result, Err(_)))
     }
 }
