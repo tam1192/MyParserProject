@@ -1,7 +1,7 @@
 use super::*;
 
 /// [Sub]の結果を保持する
-#[derive(PartialEq)]
+#[derive(Debug, PartialEq)]
 pub enum SubResult<A, B> {
     A(A),
     B(B),
