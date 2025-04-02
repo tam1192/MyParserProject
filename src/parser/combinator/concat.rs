@@ -140,6 +140,7 @@ mod tests {
     // エラー
     #[test]
     fn cat_error_test() {
+        // パースしたい文字列の並び方が、パーサーの並び方と異なる
         let base = "+-abc";
         let parser = base::char('-').cat(base::char('+'));
         let (i, (r1, r2)) = parser(base);
