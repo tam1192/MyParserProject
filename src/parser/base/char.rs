@@ -1,6 +1,6 @@
 use super::*;
 
-/// 先頭一文字でパースする
+/// 先頭の文字でパースする
 ///
 /// # Example
 /// ```rust
@@ -22,7 +22,7 @@ pub fn char<'a>(c: char) -> impl Parser<&'a str, Result<char, Error>> {
 mod tests {
     use super::*;
 
-    // 正常系
+    // 正常系: パースできる場合
     #[test]
     fn success_test() {
         let base = "*123";
@@ -34,9 +34,10 @@ mod tests {
         assert_eq!(result, Ok('*'));
     }
 
-    // 異常
+    // 異常系: 文字が異なりパースできない場合
     #[test]
     fn dissociation_test() {
+        // パースする文字の手前に、別の文字があるためにパース不可能
         let base = "123*";
         let parser = char('*');
         let (rest, result) = parser(base);
