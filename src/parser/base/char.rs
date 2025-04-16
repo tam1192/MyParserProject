@@ -1,6 +1,16 @@
 use super::*;
 
-/// 先頭の文字でパースする
+/// 文字でパースする
+///
+/// 引数に入れた文字をパースする [crate::parser::Parser] を返します。
+///
+/// # パーサーの仕様について
+/// - 引数は[std::str]です。
+/// - 引数の先頭で検査を行います。
+/// ## 成功時
+/// - 条件の文字が返却されます。
+/// ## エラー時
+/// - [super::error::Error]のkindが [super::ErrorKind::ParseCharError] になります。
 ///
 /// # Example
 /// ```rust
@@ -10,10 +20,6 @@ use super::*;
 /// let (rest, result) = char('*')(input);
 /// assert_eq!(result, Ok('*'));
 /// ```
-///
-/// # Error
-/// kindが [crate::parser::ErrorKind::ParseCharError] になります。
-///
 pub fn char<'a>(c: char) -> impl Parser<&'a str, Result<char, Error>> {
     move |i: &'a str| todo!()
 }
