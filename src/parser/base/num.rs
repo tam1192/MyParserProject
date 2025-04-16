@@ -1,5 +1,19 @@
 use super::*;
-/// 先端から続くまで、0-9でパースする関数
+/// 数値でパースする
+///
+/// 数値をパースする [super::Parser] です。
+///
+/// - 引数の型は[std::str]です。  
+/// - `0-9`の範囲でパースを行います。  
+///   - `+`,`-`,`.`などの数学記号には対応しません。  
+/// - 先頭から解析を行います。  
+///
+/// # 成功時
+/// - 解析できた数値が返却されます。
+/// # エラー時
+/// - [super::error::Error]が返却されます。
+///   - kindは [super::ErrorKind::ParseNumError] になります。
+///   - sourceは [std::num::ParseIntError] になります。
 ///
 /// # Example
 /// ```rust
@@ -10,10 +24,6 @@ use super::*;
 /// assert_eq!(result, Ok(123));
 /// ```
 ///
-/// # Error
-/// - 数値がパースできなかった時
-/// kindが [crate::parser::ErrorKind::ParseNumError] になります。
-/// sourceは [std::num::ParseIntError] になります。
 ///
 pub fn num<'a>(i: &'a str) -> (&'a str, Result<i64, Error>) {
     todo!()
