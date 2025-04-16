@@ -1,13 +1,27 @@
 use super::*;
 
-/// パースしないパーサー
+/// パースしない
+///
+/// パースをしない [super::Parser] を返します
+///
+/// # 用途について
+/// [super::combinator::Substitute]で、"A" or "Other"を表現するために使われます。
+/// 詳しくはExampleの項を参考にしてください。
 ///
 /// # Example
 /// ```rust
-/// use crate::parser::base::none;
+/// use crate::parser::base::{num, none};
 ///
-/// let input = "   *abc";
-/// let (rest, _) = none(input);
+/// // 数値があれば、数値を取り出す
+/// let parser = num.sub(none);
+///
+/// // 数値なし
+/// let case1 = "abc";
+///
+///
+/// // 数値あり
+/// let case2 = "123abc";
+/// let (rest)
 /// assert_eq!(rest, "   *abc");
 /// ```
 ///
