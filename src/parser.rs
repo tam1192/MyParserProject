@@ -6,8 +6,8 @@
 //! # パーサーの型について
 //! 基本的なパーサーの構造は、 [Parser] トレイトに従います。  
 //! [combinator]モジュールで、パーサーを組み合わせて動作するパーサーを作成できます。  
-pub mod base;
 pub mod combinator;
+pub mod str_parser;
 
 // エラー
 mod error;

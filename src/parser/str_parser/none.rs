@@ -8,7 +8,7 @@
 ///
 /// # Example
 /// ```rust
-/// use crate::parser::{base::{num, none}, combinator::substitute::*};
+/// use crate::parser::{str_parser::{num, none}, combinator::substitute::*};
 ///
 /// // 数値があれば、数値を取り出す
 /// let parser = num.sub(none);

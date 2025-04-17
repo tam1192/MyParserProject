@@ -14,7 +14,7 @@ use super::*;
 ///
 /// # Example
 /// ```rust
-/// use crate::parser::base::string;
+/// use crate::parser::str_parser::string;
 ///
 /// let input = "hello_world";
 /// let (rest, result) = string("hello".to_string())(input);
