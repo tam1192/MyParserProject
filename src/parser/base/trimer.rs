@@ -1,6 +1,9 @@
-use super::*;
-
 /// 空白を除去する
+///
+/// 空白を条件に解析する [super::Parser] です。
+///
+/// - 引数の型は[std::str]です。
+/// - 先頭から解析を行います。
 ///
 /// # Example
 /// ```rust
@@ -10,10 +13,6 @@ use super::*;
 /// let (rest, _) = trimer(input);
 /// assert_eq!(rest, "abc");
 /// ```
-///
-/// # Error
-/// errorはない
-///
 pub fn trimer<'a>(i: &'a str) -> (&'a str, ()) {
     todo!()
 }
