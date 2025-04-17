@@ -2,15 +2,16 @@ use super::*;
 
 /// 文字でパースする
 ///
-/// 引数に入れた文字を条件に解析する [super::Parser] を返します。
+/// 引数に入れた文字を条件に解析する [super::Parser] を作成します。
 ///
 /// # パーサーの仕様について
 /// - 引数の型は[std::str]です。
 /// - 先頭のみ解析を行います。
 /// ## 成功時
-/// - 条件の文字が返却されます。
+/// - 条件の文字が解析できたら、その文字が結果として返されます。
 /// ## エラー時
-/// - [super::error::Error]のkindが [super::ErrorKind::ParseCharError] になります。
+/// - [super::error::Error]が返却されます。
+///   - kindが [super::ErrorKind::ParseCharError] になります。
 ///
 /// # Example
 /// ```rust
