@@ -2,6 +2,17 @@ use super::*;
 
 /// 文字列でパースする
 ///
+/// 引数に入れた文字列を条件に解析する [super::Parser] を**作成**します。
+///
+/// # パーサーの仕様について
+/// - 引数の型は[std::str]です。
+/// - 先頭から解析を行います。
+/// ## 成功時
+/// - 条件の文字列が解析できたら、その文字列が結果として返されます。
+/// ## エラー時
+/// - 解析できなかった場合、[super::error::Error]が返されます。
+///   - kindは [super::ErrorKind::ParseStringError] になります。
+///
 /// # Example
 /// ```rust
 /// use crate::parser::base::string;
