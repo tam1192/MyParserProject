@@ -2,15 +2,15 @@ use super::*;
 
 /// 文字でパースする
 ///
-/// 引数に入れた文字を条件に解析する [super::Parser] を**作成**します。
+/// 引数に入れた文字を条件に解析する [Parser][super::Parser] を**作成**します。
 ///
 /// # パーサーの仕様について
 /// - 先頭のみ解析を行います。
 /// ## 成功時
 /// - 条件の文字が解析できたら、その文字が結果として返されます。
 /// ## エラー時
-/// - [super::error::Error]が返却されます。
-///   - kindが [super::ErrorKind::ParseCharError] になります。
+/// - [エラー][super::error::Error]が返却されます。
+///   - [kind][super::error::Error::kind]が [ParseCharError][super::ErrorKind::ParseCharError] になります。
 ///
 /// # Example
 /// ```rust

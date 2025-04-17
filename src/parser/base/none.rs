@@ -1,10 +1,10 @@
 /// パースしない
 ///
-/// パースをしない [super::Parser] です。
+/// パースをしない [Parser][super::Parser] です。
 ///
 /// # 用途について
-/// [super::combinator::Substitute]で、"A" or "Other"を表現するために使われます。
-/// 詳しくはExampleの項を参考にしてください。
+/// [Substitute][super::combinator::Substitute]で、"A" or "Other"を表現するために使われます。  
+/// 詳しくはExampleの項を参考にしてください。  
 ///
 /// # Example
 /// ```rust

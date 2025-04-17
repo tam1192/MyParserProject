@@ -9,8 +9,8 @@ use super::*;
 /// ## 成功時
 /// - 条件の文字列が解析できたら、その文字列が結果として返されます。
 /// ## エラー時
-/// - 解析できなかった場合、[super::error::Error]が返されます。
-///   - kindは [super::ErrorKind::ParseStringError] になります。
+/// - [エラー][super::error::Error]が返却されます。
+///   - [kind][super::error::Error::kind]が [ParseStringError][super::ErrorKind::ParseStringError] になります。
 ///
 /// # Example
 /// ```rust
@@ -21,10 +21,6 @@ use super::*;
 /// assert_eq!(result, Ok("hello"));
 /// assert_eq!(rest, "_world");
 /// ```
-///
-/// # Error
-/// kindが [crate::parser::ErrorKind::ParseStringError] になります。
-///
 pub fn string<'a>(s: String) -> impl Parser<&'a str, Result<String, Error>> {
     move |i: &'a str| todo!()
 }
