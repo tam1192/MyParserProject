@@ -11,7 +11,7 @@ use super::*;
 /// # 成功時
 /// - 数値が解析できたら、[std::u64]に変換され、結果として返されます。
 /// # エラー時
-/// - 解析できなかった場合、[super::error::Error]が返却されます。
+/// - 解析できなかった場合、[super::error::Error]が返されます。
 ///   - kindは [super::ErrorKind::ParseNumError] になります。
 ///   - sourceは [std::num::ParseIntError] になります。
 ///
