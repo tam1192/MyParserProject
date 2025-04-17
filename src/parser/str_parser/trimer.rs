@@ -1,19 +1,17 @@
-use super::*;
-
 /// 空白を除去する
+///
+/// 空白を条件に解析する [Parser][super::Parser] です。
+///
+/// - 先頭から解析を行います。
 ///
 /// # Example
 /// ```rust
-/// use crate::parser::base::trimer;
+/// use crate::parser::str_parser::trimer;
 ///
 /// let input = "     abc";
 /// let (rest, _) = trimer(input);
 /// assert_eq!(rest, "abc");
 /// ```
-///
-/// # Error
-/// errorはない
-///
 pub fn trimer<'a>(i: &'a str) -> (&'a str, ()) {
     todo!()
 }

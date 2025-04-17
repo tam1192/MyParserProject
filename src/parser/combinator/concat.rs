@@ -104,7 +104,7 @@ mod tests {
     #[test]
     fn cat_success_test() {
         let base = "*123";
-        let parser = base::char('*').cat(base::num);
+        let parser = str_parser::char('*').cat(str_parser::num);
         let (i, (r1, r2)) = parser(base);
         // パースした結果
         assert_eq!(r1, Ok('*'));
@@ -117,7 +117,7 @@ mod tests {
     #[test]
     fn cat_a_success_test() {
         let base = "*123";
-        let parser = base::char('*').cat_a(base::num);
+        let parser = str_parser::char('*').cat_a(str_parser::num);
         let (i, r1) = parser(base);
         // パースした結果
         assert_eq!(r1, Ok('*'));
@@ -129,7 +129,7 @@ mod tests {
     #[test]
     fn cat_b_success_test() {
         let base = "*123";
-        let parser = base::char('*').cat_b(base::num);
+        let parser = str_parser::char('*').cat_b(str_parser::num);
         let (i, r1) = parser(base);
         // パースした結果
         assert_eq!(r1, Ok(123));
@@ -142,7 +142,7 @@ mod tests {
     fn cat_error_test() {
         // パースしたい文字列の並び方が、パーサーの並び方と異なる
         let base = "+-abc";
-        let parser = base::char('-').cat(base::char('+'));
+        let parser = str_parser::char('-').cat(str_parser::char('+'));
         let (i, (r1, r2)) = parser(base);
         // パースした結果
         assert_eq!(r1.unwrap_err().kind(), &ErrorKind::ParseCharError);

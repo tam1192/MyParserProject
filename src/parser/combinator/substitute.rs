@@ -71,7 +71,7 @@ mod tests {
     #[test]
     fn sub_success_a() {
         let input = "*123";
-        let parser = base::char('*').sub(base::char('+'));
+        let parser = str_parser::char('*').sub(str_parser::char('+'));
         let (_, result) = parser(input);
         assert_eq!(result, Ok(SubResult::A('*')))
     }
@@ -79,7 +79,7 @@ mod tests {
     #[test]
     fn sub_success_b() {
         let input = "+123";
-        let parser = base::char('*').sub(base::char('+'));
+        let parser = str_parser::char('*').sub(str_parser::char('+'));
         let (_, result) = parser(input);
         assert_eq!(result, Ok(SubResult::B('+')))
     }
@@ -87,7 +87,7 @@ mod tests {
     #[test]
     fn sub_failure() {
         let input = "a123";
-        let parser = base::char('*').sub(base::char('+'));
+        let parser = str_parser::char('*').sub(str_parser::char('+'));
         let (_, result) = parser(input);
         assert!(matches!(result, Err(_)))
     }
