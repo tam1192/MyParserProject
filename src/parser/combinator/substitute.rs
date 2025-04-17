@@ -1,6 +1,6 @@
 use super::*;
 
-/// [Sub]の結果を保持する
+/// [Substitute]の結果を保持する
 #[derive(Debug, PartialEq)]
 pub enum SubResult<A, B> {
     A(A),
