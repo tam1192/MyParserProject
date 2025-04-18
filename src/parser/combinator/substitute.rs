@@ -1,45 +1,33 @@
 use super::*;
 
 /// [Substitute]の結果を保持する
+///
+/// [Substitute::sub]で結果を返すためのenumです。
 #[derive(Debug, PartialEq)]
 pub enum SubResult<A, B> {
     A(A),
     B(B),
 }
 
-/// パース失敗時に別の[Parser][crate::parser::Parser]でパースする
-///
-/// []
+/// パース失敗時に別の[Parser][crate::parser::Parser]で解析する
 ///
 /// 戻り値に[Result]型を用いる[Parser][crate::parser::Parser]で使うことができます。
-///
-/// 戻り値は
-/// - メソッド呼び出し元(A)が[Ok]だった場合は、[SubResult::A]が返されます
-/// - メソッド呼び出し元(A)が[Err]だった場合は、メソッド引数(B)のパーサーを使います
-/// - メソッド引数(B)のパーサーが[Err]だった場合は、`(A, B)`のタプル形式でエラーが返されます
-///
-/// 失敗する可能性のある [crate::parser::Parser] 型の関数オブジェクトに適用され、  
-/// メソッド呼び出し元(以下Aとする)のパーサーが失敗した場合、引数のパーサー(以下Bとする)を試みます。
 pub trait Substitute<I, A, AE> {
-    /// 別のパーサーを試す
+    /// メソッド呼び出し元(A)パーサーが失敗した時、メソッド引数(B)パーサーを試みるパーサーを作成します。
     ///
-    /// # Errorと結果について
-    /// `(I, Result<SubResult<A, B> (AE, BE)>)`のタプルで返します  
-    /// - Iはパース後に残った部分
+    /// ## 結果とエラー
+    /// - メソッド呼び出し元(A)パーサーが[Ok]だった場合は、[SubResult::A]が返されます
+    /// - メソッド呼び出し元(A)パーサーが[Err]だった場合は、メソッド引数(B)パーサーを使います
+    /// - メソッド引数(B)パーサーが[Ok]だった場合は、[SubResult::B]が返されます
+    /// - メソッド引数(B)パーサーが[Err]だった場合は、`(A, B)`のタプル形式でエラーが返されます
     ///
-    /// ## ResultがOkの場合
-    /// [SubResult]<A, B>で返されます
-    /// - Aはメソッドを呼び出す元のパーサーが返した結果
-    /// - Bはメソッドの引数に含めたパーサーが返した結果
+    /// | |A|B|
+    /// |---|---|---|
+    /// |解析順| 1 | 2 |
+    /// |Ok| [SubResult::A] | [SubResult::B] |
+    /// |Err| Bで解析する | `Err(AE, BE)` |
     ///
-    /// ## ResultがErrの場合  
-    /// (AE, BE)のタプルで返されます  
-    /// エラーは両方返されます  
-    /// - Aはメソッドを呼び出す元のパーサーが返したエラー
-    /// - Bはメソッドの引数に含めたパーサーが返したエラー
-    ///
-    ///
-    /// # Example
+    /// ## Example
     /// ```
     /// use crate::parser::{base::{char, num}, combinator::*};
     ///
@@ -49,11 +37,30 @@ pub trait Substitute<I, A, AE> {
     ///
     /// assert_eq!(result, Ok(SubResult::A('*')))
     /// ```
-    ///
     fn sub<B, BE>(
         self,
         p: impl Parser<I, Result<B, BE>>,
     ) -> impl Parser<I, Result<SubResult<A, B>, (AE, BE)>>;
+
+    /// メソッド引数(B)パーサーのエラーを無視します。  
+    /// `sub`とは、戻り値の仕様が異なり、このパーサーはエラーを返すことはありません。  
+    ///
+    /// ## 結果とエラー
+    /// - メソッド呼び出し元(A)パーサーが[Ok]だった場合は、[SubResult::A]が返されます
+    /// - メソッド呼び出し元(A)パーサーが[Err]だった場合は、メソッド引数(B)パーサーを使います
+    /// - メソッド引数(B)パーサーが[Ok]だった場合は、[SubResult::B]が返されます。
+    /// - メソッド引数(B)パーサーが[Err]だった場合も、[SubResult::B]が返されます。
+    ///
+    /// | |A|B|
+    /// |---|---|---|
+    /// |解析順| 1 | 2 |
+    /// |Ok| [SubResult::A] | [SubResult::B] |
+    /// |Err| Bで解析する | [SubResult::B] |
+    ///
+    /// ## `sub`との使い分け
+    /// メソッド引数(B)パーサーの戻り値が[Result]出ない場合も使うことができます。
+    /// そのため、[trimer][crate::parser::str_parser::trimer]などのパーサーが使用可能です。
+    fn sub_uncheck_b_error<B>(self, p: impl Parser<I, B>) -> impl Parser<I, SubResult<A, B>>;
 }
 
 // 実装
@@ -65,6 +72,10 @@ where
         self,
         p: impl Parser<I, Result<B, BE>>,
     ) -> impl Parser<I, Result<SubResult<A, B>, (AE, BE)>> {
+        move |i| todo!()
+    }
+
+    fn sub_uncheck_b_error<B>(self, p: impl Parser<I, B>) -> impl Parser<I, SubResult<A, B>> {
         move |i| todo!()
     }
 }
