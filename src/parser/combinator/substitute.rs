@@ -2,7 +2,7 @@ use super::*;
 
 /// [Substitute]の結果を保持する
 ///
-/// [Substitute::sub]で結果を返すためのenumです。
+/// [subパーサー][Substitute::sub]で結果を返すためのenumです。
 #[derive(Debug, PartialEq)]
 pub enum SubResult<A, B> {
     A(A),
