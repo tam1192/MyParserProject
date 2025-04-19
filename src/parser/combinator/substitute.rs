@@ -60,7 +60,7 @@ pub trait Substitute<I, A, AE> {
     /// ## `sub`との使い分け
     /// メソッド引数(B)パーサーの戻り値が[Result]出ない場合も使うことができます。
     /// そのため、[trimer][crate::parser::str_parser::trimer]などのパーサーが使用可能です。
-    fn sub_uncheck_b_error<B>(self, p: impl Parser<I, B>) -> impl Parser<I, SubResult<A, B>>;
+    fn sub_uncheck<B>(self, p: impl Parser<I, B>) -> impl Parser<I, SubResult<A, B>>;
 }
 
 // 実装
@@ -75,7 +75,7 @@ where
         move |i| todo!()
     }
 
-    fn sub_uncheck_b_error<B>(self, p: impl Parser<I, B>) -> impl Parser<I, SubResult<A, B>> {
+    fn sub_uncheck<B>(self, p: impl Parser<I, B>) -> impl Parser<I, SubResult<A, B>> {
         move |i| todo!()
     }
 }
@@ -110,5 +110,30 @@ mod tests {
         let parser = str_parser::char('*').sub(str_parser::char('+'));
         let (_, result) = parser(input);
         assert!(matches!(result, Err(_)))
+    }
+
+    // Aのパーサーで成功する時
+    #[test]
+    fn sub_uncheck_success_a() {
+        let input = "*123";
+        let parser = str_parser::char('*').sub_uncheck(str_parser::char('+'));
+        let (_, result) = parser(input);
+        assert_eq!(result, SubResult::A('*'))
+    }
+    // Bのパーサーで成功する時
+    #[test]
+    fn sub_uncheck_success_b() {
+        let input = "+123";
+        let parser = str_parser::char('*').sub_uncheck(str_parser::char('+'));
+        let (_, result) = parser(input);
+        assert_eq!(result, SubResult::B(Ok('+')))
+    }
+    // ABどちらもパース不可能な時
+    #[test]
+    fn sub_uncheck_failure() {
+        let input = "a123";
+        let parser = str_parser::char('*').sub_uncheck(str_parser::char('+'));
+        let (_, result) = parser(input);
+        assert!(matches!(result, SubResult::B(Err(_))))
     }
 }
