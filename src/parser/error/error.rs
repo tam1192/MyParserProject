@@ -11,6 +11,10 @@ pub struct Error {
 }
 
 impl Error {
+    /// エラーを作成
+    pub fn new(kind: ErrorKind) -> Self {
+        Self { kind }
+    }
     /// ErrorKindを取得する
     pub fn kind(&self) -> &ErrorKind {
         &self.kind
