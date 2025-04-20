@@ -4,8 +4,11 @@ use super::*;
 pub trait Map<I, O> {
     /// パーサーの結果に関数を適用
     ///
-    /// ## 引数について
-    /// パーサーが出力する結果がそのまま引数となります。  
+    /// クロージャーを受け取り、mapメソッドを呼び出す手前までのパーサーが出力した結果に、関数を適用します。
+    ///
+    /// # ヒント
+    /// - [.cat][concat::Concat::cat]メソッドは(`メソッド呼び出し元`, `メソッド引数`)形式で出力されます
+    /// - [.sub][substitute::Substitute::sub]メソッドは[substitute::SubResult]で出力されます
     fn map<T>(self, f: impl Fn(O) -> T + Clone) -> impl Parser<I, T>;
 }
 
