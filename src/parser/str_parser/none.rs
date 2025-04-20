@@ -26,7 +26,7 @@
 /// assert_eq!(rest, "abc");
 /// ```
 pub fn none<'a>(i: &'a str) -> (&'a str, ()) {
-    todo!()
+    (i, ())
 }
 
 #[cfg(test)]
