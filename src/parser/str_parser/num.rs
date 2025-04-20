@@ -1,21 +1,30 @@
 use super::*;
-/// 先端から続くまで、0-9でパースする関数
+/// 数値でパースする
+///
+/// 数値を条件に解析する [Parser][super::Parser] です。
+///
+/// - `0-9`の範囲でパースを行います。  
+///   - `+`,`-`,`.`などの数学記号には対応しません。  
+/// - 先頭から解析を行います。  
+///
+/// # 成功時
+/// - 数値が解析できたら、[`parse<u64>`][`str::parse<u64>`]によって変換された値が、結果として返されます。
+/// # エラー時
+/// - 解析できなかった場合、[エラー][super::error::Error]が返されます。
+///   - [kind][super::error::Error::kind]は [ParseNumError][super::ErrorKind::ParseNumError] になります。
+///   - [source][std::error::Error::source]は[`parse<u64>`][`str::parse<u64>`()] のエラーである [ParseIntError][std::num::ParseIntError] になります。
 ///
 /// # Example
 /// ```rust
-/// use crate::parser::base::num;
+/// use crate::parser::str_parser::num;
 ///
 /// let input = "123abc";
 /// let (rest, result) = num(input);
 /// assert_eq!(result, Ok(123));
 /// ```
 ///
-/// # Error
-/// - 数値がパースできなかった時
-/// kindが [crate::parser::ErrorKind::ParseNumError] になります。
-/// sourceは [std::num::ParseIntError] になります。
 ///
-pub fn num<'a>(i: &'a str) -> (&'a str, Result<i64, Error>) {
+pub fn num<'a>(i: &'a str) -> (&'a str, Result<u64, Error>) {
     todo!()
 }
 

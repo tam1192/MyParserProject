@@ -13,9 +13,6 @@ pub trait Concat<I, O1, O2> {
     /// - O1はメソッドを呼び出す元のパーサーが返した結果
     /// - O2はメソッドの引数に含めたパーサーが返した結果
     ///
-    /// # Error
-    /// 実行したパーサーにエラーが含まれる場合も、そのまま結果を出す
-    ///
     /// # Example
     /// ```
     /// use crate::parser::{base::{char, num}, combinator::Concat};
@@ -37,9 +34,6 @@ pub trait Concat<I, O1, O2> {
     /// - Iはパース後に残った部分
     /// - O1はメソッドを呼び出す元のパーサーが返した結果
     ///
-    /// # Error
-    /// 実行したパーサーにエラーが含まれる場合も、そのまま結果を出す
-    ///
     /// # Example
     /// ```
     /// use crate::parser::{base::{char, num}, combinator::Concat};
@@ -60,9 +54,6 @@ pub trait Concat<I, O1, O2> {
     /// `(I, O2)`二重タプルで返します
     /// - Iはパース後に残った部分
     /// - O2はメソッドの引数に含めたパーサーが返した結果
-    ///
-    /// # Error
-    /// 実行したパーサーにエラーが含まれる場合も、そのまま結果を出す
     ///
     /// # Example
     /// ```
@@ -104,7 +95,7 @@ mod tests {
     #[test]
     fn cat_success_test() {
         let base = "*123";
-        let parser = base::char('*').cat(base::num);
+        let parser = str_parser::char('*').cat(str_parser::num);
         let (i, (r1, r2)) = parser(base);
         // パースした結果
         assert_eq!(r1, Ok('*'));
@@ -117,7 +108,7 @@ mod tests {
     #[test]
     fn cat_a_success_test() {
         let base = "*123";
-        let parser = base::char('*').cat_a(base::num);
+        let parser = str_parser::char('*').cat_a(str_parser::num);
         let (i, r1) = parser(base);
         // パースした結果
         assert_eq!(r1, Ok('*'));
@@ -129,7 +120,7 @@ mod tests {
     #[test]
     fn cat_b_success_test() {
         let base = "*123";
-        let parser = base::char('*').cat_b(base::num);
+        let parser = str_parser::char('*').cat_b(str_parser::num);
         let (i, r1) = parser(base);
         // パースした結果
         assert_eq!(r1, Ok(123));
@@ -142,7 +133,7 @@ mod tests {
     fn cat_error_test() {
         // パースしたい文字列の並び方が、パーサーの並び方と異なる
         let base = "+-abc";
-        let parser = base::char('-').cat(base::char('+'));
+        let parser = str_parser::char('-').cat(str_parser::char('+'));
         let (i, (r1, r2)) = parser(base);
         // パースした結果
         assert_eq!(r1.unwrap_err().kind(), &ErrorKind::ParseCharError);

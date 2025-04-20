@@ -1,19 +1,25 @@
 use super::*;
 
-/// 先頭の文字でパースする
+/// 文字でパースする
+///
+/// 引数に入れた文字を条件に解析する [Parser][super::Parser] を**作成**します。
+///
+/// # パーサーの仕様について
+/// - 先頭のみ解析を行います。
+/// ## 成功時
+/// - 条件の文字が解析できたら、その文字が結果として返されます。
+/// ## エラー時
+/// - [エラー][super::error::Error]が返却されます。
+///   - [kind][super::error::Error::kind]が [ParseCharError][super::ErrorKind::ParseCharError] になります。
 ///
 /// # Example
 /// ```rust
-/// use crate::parser::base::char;
+/// use crate::parser::str_parser::char;
 ///
 /// let input = "*123";
 /// let (rest, result) = char('*')(input);
 /// assert_eq!(result, Ok('*'));
 /// ```
-///
-/// # Error
-/// kindが [crate::parser::ErrorKind::ParseCharError] になります。
-///
 pub fn char<'a>(c: char) -> impl Parser<&'a str, Result<char, Error>> {
     move |i: &'a str| todo!()
 }
