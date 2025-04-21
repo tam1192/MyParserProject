@@ -23,12 +23,21 @@ impl Error {
 
 impl std::fmt::Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        todo!()
+        match &self.kind {
+            ErrorKind::ParseNumError(parse_int_error) => {
+                write!(f, "failed parse to number\n{}", parse_int_error)
+            }
+            ErrorKind::ParseCharError => write!(f, "failed parse to char"),
+            ErrorKind::ParseStringError => write!(f, "failed parse to string"),
+        }
     }
 }
 
 impl std::error::Error for Error {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        None
+        match &self.kind {
+            ErrorKind::ParseNumError(parse_int_error) => Some(parse_int_error),
+            _ => None,
+        }
     }
 }
