@@ -25,7 +25,6 @@ use super::*;
 ///
 ///
 pub fn num<'a>(i: &'a str) -> (&'a str, Result<u64, Error>) {
-    // let x = if let Some(n) = i.find(|c: char| !c.is_ascii_digit()) {
     let l = i.find(|c: char| !c.is_ascii_digit()).unwrap_or(0);
     match i[..l].parse::<u64>() {
         Ok(n) => (&i[l..], Ok(n)),
