@@ -22,7 +22,10 @@ use super::*;
 /// assert_eq!(rest, "_world");
 /// ```
 pub fn string<'a>(s: String) -> impl Parser<&'a str, Result<String, Error>> {
-    move |i: &'a str| todo!()
+    move |i: &'a str| match i.strip_prefix(&s) {
+        Some(i) => (i, Ok(s.clone())),
+        None => (i, Err(Error::new(ErrorKind::ParseStringError))),
+    }
 }
 
 #[cfg(test)]
