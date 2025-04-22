@@ -14,15 +14,18 @@ use super::*;
 ///
 /// # Example
 /// ```rust
-/// use crate::parser::str_parser::string;
+/// use my_parser_project::parser::str_parser::string;
 ///
 /// let input = "hello_world";
 /// let (rest, result) = string("hello".to_string())(input);
-/// assert_eq!(result, Ok("hello"));
+/// assert_eq!(result, Ok("hello".to_string()));
 /// assert_eq!(rest, "_world");
 /// ```
 pub fn string<'a>(s: String) -> impl Parser<&'a str, Result<String, Error>> {
-    move |i: &'a str| todo!()
+    move |i: &'a str| match i.strip_prefix(&s) {
+        Some(i) => (i, Ok(s.clone())),
+        None => (i, Err(Error::new(ErrorKind::ParseStringError))),
+    }
 }
 
 #[cfg(test)]

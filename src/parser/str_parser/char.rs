@@ -14,14 +14,20 @@ use super::*;
 ///
 /// # Example
 /// ```rust
-/// use crate::parser::str_parser::char;
+/// use my_parser_project::parser::str_parser::char;
 ///
 /// let input = "*123";
 /// let (rest, result) = char('*')(input);
 /// assert_eq!(result, Ok('*'));
 /// ```
 pub fn char<'a>(c: char) -> impl Parser<&'a str, Result<char, Error>> {
-    move |i: &'a str| todo!()
+    move |i: &'a str| {
+        if i.chars().next() == Some(c) {
+            (&i[1..], Ok(c))
+        } else {
+            (&i, Err(Error::new(ErrorKind::ParseCharError)))
+        }
+    }
 }
 
 #[cfg(test)]

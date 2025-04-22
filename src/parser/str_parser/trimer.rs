@@ -6,14 +6,14 @@
 ///
 /// # Example
 /// ```rust
-/// use crate::parser::str_parser::trimer;
+/// use my_parser_project::parser::str_parser::trimer;
 ///
 /// let input = "     abc";
 /// let (rest, _) = trimer(input);
 /// assert_eq!(rest, "abc");
 /// ```
 pub fn trimer<'a>(i: &'a str) -> (&'a str, ()) {
-    todo!()
+    (i.trim_start(), ())
 }
 
 #[cfg(test)]

@@ -16,7 +16,7 @@ use super::*;
 ///
 /// # Example
 /// ```rust
-/// use crate::parser::str_parser::num;
+/// use my_parser_project::parser::str_parser::num;
 ///
 /// let input = "123abc";
 /// let (rest, result) = num(input);
@@ -25,7 +25,11 @@ use super::*;
 ///
 ///
 pub fn num<'a>(i: &'a str) -> (&'a str, Result<u64, Error>) {
-    todo!()
+    let l = i.find(|c: char| !c.is_ascii_digit()).unwrap_or(i.len());
+    match i[..l].parse::<u64>() {
+        Ok(n) => (&i[l..], Ok(n)),
+        Err(e) => (i, Err(Error::new(ErrorKind::ParseNumError(e)))),
+    }
 }
 
 #[cfg(test)]
@@ -55,5 +59,39 @@ mod tests {
             result.unwrap_err().kind(),
             &ErrorKind::ParseNumError(_)
         ));
+    }
+
+    #[test]
+    // 数値のみの文字列からパースする
+    fn num_only() {
+        let input = "123".trim();
+        let (_, result) = num(input);
+        assert_eq!(result.unwrap(), 123)
+    }
+
+    // ascii文字を一つ一つ試す
+    #[test]
+    fn ascii_test() {
+        // ヒープ確保処理節約のため、使い回す
+        let mut base = String::with_capacity(10);
+        // パースできた文字を入れておく配列
+        let mut result_list = Vec::with_capacity(15);
+        // 全てのascii文字を試せるようにする
+        (0x0..0xFF).for_each(|b: u8| {
+            // 中身を初期化
+            base.clear();
+            // 該当文字と\nを加え、文字列を作成する
+            base.push(char::from(b));
+            base.push_str("\n");
+            // パースして、結果を確認する。
+            let (_, result) = num(&base);
+            if b >= 0x30 && b < 0x3a {
+                // unwrapは失敗したらpanic!を起こすので、assert同然に使用可能
+                result_list.push(result.unwrap());
+            } else {
+                assert!(matches!(result, Err(_)));
+            }
+        });
+        println!("{:?}", result_list);
     }
 }

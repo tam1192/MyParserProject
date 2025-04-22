@@ -8,25 +8,25 @@
 ///
 /// # Example
 /// ```rust
-/// use crate::parser::{str_parser::{num, none}, combinator::substitute::*};
+/// use my_parser_project::parser::{str_parser::{num, none}, combinator::*};
 ///
 /// // 数値があれば、数値を取り出す
-/// let parser = num.sub(none);
+/// let parser = num.sub_uncheck(none);
 ///
 /// // 数値なし
 /// let case1 = "abc";
 /// let (rest, result) = parser(case1);
-/// assert_eq!(result, SubResult::B(()))
+/// assert_eq!(result, SubResult::B(()));
 /// assert_eq!(rest, "abc");
 ///
 /// // 数値あり
 /// let case2 = "123abc";
 /// let (rest, result) = parser(case2);
-/// assert_eq!(result, SubResult::A(Ok(123)))
+/// assert_eq!(result, SubResult::A(123));
 /// assert_eq!(rest, "abc");
 /// ```
 pub fn none<'a>(i: &'a str) -> (&'a str, ()) {
-    todo!()
+    (i, ())
 }
 
 #[cfg(test)]
