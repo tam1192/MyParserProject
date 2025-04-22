@@ -17,7 +17,11 @@ where
     P: Parser<I, O>,
 {
     fn map<T>(self, f: impl Fn(O) -> T + Clone) -> impl Parser<I, T> {
-        move |i| todo!()
+        move |i| {
+            // self(メソッド呼び出し元パーサー)を実行し、結果となるrに関数を適用させる
+            let (i, r) = self(i);
+            (i, f(r))
+        }
     }
 }
 
@@ -29,10 +33,10 @@ mod tests {
     fn map_2x_test() {
         // numパーサーで数値を取得し、2倍した結果を取得するテスト
         let base = "10x";
-        let parser = str_parser::num.map(|x| x.map(|i| i * 2));
+        let parser = str_parser::num.map(|x: Result<u64, Error>| x.map(|i| i * 2));
         let (i, r1) = parser(base);
         // パース結果
-        assert_eq!(r1, Ok(4));
+        assert_eq!(r1, Ok(10 * 2));
         // 余った部分
         assert_eq!(i, "x");
     }

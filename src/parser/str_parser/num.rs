@@ -16,7 +16,7 @@ use super::*;
 ///
 /// # Example
 /// ```rust
-/// use crate::parser::str_parser::num;
+/// use my_parser_project::parser::str_parser::num;
 ///
 /// let input = "123abc";
 /// let (rest, result) = num(input);
@@ -25,7 +25,7 @@ use super::*;
 ///
 ///
 pub fn num<'a>(i: &'a str) -> (&'a str, Result<u64, Error>) {
-    let l = i.find(|c: char| !c.is_ascii_digit()).unwrap_or(0);
+    let l = i.find(|c: char| !c.is_ascii_digit()).unwrap_or(i.len());
     match i[..l].parse::<u64>() {
         Ok(n) => (&i[l..], Ok(n)),
         Err(e) => (i, Err(Error::new(ErrorKind::ParseNumError(e)))),
@@ -59,6 +59,14 @@ mod tests {
             result.unwrap_err().kind(),
             &ErrorKind::ParseNumError(_)
         ));
+    }
+
+    #[test]
+    // 数値のみの文字列からパースする
+    fn num_only() {
+        let input = "123".trim();
+        let (_, result) = num(input);
+        assert_eq!(result.unwrap(), 123)
     }
 
     // ascii文字を一つ一つ試す

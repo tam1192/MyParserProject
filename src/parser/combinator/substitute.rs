@@ -29,7 +29,7 @@ pub trait Substitute<I, A, AE> {
     ///
     /// ## Example
     /// ```
-    /// use crate::parser::{base::{char, num}, combinator::*};
+    /// use my_parser_project::parser::{str_parser::{char, num}, combinator::*};
     ///
     /// let input = "*123";
     /// let parser = char('*').sub(num);
@@ -72,11 +72,23 @@ where
         self,
         p: impl Parser<I, Result<B, BE>>,
     ) -> impl Parser<I, Result<SubResult<A, B>, (AE, BE)>> {
-        move |i| todo!()
+        move |i| match self(i) {
+            (i, Ok(a)) => (i, Ok(SubResult::A(a))),
+            (i, Err(ae)) => match p(i) {
+                (i, Ok(b)) => (i, Ok(SubResult::B(b))),
+                (i, Err(be)) => (i, Err((ae, be))),
+            },
+        }
     }
 
     fn sub_uncheck<B>(self, p: impl Parser<I, B>) -> impl Parser<I, SubResult<A, B>> {
-        move |i| todo!()
+        move |i| match self(i) {
+            (i, Ok(a)) => (i, SubResult::A(a)),
+            (i, Err(_)) => {
+                let (i, b) = p(i);
+                (i, SubResult::B(b))
+            }
+        }
     }
 }
 

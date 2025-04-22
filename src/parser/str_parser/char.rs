@@ -14,7 +14,7 @@ use super::*;
 ///
 /// # Example
 /// ```rust
-/// use crate::parser::str_parser::char;
+/// use my_parser_project::parser::str_parser::char;
 ///
 /// let input = "*123";
 /// let (rest, result) = char('*')(input);
