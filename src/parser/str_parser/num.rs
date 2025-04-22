@@ -60,4 +60,29 @@ mod tests {
             &ErrorKind::ParseNumError(_)
         ));
     }
+
+    // ascii文字を一つ一つ試す
+    #[test]
+    fn ascii_test() {
+        // ヒープ確保処理節約のため、使い回す
+        let mut base = String::with_capacity(10);
+        // パースできた文字を入れておく配列
+        let mut result_list = Vec::with_capacity(15);
+        // 全てのascii文字を試せるようにする
+        (0x0..0xFF).for_each(|b: u8| {
+            // 中身を初期化
+            base.clear();
+            // 該当文字と\nを加え、文字列を作成する
+            base.push(char::from(b));
+            base.push_str("\n");
+            // パースして、結果を確認する。
+            let (_, result) = num(&base);
+            if b >= 0x30 && b < 0x3a {
+                result_list.push(result.unwrap());
+            } else {
+                assert!(matches!(result, Err(_)));
+            }
+        });
+        println!("{:?}", result_list);
+    }
 }
