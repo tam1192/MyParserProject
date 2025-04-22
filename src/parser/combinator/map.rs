@@ -17,7 +17,11 @@ where
     P: Parser<I, O>,
 {
     fn map<T>(self, f: impl Fn(O) -> T + Clone) -> impl Parser<I, T> {
-        move |i| todo!()
+        move |i| {
+            // self(メソッド呼び出し元パーサー)を実行し、結果となるrに関数を適用させる
+            let (i, r) = self(i);
+            (i, f(r))
+        }
     }
 }
 
