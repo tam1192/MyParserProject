@@ -78,6 +78,7 @@ mod tests {
             // パースして、結果を確認する。
             let (_, result) = num(&base);
             if b >= 0x30 && b < 0x3a {
+                // unwrapは失敗したらpanic!を起こすので、assert同然に使用可能
                 result_list.push(result.unwrap());
             } else {
                 assert!(matches!(result, Err(_)));
