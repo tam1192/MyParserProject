@@ -75,15 +75,32 @@ where
     P: Parser<I, O1>,
 {
     fn cat(self, p: impl Parser<I, O2>) -> impl Parser<I, (O1, O2)> {
-        move |i| todo!()
+        move |i| {
+            // self(メソッド呼び出し元パーサー)
+            // p(メソッド引数パーサー)
+            // の順でパースする
+            let (i, o1) = self(i);
+            let (i, o2) = p(i);
+            (i, (o1, o2))
+        }
     }
 
     fn cat_a(self, p: impl Parser<I, O2>) -> impl Parser<I, O1> {
-        move |i| todo!()
+        move |i| {
+            let (i, o1) = self(i);
+            // o2の結果は破棄する
+            let (i, _) = p(i);
+            (i, o1)
+        }
     }
 
     fn cat_b(self, p: impl Parser<I, O2>) -> impl Parser<I, O2> {
-        move |i| todo!()
+        move |i| {
+            // o1の結果は破棄する
+            let (i, _) = self(i);
+            let (i, o2) = p(i);
+            (i, o2)
+        }
     }
 }
 
@@ -134,11 +151,12 @@ mod tests {
         // パースしたい文字列の並び方が、パーサーの並び方と異なる
         let base = "+-abc";
         let parser = str_parser::char('-').cat(str_parser::char('+'));
+
         let (i, (r1, r2)) = parser(base);
         // パースした結果
         assert_eq!(r1.unwrap_err().kind(), &ErrorKind::ParseCharError);
-        assert_eq!(r2.unwrap_err().kind(), &ErrorKind::ParseCharError);
+        assert_eq!(r2.unwrap(), '+');
         // 取り残された文字
-        assert_eq!(i, "+-abc");
+        assert_eq!(i, "-abc");
     }
 }
