@@ -29,7 +29,7 @@ pub trait Substitute<I, A, AE> {
     ///
     /// ## Example
     /// ```
-    /// use crate::parser::{base::{char, num}, combinator::*};
+    /// use my_parser_project::parser::{str_parser::{char, num}, combinator::*};
     ///
     /// let input = "*123";
     /// let parser = char('*').sub(num);

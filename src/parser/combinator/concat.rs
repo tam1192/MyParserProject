@@ -15,7 +15,7 @@ pub trait Concat<I, O1, O2> {
     ///
     /// # Example
     /// ```
-    /// use crate::parser::{base::{char, num}, combinator::Concat};
+    /// use my_parser_project::parser::{str_parser::{char, num}, combinator::Concat};
     ///
     /// let input = "*123";
     /// let parser = char('*').cat(num);
@@ -36,7 +36,7 @@ pub trait Concat<I, O1, O2> {
     ///
     /// # Example
     /// ```
-    /// use crate::parser::{base::{char, num}, combinator::Concat};
+    /// use my_parser_project::parser::{str_parser::{char, num}, combinator::Concat};
     ///
     /// let input = "*123";
     /// let parser = char('*').cat_a(num);
@@ -57,7 +57,7 @@ pub trait Concat<I, O1, O2> {
     ///
     /// # Example
     /// ```
-    /// use crate::parser::{base::{char, num}, combinator::Concat};
+    /// use my_parser_project::parser::{str_parser::{char, num}, combinator::Concat};
     ///
     /// let input = "*123";
     /// let parser = char('*').cat_b(num);

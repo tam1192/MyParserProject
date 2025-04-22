@@ -16,7 +16,7 @@ use super::*;
 ///
 /// # Example
 /// ```rust
-/// use crate::parser::str_parser::num;
+/// use my_parser_project::parser::str_parser::num;
 ///
 /// let input = "123abc";
 /// let (rest, result) = num(input);

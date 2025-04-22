@@ -14,11 +14,11 @@ use super::*;
 ///
 /// # Example
 /// ```rust
-/// use crate::parser::str_parser::string;
+/// use my_parser_project::parser::str_parser::string;
 ///
 /// let input = "hello_world";
 /// let (rest, result) = string("hello".to_string())(input);
-/// assert_eq!(result, Ok("hello"));
+/// assert_eq!(result, Ok("hello".to_string()));
 /// assert_eq!(rest, "_world");
 /// ```
 pub fn string<'a>(s: String) -> impl Parser<&'a str, Result<String, Error>> {

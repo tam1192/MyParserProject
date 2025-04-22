@@ -6,7 +6,7 @@
 ///
 /// # Example
 /// ```rust
-/// use crate::parser::str_parser::trimer;
+/// use my_parser_project::parser::str_parser::trimer;
 ///
 /// let input = "     abc";
 /// let (rest, _) = trimer(input);
