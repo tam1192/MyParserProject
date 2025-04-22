@@ -1,15 +1,26 @@
-use crate::error::*;
-pub trait Parser<I, O>: ParserOnce<I, O> + Clone {}
-impl<F, I, O> Parser<I, O> for F where F: ParserOnce<I, O> + Clone {}
+//! 配列・文字列から指定した条件で解析を行う機能を提供する
+//!
+//! パーサー（構文解析器）とは、文字列やバイト列のスライスから、指定した条件で解析を行うためのアルゴリズムのことです。
+//! このモジュールでは、トップダウン構文解析として、配列の先頭から解析を行うパーサーを提供します。
+//!
+//! # パーサーの型について
+//! 基本的なパーサーの構造は、 [Parser] トレイトに従います。  
+//! [combinator]モジュールで、パーサーを組み合わせて動作するパーサーを作成できます。  
+pub mod combinator;
+pub mod str_parser;
 
-pub trait ParserOnce<I, O>: Fn(I) -> Result<(I, O)> {}
-impl<F, I, O> ParserOnce<I, O> for F where F: Fn(I) -> Result<(I, O)> {}
+// エラー
+mod error;
+pub use error::*;
 
-mod base;
-pub use base::*;
-
-mod combinator;
-pub use combinator::*;
-
-mod template;
-pub use template::*;
+/// パーサー関数をトレイトオブジェクト化します。
+///
+/// 引数に指定されたスライスの先頭から、指定された条件で解析をし、一致した場合は結果を返却します。
+///
+/// # 戻り値について
+/// `(I, R)`のタプル形式です。
+/// - I: パース後に残った部分が入ります
+/// - R: パースした結果が入ります。結果の型式については、パーサーによって異なります。
+pub trait Parser<I, R>: Fn(I) -> (I, R) + Clone {}
+// Fn(I) -> (I, Result<T,E>) を Parser<I, T, E> として使えるようにする
+impl<I, R, F> Parser<I, R> for F where F: Fn(I) -> (I, R) + Clone {}
