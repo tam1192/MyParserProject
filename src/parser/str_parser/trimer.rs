@@ -13,7 +13,7 @@
 /// assert_eq!(rest, "abc");
 /// ```
 pub fn trimer<'a>(i: &'a str) -> (&'a str, ()) {
-    todo!()
+    (i.trim_start(), ())
 }
 
 #[cfg(test)]

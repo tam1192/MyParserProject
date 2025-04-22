@@ -21,7 +21,13 @@ use super::*;
 /// assert_eq!(result, Ok('*'));
 /// ```
 pub fn char<'a>(c: char) -> impl Parser<&'a str, Result<char, Error>> {
-    move |i: &'a str| todo!()
+    move |i: &'a str| {
+        if i.chars().next() == Some(c) {
+            (&i[1..], Ok(c))
+        } else {
+            (&i, Err(Error::new(ErrorKind::ParseCharError)))
+        }
+    }
 }
 
 #[cfg(test)]
