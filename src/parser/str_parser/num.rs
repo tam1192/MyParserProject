@@ -40,8 +40,8 @@ mod tests {
     #[test]
     fn success_test() {
         let input = "123abc";
-        let (rest, result) = num(input);
-        // 残った文字列
+        let (rest, result) = num(input); // Test invalid input parsing
+                                         // 残った文字列
         assert_eq!(rest, "abc");
         // パースした数字
         assert_eq!(result, Ok(123));
@@ -49,7 +49,7 @@ mod tests {
 
     // 異常系: 数字がパースできない場合
     #[test]
-    fn dissociation_test() {
+    fn invalid_input_test() {
         let input = "abc123";
         let (rest, result) = num(input);
         // 残った文字列

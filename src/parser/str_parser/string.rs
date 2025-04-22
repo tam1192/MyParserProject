@@ -46,7 +46,7 @@ mod tests {
 
     // 異常系：文字列が異なりパースできない
     #[test]
-    fn dissociation_test() {
+    fn failure_test() {
         // 本来パースしたい文字列の手前に、別の文字が含まれている
         let base = "3+=";
         let parser = string("+=".to_string());
