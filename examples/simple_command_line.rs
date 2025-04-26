@@ -20,9 +20,9 @@ fn main() {
                 // ping ; pong!とユーザーに投げる
                 .sub(string("ping".to_string()))
                 .map(|r| match r {
-                    Ok(SubResult::A(SubResult::A(_))) => 1,
-                    Ok(SubResult::A(SubResult::B(_))) => 2,
-                    Ok(SubResult::B(_)) => 3,
+                    Ok(SubResult::Main(SubResult::Main(_))) => 1,
+                    Ok(SubResult::Main(SubResult::Sub(_))) => 2,
+                    Ok(SubResult::Sub(_)) => 3,
                     Err(_) => 0,
                 }),
         )(&input);

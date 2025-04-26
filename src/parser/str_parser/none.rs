@@ -16,13 +16,13 @@
 /// // 数値なし
 /// let case1 = "abc";
 /// let (rest, result) = parser(case1);
-/// assert_eq!(result, SubResult::B(()));
+/// assert_eq!(result, SubResult::Sub(()));
 /// assert_eq!(rest, "abc");
 ///
 /// // 数値あり
 /// let case2 = "123abc";
 /// let (rest, result) = parser(case2);
-/// assert_eq!(result, SubResult::A(123));
+/// assert_eq!(result, SubResult::Main(123));
 /// assert_eq!(rest, "abc");
 /// ```
 pub fn none<'a>(i: &'a str) -> (&'a str, ()) {
