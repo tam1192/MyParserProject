@@ -4,28 +4,28 @@ use super::*;
 ///
 /// [subパーサー][Substitute::sub]で結果を返すためのenumです。
 #[derive(Debug, PartialEq)]
-pub enum SubResult<A, B> {
-    A(A),
-    B(B),
+pub enum SubResult<Main, Sub> {
+    Main(Main),
+    Sub(Sub),
 }
 
 /// パース失敗時に別の[Parser][crate::parser::Parser]で解析する
 ///
 /// 戻り値に[Result]型を用いる[Parser][crate::parser::Parser]で使うことができます。
-pub trait Substitute<I, A, AE> {
-    /// メソッド呼び出し元(A)パーサーが失敗した時、メソッド引数(B)パーサーを試みるパーサーを作成します。
+pub trait Substitute<I, Main, MainE> {
+    /// メソッド呼び出し元(Main)パーサーが失敗した時、メソッド引数(B)パーサーを試みるパーサーを作成します。
     ///
     /// ## 結果とエラー
-    /// - メソッド呼び出し元(A)パーサーが[Ok]だった場合は、[SubResult::A]が返されます
-    /// - メソッド呼び出し元(A)パーサーが[Err]だった場合は、メソッド引数(B)パーサーを使います
-    /// - メソッド引数(B)パーサーが[Ok]だった場合は、[SubResult::B]が返されます
-    /// - メソッド引数(B)パーサーが[Err]だった場合は、`(A, B)`のタプル形式でエラーが返されます
+    /// - メソッド呼び出し元(Main)パーサーが[Ok]だった場合は、[SubResult::Main]が返されます
+    /// - メソッド呼び出し元(Main)パーサーが[Err]だった場合は、メソッド引数(Sub)パーサーを使います
+    /// - メソッド引数(Sub)パーサーが[Ok]だった場合は、[SubResult::Sub]が返されます
+    /// - メソッド引数(Sub)パーサーが[Err]だった場合は、`(Main, Sub)`のタプル形式でエラーが返されます
     ///
     /// | |A|B|
     /// |---|---|---|
     /// |解析順| 1 | 2 |
-    /// |Ok| [SubResult::A] | [SubResult::B] |
-    /// |Err| Bで解析する | `Err(AE, BE)` |
+    /// |Ok| [SubResult::Main] | [SubResult::Sub] |
+    /// |Err| Subで解析する | `Err(MainE, SubE)` |
     ///
     /// ## Example
     /// ```
@@ -35,58 +35,58 @@ pub trait Substitute<I, A, AE> {
     /// let parser = char('*').sub(num);
     /// let (_, result) = parser(input);
     ///
-    /// assert_eq!(result, Ok(SubResult::A('*')))
+    /// assert_eq!(result, Ok(SubResult::Main('*')))
     /// ```
-    fn sub<B, BE>(
+    fn sub<Sub, SubE>(
         self,
-        p: impl Parser<I, Result<B, BE>>,
-    ) -> impl Parser<I, Result<SubResult<A, B>, (AE, BE)>>;
+        p: impl Parser<I, Result<Sub, SubE>>,
+    ) -> impl Parser<I, Result<SubResult<Main, Sub>, (MainE, SubE)>>;
 
-    /// メソッド引数(B)パーサーのエラーを無視します。  
+    /// メソッド引数(Sub)パーサーのエラーを無視します。  
     /// `sub`とは、戻り値の仕様が異なり、このパーサーはエラーを返すことはありません。  
     ///
     /// ## 結果とエラー
-    /// - メソッド呼び出し元(A)パーサーが[Ok]だった場合は、[SubResult::A]が返されます
-    /// - メソッド呼び出し元(A)パーサーが[Err]だった場合は、メソッド引数(B)パーサーを使います
-    /// - メソッド引数(B)パーサーが[Ok]だった場合は、[SubResult::B]が返されます。
-    /// - メソッド引数(B)パーサーが[Err]だった場合も、[SubResult::B]が返されます。
+    /// - メソッド呼び出し元(Main)パーサーが[Ok]だった場合は、[SubResult::Main]が返されます
+    /// - メソッド呼び出し元(Main)パーサーが[Err]だった場合は、メソッド引数(Sub)パーサーを使います
+    /// - メソッド引数(Sub)パーサーが[Ok]だった場合は、[SubResult::Sub]が返されます。
+    /// - メソッド引数(Sub)パーサーが[Err]だった場合も、[SubResult::Sub]が返されます。
     ///
-    /// | |A|B|
+    /// | |Main|Sub|
     /// |---|---|---|
     /// |解析順| 1 | 2 |
-    /// |Ok| [SubResult::A] | [SubResult::B] |
-    /// |Err| Bで解析する | [SubResult::B] |
+    /// |Ok| [SubResult::Main] | [SubResult::Sub] |
+    /// |Err| Subで解析する | [SubResult::Sub] |
     ///
     /// ## `sub`との使い分け
-    /// メソッド引数(B)パーサーの戻り値が[Result]出ない場合も使うことができます。
+    /// メソッド引数(Sub)パーサーの戻り値が[Result]出ない場合も使うことができます。
     /// そのため、[trimer][crate::parser::str_parser::trimer]などのパーサーが使用可能です。
-    fn sub_uncheck<B>(self, p: impl Parser<I, B>) -> impl Parser<I, SubResult<A, B>>;
+    fn sub_uncheck<Sub>(self, p: impl Parser<I, Sub>) -> impl Parser<I, SubResult<Main, Sub>>;
 }
 
 // 実装
-impl<I, A, AE, P> Substitute<I, A, AE> for P
+impl<I, Main, MainE, P> Substitute<I, Main, MainE> for P
 where
-    P: Parser<I, Result<A, AE>>,
+    P: Parser<I, Result<Main, MainE>>,
 {
-    fn sub<B, BE>(
+    fn sub<Sub, SubE>(
         self,
-        p: impl Parser<I, Result<B, BE>>,
-    ) -> impl Parser<I, Result<SubResult<A, B>, (AE, BE)>> {
+        p: impl Parser<I, Result<Sub, SubE>>,
+    ) -> impl Parser<I, Result<SubResult<Main, Sub>, (MainE, SubE)>> {
         move |i| match self(i) {
-            (i, Ok(a)) => (i, Ok(SubResult::A(a))),
+            (i, Ok(a)) => (i, Ok(SubResult::Main(a))),
             (i, Err(ae)) => match p(i) {
-                (i, Ok(b)) => (i, Ok(SubResult::B(b))),
+                (i, Ok(b)) => (i, Ok(SubResult::Sub(b))),
                 (i, Err(be)) => (i, Err((ae, be))),
             },
         }
     }
 
-    fn sub_uncheck<B>(self, p: impl Parser<I, B>) -> impl Parser<I, SubResult<A, B>> {
+    fn sub_uncheck<B>(self, p: impl Parser<I, B>) -> impl Parser<I, SubResult<Main, B>> {
         move |i| match self(i) {
-            (i, Ok(a)) => (i, SubResult::A(a)),
+            (i, Ok(a)) => (i, SubResult::Main(a)),
             (i, Err(_)) => {
                 let (i, b) = p(i);
-                (i, SubResult::B(b))
+                (i, SubResult::Sub(b))
             }
         }
     }
@@ -105,7 +105,7 @@ mod tests {
         let input = "*123";
         let parser = str_parser::char('*').sub(str_parser::char('+'));
         let (_, result) = parser(input);
-        assert_eq!(result, Ok(SubResult::A('*')))
+        assert_eq!(result, Ok(SubResult::Main('*')))
     }
     // Bのパーサーで成功する時
     #[test]
@@ -113,7 +113,7 @@ mod tests {
         let input = "+123";
         let parser = str_parser::char('*').sub(str_parser::char('+'));
         let (_, result) = parser(input);
-        assert_eq!(result, Ok(SubResult::B('+')))
+        assert_eq!(result, Ok(SubResult::Sub('+')))
     }
     // ABどちらもパース不可能な時
     #[test]
@@ -130,7 +130,7 @@ mod tests {
         let input = "*123";
         let parser = str_parser::char('*').sub_uncheck(str_parser::char('+'));
         let (_, result) = parser(input);
-        assert_eq!(result, SubResult::A('*'))
+        assert_eq!(result, SubResult::Main('*'))
     }
     // Bのパーサーで成功する時
     #[test]
@@ -138,7 +138,7 @@ mod tests {
         let input = "+123";
         let parser = str_parser::char('*').sub_uncheck(str_parser::char('+'));
         let (_, result) = parser(input);
-        assert_eq!(result, SubResult::B(Ok('+')))
+        assert_eq!(result, SubResult::Sub(Ok('+')))
     }
     // ABどちらもパース不可能な時
     #[test]
@@ -146,6 +146,6 @@ mod tests {
         let input = "a123";
         let parser = str_parser::char('*').sub_uncheck(str_parser::char('+'));
         let (_, result) = parser(input);
-        assert!(matches!(result, SubResult::B(Err(_))))
+        assert!(matches!(result, SubResult::Sub(Err(_))))
     }
 }
