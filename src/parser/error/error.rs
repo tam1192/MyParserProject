@@ -29,6 +29,7 @@ impl std::fmt::Display for Error {
             }
             ErrorKind::ParseCharError => write!(f, "failed parse to char"),
             ErrorKind::ParseStringError => write!(f, "failed parse to string"),
+            ErrorKind::ParseNotError => write!(f, "failed parse to not"),
         }
     }
 }
