@@ -36,7 +36,8 @@ mod tests {
     #[test]
     fn success_test() {
         let base = "+=3";
-        let parser = string("+=");
+        let parse_str = "+=";
+        let parser = string(&parse_str);
         let (rest, result) = parser(base);
         // 残った文字列
         assert_eq!(rest, "3");
