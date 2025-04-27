@@ -12,3 +12,6 @@ pub use substitute::*;
 
 mod map;
 pub use map::*;
+
+mod not;
+pub use not::*;

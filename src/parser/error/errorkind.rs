@@ -11,4 +11,6 @@ pub enum ErrorKind {
     ParseCharError,
     /// [string][crate::parser::str_parser::string] パーサーのエラー
     ParseStringError,
+    /// [not][crate::parser::combinator::not] パーサーのエラー
+    ParseNotError,
 }
