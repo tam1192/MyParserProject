@@ -14,11 +14,11 @@ fn main() {
         // 入力から命令を取り出す
         let (input, opcode) = trimer.cat_b(
             // say <msg> : msgをユーザーに投げる
-            string("say".to_string())
+            string("say")
                 // exit : プログラムを終了させる
-                .sub(string("exit".to_string()))
+                .sub(string("exit"))
                 // ping ; pong!とユーザーに投げる
-                .sub(string("ping".to_string()))
+                .sub(string("ping"))
                 .map(|r| match r {
                     Ok(SubResult::Main(SubResult::Main(_))) => 1,
                     Ok(SubResult::Main(SubResult::Sub(_))) => 2,
