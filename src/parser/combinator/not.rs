@@ -33,6 +33,48 @@ mod tests {
     use crate::parser::str_parser::*;
 
     #[test]
+    fn char_parser() {
+        let patterns = [
+            ("abc+", ("+", "abc")),
+            ("+abc", ("+abc", "")),
+            ("+", ("+", "")),
+            ("abc", ("", "abc")),
+        ];
+        let parser = not(char('+'));
+        for (input, result) in patterns {
+            assert_eq!(parser(input), result);
+        }
+    }
+
+    #[test]
+    fn num_parser() {
+        let patterns = [
+            ("abc123", ("123", "abc")),
+            ("123abc", ("123abc", "")),
+            ("123", ("123", "")),
+            ("abc", ("", "abc")),
+        ];
+        let parser = not(num);
+        for (input, result) in patterns {
+            assert_eq!(parser(input), result);
+        }
+    }
+
+    #[test]
+    fn string_parser() {
+        let patterns = [
+            ("123abc", ("abc", "123")),
+            ("abc123", ("abc123", "")),
+            ("abc", ("abc", "")),
+            ("123", ("", "123")),
+        ];
+        let parser = not(string(String::from("abc")));
+        for (input, result) in patterns {
+            assert_eq!(parser(input), result);
+        }
+    }
+
+    #[test]
     fn simple() {
         let input = "abc123";
         let parser = not(num);
