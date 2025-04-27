@@ -68,7 +68,7 @@ mod tests {
             ("abc", ("abc", "")),
             ("123", ("", "123")),
         ];
-        let parser = not(string(String::from("abc")));
+        let parser = not(string("abc"));
         for (input, result) in patterns {
             assert_eq!(parser(input), result);
         }

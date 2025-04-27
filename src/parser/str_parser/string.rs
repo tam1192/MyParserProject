@@ -17,13 +17,13 @@ use super::*;
 /// use my_parser_project::parser::str_parser::string;
 ///
 /// let input = "hello_world";
-/// let (rest, result) = string("hello".to_string())(input);
-/// assert_eq!(result, Ok("hello".to_string()));
+/// let (rest, result) = string("hello")(input);
+/// assert_eq!(result, Ok("hello"));
 /// assert_eq!(rest, "_world");
 /// ```
-pub fn string<'a>(s: String) -> impl Parser<&'a str, Result<String, Error>> {
+pub fn string<'a>(s: &str) -> impl Parser<&'a str, Result<&str, Error>> {
     move |i: &'a str| match i.strip_prefix(&s) {
-        Some(i) => (i, Ok(s.clone())),
+        Some(i) => (i, Ok(s)),
         None => (i, Err(Error::new(ErrorKind::ParseStringError))),
     }
 }
@@ -36,12 +36,12 @@ mod tests {
     #[test]
     fn success_test() {
         let base = "+=3";
-        let parser = string("+=".to_string());
+        let parser = string("+=");
         let (rest, result) = parser(base);
         // 残った文字列
         assert_eq!(rest, "3");
         // パースした文字列
-        assert_eq!(result, Ok("+=".to_string()));
+        assert_eq!(result, Ok("+="));
     }
 
     // 異常系：文字列が異なりパースできない
@@ -49,7 +49,7 @@ mod tests {
     fn failure_test() {
         // 本来パースしたい文字列の手前に、別の文字が含まれている
         let base = "3+=";
-        let parser = string("+=".to_string());
+        let parser = string("+=");
         let (rest, result) = parser(base);
         // 残った文字列
         assert_eq!(rest, "3+=");
