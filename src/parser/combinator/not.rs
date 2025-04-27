@@ -8,7 +8,7 @@ use super::*;
 /// ```
 /// use my_parser_project::parser::{combinator::*, str_parser::*};
 ///  
-/// let base = "abc123"
+/// let base = "abc123";
 /// let parser = not(num);
 /// let (remain, result) = parser(base);
 ///
