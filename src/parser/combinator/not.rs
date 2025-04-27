@@ -16,8 +16,15 @@ use super::*;
 /// assert_eq!(remain, "123");
 /// ```
 ///
-pub fn not<I, T, E, P: Parser<I, Result<T, E>>>(p: P) -> impl Parser<I, I> {
-    move |i| todo!()
+pub fn not<'a, T, E, P: Parser<&'a str, Result<T, E>>>(p: P) -> impl Parser<&'a str, &'a str> {
+    move |i| {
+        for first in 0..i.len() {
+            if let (_, Ok(_)) = p(&i[first..]) {
+                return (&i[first..], &i[..first]);
+            }
+        }
+        ("", &i)
+    }
 }
 
 #[cfg(test)]
@@ -40,8 +47,8 @@ mod tests {
         let input = "123";
         let parser = not(num);
         let (remain, result) = parser(input);
-        assert_eq!(result, "123");
-        assert_eq!(remain, "");
+        assert_eq!(result, "");
+        assert_eq!(remain, "123");
     }
 
     // 入力パーサーがすべて失敗する例
@@ -50,7 +57,8 @@ mod tests {
         let input = "abc";
         let parser = not(num);
         let (remain, result) = parser(input);
-        assert_eq!(result, "");
-        assert_eq!(remain, "abc");
+        println!("{}", result);
+        assert_eq!(result, "abc");
+        assert_eq!(remain, "");
     }
 }
